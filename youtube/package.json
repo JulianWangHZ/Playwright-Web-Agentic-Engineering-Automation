@@ -1,0 +1,55 @@
+{
+  "name": "youtube",
+  "version": "1.0.0",
+  "description": "YouTube Web E2E automation tests",
+  "scripts": {
+    "bddgen": "bddgen",
+    "test": "bddgen && playwright test",
+    "test:headed": "HEADLESS=false npm test",
+    "test:ui": "bddgen && playwright test --project=ui",
+    "test:mobile": "bddgen && DEVICE='iPhone 14' playwright test --project=ui",
+    "test:tablet": "bddgen && DEVICE='iPad (gen 7)' playwright test --project=ui",
+    "test:smoke": "bddgen && playwright test --grep @smoke",
+    "test:regression": "bddgen && playwright test --grep @regression",
+    "test:search": "bddgen && playwright test --grep @search-results",
+    "test:watch": "bddgen && playwright test --grep @watch",
+    "test:channel": "bddgen && playwright test --grep @channel",
+    "test:ci": "CI=true PARALLEL_WORKERS=8 npm test",
+    "test:ci:smoke": "CI=true PARALLEL_WORKERS=8 bddgen && playwright test --grep @smoke",
+    "report": "open smart-report.html",
+    "clean": "rm -rf test-results smart-report.html test-history.json tests/.features-gen .auth",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "check": "npm run type-check && npm run format:check && npm run lint"
+  },
+  "keywords": [
+    "playwright",
+    "bdd",
+    "youtube",
+    "e2e"
+  ],
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "sharp": "^0.34.0"
+  },
+  "devDependencies": {
+    "@playwright/cli": "0.1.15",
+    "@playwright/test": "1.58.2",
+    "@types/node": "^25.2.3",
+    "dotenv": "^17.2.4",
+    "eslint": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.7.1",
+    "playwright-bdd": "^8.0.0",
+    "playwright-smart-reporter": "^2.1.0",
+    "prettier": "^3.8.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.64.0"
+  }
+}

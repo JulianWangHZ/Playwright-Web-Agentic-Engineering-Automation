@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "atlassian": {
+      "command": "uvx",
+      "args": ["mcp-atlassian", "--env-file", ".claude/secrets.env"]
+    },
+    "playwright-test": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "cd youtube && exec node_modules/.bin/playwright run-test-mcp-server -c playwright.config.ts"
+      ]
+    }
+  }
+}

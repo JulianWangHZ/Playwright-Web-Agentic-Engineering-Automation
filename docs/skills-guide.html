@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Skills Guide — Which Skill to Use at Each Stage</title>
+<style>
+  :root {
+    --text: #1d1d1f;
+    --text2: #6e6e73;
+    --text3: #424245;
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --line: #d2d2d7;
+    --accent: #0071e3;
+    --code-bg: #f5f5f7;
+    --radius: 18px;
+    --font: "SF Pro TC", "SF Pro Text", "SF Pro Icons", "PingFang TC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 64px 24px 96px;
+  }
+  .wrap { max-width: 1024px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 64px; }
+  h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.015em; }
+  .sub { color: var(--text2); margin-top: 10px; font-size: 19px; font-weight: 400; }
+  .legend { margin-top: 20px; font-size: 14px; color: var(--text2); }
+  .legend b { color: var(--accent); font-weight: 600; }
+  h2 {
+    font-size: 24px; font-weight: 700; letter-spacing: -0.01em;
+    margin: 56px 0 20px; display: flex; align-items: center; gap: 12px;
+  }
+  h2 .tag {
+    font-size: 13px; color: var(--text3); background: var(--card);
+    border: 1px solid var(--line); padding: 3px 12px; border-radius: 980px; font-weight: 500;
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+  .step {
+    flex: 1; min-width: 244px; background: var(--card);
+    border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px;
+  }
+  .step .n { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; text-transform: uppercase; }
+  .step h3 { font-size: 17px; font-weight: 600; margin: 6px 0 10px; letter-spacing: -0.01em; }
+  .step h3 code { font-size: 14px; background: var(--code-bg); color: var(--accent); padding: 3px 9px; border-radius: 8px; font-weight: 500; }
+  .step p { font-size: 15px; color: var(--text3); margin-bottom: 10px; }
+  .meta { font-size: 13px; color: var(--text2); }
+  .meta code { background: var(--code-bg); padding: 2px 7px; border-radius: 6px; color: var(--text); }
+  .opt { display: inline-block; font-size: 11px; color: var(--text3); background: var(--bg); border: 1px solid var(--line); padding: 1px 9px; border-radius: 980px; font-weight: 600; margin-left: 6px; }
+  .arrow { text-align: center; color: var(--text2); font-size: 22px; margin: 4px 0; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; font-size: 15px; }
+  th, td { text-align: left; padding: 13px 18px; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: none; }
+  th { background: var(--bg); color: var(--text); font-weight: 600; }
+  td code { background: var(--code-bg); padding: 2px 7px; border-radius: 6px; color: var(--accent); font-weight: 500; }
+  .note {
+    background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    padding: 14px 18px; border-radius: 12px; margin: 16px 0; font-size: 14.5px; color: var(--text3);
+  }
+  .note b { color: var(--text); font-weight: 600; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+  footer { margin-top: 72px; text-align: center; color: var(--text2); font-size: 15px; line-height: 1.9; }
+  footer code { background: var(--card); border: 1px solid var(--line); padding: 3px 11px; border-radius: 8px; color: var(--accent); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Skills Guide</h1>
+    <p class="sub">Which Skill to use at each stage, and when — so anyone can follow along and run a full QA pipeline</p>
+    <p class="legend"><b>Blue</b> = skill command · <span class="opt">optional</span> = optional step · for the full pipeline overview see <b>pipeline.html</b></p>
+  </header>
+
+  <h2>Two-Layer Architecture</h2>
+  <div class="row">
+    <div class="step">
+      <div class="n">Layer 1 · Orchestration</div>
+      <h3>Guides you / picks for you</h3>
+      <p><code>/flow-qa-router</code> — when you don't know which one to use, describe your scenario and it picks the skill.</p>
+      <p><code>/flow-feature-testing-workflow</code> and <code>/flow-version-testing-workflow</code> walk you step by step through an entire stage.</p>
+    </div>
+    <div class="step">
+      <div class="n">Layer 2 · Execution</div>
+      <h3>Individual skills that do the work</h3>
+      <p>test-matrix / state-machine / write-bdd / bdd-review / version-test-plan / tc-merge / jira-sync … each does one thing and can be called on its own.</p>
+    </div>
+  </div>
+
+  <h2>First decide: which stage are you in?</h2>
+  <table>
+    <tr><th>Argument format</th><th>Stage</th><th>Example</th></tr>
+    <tr><td><code>TICKET-xxx</code></td><td>Feature (single feature)</td><td><code>/stage-test-matrix TICKET-1352</code></td></tr>
+    <tr><td><code>vX.X TICKET-xxx</code></td><td>Version (a ticket merged into a version)</td><td><code>/stage-write-bdd v4.16 TICKET-1352</code></td></tr>
+    <tr><td><code>vX.X</code></td><td>Version (aggregation / wrap-up)</td><td><code>/stage-version-test-plan v4.16</code></td></tr>
+  </table>
+
+  <h2>Feature Stage <span class="tag">single feature: design → test</span></h2>
+  <div class="note">Goal: turn one feature ticket into executable test assets. <b>Don't skip the order</b> — drawing the state machine before the matrix is verified tends to drift the scope; writing cases before the state machine is drawn tends to miss edge cases.</div>
+  <div class="row">
+    <div class="step">
+      <div class="n">Step 1</div>
+      <h3><code>/stage-test-matrix</code></h3>
+      <p>Generate a "condition × behavior" Test Matrix from the ticket or plan.md, applying the ten coverage techniques for exhaustive coverage (equivalence classes / boundary values / decision tables …).</p>
+      <p class="meta">argument <code>TICKET-xxx</code></p>
+    </div>
+    <div class="step">
+      <div class="n">Step 2 <span class="opt">optional</span></div>
+      <h3><code>/stage-state-machine</code></h3>
+      <p>Draw a Mermaid State Machine covering legal + illegal transitions, filling in the state flows the matrix easily misses.</p>
+      <p class="meta">prerequisite <code>test_matrix.md</code></p>
+    </div>
+    <div class="step">
+      <div class="n">Step 3</div>
+      <h3><code>/stage-write-bdd</code></h3>
+      <p>Write Gherkin <code>.feature</code> from the matrix (New: whole file / Modified: diff); each scenario maps to one ticket.</p>
+      <p class="meta">prerequisite <code>test_matrix.md</code></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="step">
+      <div class="n">Step 4 <span class="opt">optional</span></div>
+      <h3><code>/stage-ui-prototype</code></h3>
+      <p>Produce an interactive HTML prototype so stakeholders can confirm scope against the screens.</p>
+      <p class="meta">prerequisite <code>test_matrix.md</code></p>
+    </div>
+    <div class="step">
+      <div class="n">Step 5 <span class="opt">optional</span></div>
+      <h3><code>/stage-bdd-review</code></h3>
+      <p>Dispatch an independent subagent to review the BDD and score it /100 (report only, no file changes).</p>
+      <p class="meta">argument <code>TICKET-xxx</code> or cases path</p>
+    </div>
+    <div class="step">
+      <div class="n">Step 6 <span class="opt">optional</span></div>
+      <h3><code>/stage-jira-sync</code></h3>
+      <p>Sync the test artifacts to Jira, creating a TEST Sub-task under the feature ticket for archiving.</p>
+      <p class="meta">argument <code>TICKET-xxx</code></p>
+    </div>
+  </div>
+  <div class="note">Want to be walked through step by step without memorizing the order → just run <b><code>/flow-feature-testing-workflow TICKET-xxx</code></b>.</div>
+
+  <h2>Version Stage <span class="tag">which features the version includes → aggregate → release gate</span></h2>
+  <div class="row">
+    <div class="step">
+      <div class="n">Step 1 · Entry point</div>
+      <h3><code>/stage-version-test-plan</code></h3>
+      <p>Pull this version's feature list, assign lead testers, define the scope and the integration / regression range, and create the <code>versions/{version}/</code> container + plan.md.</p>
+      <p class="meta">argument <code>vX.X</code></p>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="step">
+      <div class="n">Step 2 · Per feature</div>
+      <h3>matrix → state machine → BDD → review</h3>
+      <p>Only tickets <b>with changes</b> in this version re-run the corresponding stages, scoped to the change (<code>/stage-test-matrix</code> → <code>/stage-state-machine</code><span class="opt">optional</span> → <code>/stage-write-bdd</code> → <code>/stage-bdd-review</code><span class="opt">optional</span>); unchanged tickets reuse the existing artifacts from the Feature stage and need no re-run.</p>
+      <p class="meta">argument <code>vX.X TICKET-xxx</code></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="step">
+      <div class="n">Step 3 · Wrap-up</div>
+      <h3>integration + regression matrix / BDD</h3>
+      <p>Aggregate across features and add integration and regression scenarios (regression goes in <code>testcases/regression/</code>).</p>
+    </div>
+    <div class="step">
+      <div class="n">Step 4 · Release gate</div>
+      <h3><code>/tool-qa-release-gate</code></h3>
+      <p>Aggregate the pass rate, open bugs, and risk, compute readiness, produce a signable sign-off, and make the go / no-go call.</p>
+      <p class="meta">argument <code>vX.X</code> · depends on <code>/tool-scan-qa-risk</code></p>
+    </div>
+    <div class="step">
+      <div class="n">Step 5 · Merge back</div>
+      <h3><code>/stage-tc-merge</code></h3>
+      <p>After sign-off, merge the approved <code>.feature</code> files back into the <code>testcases/</code> main library (the only skill allowed to write to the main library).</p>
+      <p class="meta">argument <code>vX.X</code> · prerequisite: signed off, no further changes</p>
+    </div>
+  </div>
+  <div class="note">Want to be walked through step by step → <b><code>/flow-version-testing-workflow v4.16</code></b>.</div>
+
+  <h2>Persistent Tools <span class="tag">not stage-bound · available anytime</span></h2>
+  <div class="grid2">
+    <div class="step">
+      <h3><code>/tool-root-cause-analysis</code></h3>
+      <p>CS-reported, ticket already created: reproduce → confirm whether it's a bug → privately judge frontend vs backend. By default, no new ticket is created and the root cause is not written to the ticket.</p>
+      <p class="meta">argument <code>symptom</code> or an existing <code>TICKET-xxx</code></p>
+    </div>
+    <div class="step">
+      <h3><code>/tool-open-qa-bug</code></h3>
+      <p>Found a bug and need to file a report: gather information, deduplicate, and create a Bug subtask under the feature ticket.</p>
+      <p class="meta">argument: none (natural language)</p>
+    </div>
+    <div class="step">
+      <h3><code>/tool-scan-qa-risk</code></h3>
+      <p>During sprint planning, rate each ticket HIGH/MED/LOW risk and output a risk matrix + test priority order.</p>
+      <p class="meta">argument <code>sprint name</code> or <code>TICKET-xxx …</code></p>
+    </div>
+    <div class="step">
+      <h3><code>/tool-qa-release-gate</code></h3>
+      <p>Go/no-go release gate for version wrap-up / before shipping.</p>
+      <p class="meta">argument <code>vX.X</code></p>
+    </div>
+  </div>
+
+  <h2>Automation &amp; Engineering <span class="tag">E2E implementation and CI</span></h2>
+  <div class="grid2">
+    <div class="step">
+      <h3><code>/auto-playwright-agentic-automation-workflow</code></h3>
+      <p>Add the Playwright implementation for existing <code>@auto</code> scenarios: planner walks through live to extract real locators → generator writes code from the evidence → verify → healer fixes residual failures.</p>
+      <p class="meta">argument <code>feature path / @tag / scenario / empty</code></p>
+    </div>
+    <div class="step">
+      <h3><code>/auto-responsive-layout-check</code></h3>
+      <p>Scan responsive layout / overflow across viewports (standalone spec, not part of BDD).</p>
+      <p class="meta">argument <code>list of page paths / empty</code></p>
+    </div>
+    <div class="step">
+      <h3><code>/auto-console-error-collector</code></h3>
+      <p>Build a console error-interception fixture that adds a layer of JS error protection to every E2E.</p>
+      <p class="meta">argument: none</p>
+    </div>
+    <div class="step">
+      <h3><code>/auto-test-impact-analyzer</code></h3>
+      <p>Compute the affected test subset from the git diff so a PR runs only the relevant subset and shortens CI.</p>
+      <p class="meta">argument <code>base branch / empty</code></p>
+    </div>
+    <div class="step">
+      <h3><code>/auto-tc-version-diff</code></h3>
+      <p>Compare BDD differences between two versions (Added/Modified/Removed) + produce a supplementary test list.</p>
+      <p class="meta">argument <code>&lt;old version&gt; &lt;new version&gt;</code></p>
+    </div>
+    <div class="step">
+      <h3><code>/auto-code-review</code> · <code>/auto-create-pull-request</code></h3>
+      <p>Run a framework code review on the current branch diff (100-point scale); generate a PR description and submit it.</p>
+      <p class="meta">argument: none</p>
+    </div>
+  </div>
+
+  <footer>
+    Not sure which one? → Run <code>/flow-qa-router &lt;describe your scenario&gt;</code> and it picks for you based on the QA Workflow Map.<br />
+    For the full pipeline overview see <code>pipeline.html</code> · the text single source of truth is <code>docs/qa-workflow-map.md</code>
+  </footer>
+</div>
+</body>
+</html>

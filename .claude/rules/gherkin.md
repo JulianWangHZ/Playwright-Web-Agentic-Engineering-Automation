@@ -1,0 +1,164 @@
+---
+description: Gherkin BDD writing rules and Tag rules, applies to all .feature files
+globs: ["**/*.feature"]
+---
+
+## Gherkin Principles
+
+- `Given / When / Then / And` in English; concrete data in double quotes
+- Operations stay close to the user's perspective (no API layer, no implementation details); **do not write "bypass the frontend and call the API directly" scenarios** (that is a developer's perspective; backend bypass protection is covered by unit / integration tests)
+- Each Scenario runs independently (does not depend on the state of the previous Scenario)
+- No `Scenario Outline / Examples`
+- No fabricated scenarios (every Scenario must trace to a ticket or test_matrix)
+- The Feature level requires a preamble (the three lines "As a X / I want Y / So that Z")
+- `Background:` is only for preconditions genuinely shared by all Scenarios
+
+## Declarative Principles
+
+Steps describe user **intent (WHAT)**, not UI operation details (HOW):
+
+| | Style |
+|---|---|
+| ✅ Declarative | `When I open the watch page of video "jydYq7oAtD8"` |
+| ❌ Imperative | `When I type "youtube.com/watch?v=jydYq7oAtD8" in the address bar` + `And I press Enter` + `And I wait for the player to load` |
+
+**Judgment rules:**
+- A step should map to a business action, not a UI component operation (click, type, select)
+- If it feels like it needs several imperative steps to express one business action → that is a signal the Page Object is missing a composite method; the fix is to add the method, not to expand the details in the feature
+- **Do not mix imperative and declarative**: once you open the door, imperative steps spread and the style becomes inconsistent
+
+## Feature File Format
+
+Every `.feature` file follows a fixed structure. The structural keywords use English `Feature / Scenario / Given / When / Then / And / Background`, and the step text is in English:
+
+```
+# Note: {optional; target site / test data / cross-file dependency notes, may span multiple lines}
+@{role}
+Feature: {name}
+  As a {role}
+  I want {goal}
+  So that {value}
+
+  # ############################################
+  # {section name}
+  # ############################################
+  @{page} @{smoke/regression/auto}
+  Scenario: ...
+```
+
+- `# Note:` is optional; since YouTube is an external site with no in-house page code path, use `# Note:` to record the target site, fixed test data, or relationships with other features; it may span multiple lines
+- Section separators `# ############################################` group Scenarios by business function, one line before and after each group
+
+## Tag Rules
+
+**Feature level**: role tag (e.g. `@guest` / `@logged-in-user`, etc.); add it only when a single feature contains **multiple distinct roles** that need to be distinguished; for a single role (YouTube guest/logged-out is always "the user") omit the tag and write "As a user" directly in the preamble
+
+**Scenario level** (three categories; **do not add** path-derived module tags — subset filtering can use the page tag or file path):
+
+1. **Page tag** (required, 1 or more) — English page name
+   - e.g. `@home` / `@search-results` / `@watch` / `@channel`
+
+2. **Test-level tag** (required) — **three orthogonal axes**: each tag answers exactly one question, they are independent, and one cannot substitute for another.
+
+   | Axis | Question it answers | tag |
+   |---|---|---|
+   | **Suite** | When does it run? | `@smoke` ⊂ `@regression` |
+   | **Execution** | Who runs it? | `@auto` (absent = manual) |
+   | **Nature** | What kind of case is this? | `@boundary` (absent = ordinary positive/negative) |
+
+   > **The two most common misuses**: treating "hard to automate / hard to build test data" as `@boundary`; and treating `@boundary` as a reason not to add `@regression`.
+   > **How hard it is to test is an execution cost (the `@auto` axis) and is unrelated to the nature of the case (the `@boundary` axis).**
+
+   **2-1 Suite tag (required)**
+
+   | tag | Definition |
+   |---|---|
+   | `@regression` | **Added by default**. Feature coverage that must run before a release — **positive and negative alike count**. Only exclusion: exploratory / one-off scenarios. |
+   | `@smoke` | A subset of `@regression`. The first gate after deployment, **core happy path only**, usually 1-3 per Feature. |
+
+   > **Iron rule**: `@boundary` is **not** a reason to skip `@regression`. A boundary scenario worth putting in the main library is worth running every release. Hard-to-build test data → mark it manual (no `@auto`), do not kick it out of regression.
+
+   **2-2 Execution tag**
+
+   | tag | Definition |
+   |---|---|
+   | `@auto` | Programmatically executable **and** programmatically verifiable (text / state / element visibility); allowed to use fixed test data for setup. Does not depend on manual intervention or uncontrollable external factors (manual review, real login, visual comparison); **do not add it to i18n/locale-switch cases** (locale switching needs manual confirmation). |
+   | (no `@auto`) | Manual execution. Explain the reason with a scenario tag or `# Note:`. |
+
+   `@auto` and `@boundary` **can coexist** — boundary scenarios are often easy to automate (e.g. search with no results).
+
+   > **`@auto` has two-phase semantics (authoring phase vs implementation phase)**:
+   > - **Authoring phase (when writing BDD)**: `@auto` is a **preliminary feasibility candidate** — judged by "can this scenario in principle be verified by a program" (looking at intrinsic automatability, not "is the page implemented yet"). If it is intrinsically verifiable, mark `@auto` up front to front-load the judgment cost; only when it clearly relies on manual / uncontrollable factors (manual review, real login, visual comparison, locale switching) do you leave it unmarked from the start.
+   > - **Implementation phase (when building automation)**: the playwright evidence map (`playwright-test-planner` walking a real browser) **authoritatively re-checks** feasibility — proven infeasible, downgrade and remove `@auto`; flaky, mark `@quarantine`. This gate is the final ruling.
+   > - **Therefore**: an unconfirmed target (test data / routing undecided) is **not** a reason to withhold `@auto` — that is implementation readiness, which is orthogonal to intrinsic automatability. In that case mark a preliminary `@auto` and record in `# Note:` "test data / routing to be confirmed, re-checked at implementation phase", and **do not** write "temporarily not marking @auto". A reviewer must not flag a preliminary `@auto` as a violation because "the target is unconfirmed".
+
+   **2-3 Nature tag**
+
+   `@boundary` marks **only true extremes**: the subject under test sits at the edge of the input domain or state space, requiring the system to be pushed to a critical / exhausted / rare state to hold.
+
+   | Is `@boundary` | Example |
+   |---|---|
+   | Critical value | max search keyword length, all filter conditions selected |
+   | Resource exhaustion | search results paged to the last page, extremely long playlist |
+   | Race / timing | video taken down during playback, results updated during search |
+   | Fault injection | backend 5xx, network outage |
+
+   | **Not** `@boundary` (= ordinary negative, gets only `@regression`) | Example |
+   |---|---|
+   | Invalid input | empty search string, invalid video ID |
+   | No data / empty state | search with no results, channel with no videos |
+   | Guest restrictions | cannot subscribe while logged out, cannot comment while logged out |
+
+   **Judgment sentence**: is the trigger "an invalid operation a user would casually hit" → ordinary negative; or "requires pushing the system to some critical / exhausted / rare state" → `@boundary`.
+
+   **Combination quick reference**
+
+   | Situation | tags |
+   |---|---|
+   | Core positive, automatable | `@smoke @regression @auto` |
+   | Core positive, needs manual | `@smoke @regression` |
+   | Ordinary negative (invalid input / logged out / empty state), automatable | `@regression @auto` |
+   | Ordinary negative, needs manual (e.g. real login) | `@regression` |
+   | Boundary, automatable | `@regression @auto @boundary` |
+   | Boundary, needs manual (test data hard to rebuild each release) | `@regression @boundary` |
+
+3. **Scenario tag** (required, 1 or more) — a noun phrase describing this Scenario's business condition or precondition
+   - At least 1 per Scenario, so anyone can see at a glance which situation is tested; **do not repeat** the verb phrase of the Scenario title
+   - Name happy paths by precondition or result (e.g. `@keyword-search` / `@video-info`); name negative/boundary by trigger condition (e.g. `@no-search-results` / `@video-taken-down`)
+   - e.g. `@keyword-search` / `@guest-browsing` / `@video-info` / `@interactions` / `@channel-info` / `@content-tabs` / `@filter-panel` / `@apply-video-type`
+
+**Forbidden**: `@P0` / version tags / using the Scenario name as a tag / **whitespace inside a tag**
+
+> A tag must not contain whitespace (a Gherkin rule; whitespace around English/numeric tokens is not allowed either): `@cancel within 24 hours` ❌ → `@cancel-within-24-hours` ✅; `@enter AI search from home` ❌ → `@enter-ai-search-from-home` ✅.
+
+**i18n**: testing focuses on the primary (English) interface; multi-locale scenarios are for now excluded from the coverage requirement
+
+**Modified-file principle**: apply the tag rules only to Scenarios **added** by this ticket; existing Scenarios (from the main library) do not need their tag format corrected along the way (that is a separate refactor task).
+
+## Example
+
+```gherkin
+# Note: target site https://www.youtube.com; uses a fixed test video ID
+Feature: YouTube watch page
+  As a user
+  I want to open the video watch page
+  So that I can watch the video and use the interaction features
+
+  # ############################################
+  # video info
+  # ############################################
+  @watch @smoke @regression @auto @video-info
+  Scenario: Opening the video page shows the title and player
+    Given I open the watch page of video "jydYq7oAtD8"
+    Then I should see the video title
+    And I should see the player controls
+
+  # ############################################
+  # interactions
+  # ############################################
+  @watch @regression @auto @interactions
+  Scenario: The video page shows interaction buttons
+    Given I open the watch page of video "jydYq7oAtD8"
+    Then I should see the subscribe button
+    And I should see the like and share buttons
+```

@@ -1,0 +1,14 @@
+services:
+  test:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - CI=true
+      - HEADLESS=true
+    volumes:
+      # Output test results to the host for easy report viewing
+      - ./smart-report.html:/app/smart-report.html
+      - ./test-history.json:/app/test-history.json
+      - ./test-results:/app/test-results

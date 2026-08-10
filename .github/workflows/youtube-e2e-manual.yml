@@ -1,0 +1,73 @@
+name: YouTube Web E2E (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to run (without @; e.g. auto / smoke / search-results)
+        type: string
+        default: auto
+      env:
+        description: Target environment (sit = staging)
+        type: choice
+        default: sit
+        options: [sit, pr, prod]
+      browser:
+        description: Browser engine
+        type: choice
+        default: chromium
+        options: [chromium, webkit, firefox]
+      device:
+        description: Device emulation (Desktop = desktop, follows the browser engine)
+        type: choice
+        default: Desktop
+        options: [Desktop, "iPhone 14", "Pixel 7", "iPad (gen 7)"]
+      workers:
+        description: Number of parallel workers (allowlist pool cap 10)
+        type: string
+        default: "8"
+
+jobs:
+  e2e:
+    name: E2E @${{ inputs.tag }} ${{ inputs.env }}/${{ inputs.browser }} (${{ inputs.workers }} workers)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: youtube
+    env:
+      TAG: ${{ inputs.tag }}
+      ENV: ${{ inputs.env }}
+      BROWSER: ${{ inputs.browser }}
+      DEVICE: ${{ inputs.device }}
+      PARALLEL_WORKERS: ${{ inputs.workers }}
+      HEADLESS: "true"
+      # Keep video only on failure (retain-on-failure); the report dev section shows this video
+      VIDEO_ON_FAILURE: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: youtube/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install ${{ inputs.browser }}
+
+      - name: Run E2E (@${{ inputs.tag }})
+        run: |
+          if [ "$DEVICE" = "Desktop" ]; then export DEVICE=""; fi
+          npm run test:ui
+
+      - name: Upload result JSON
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-result-${{ inputs.env }}-${{ inputs.browser }}
+          path: youtube/smart-report.html
+          retention-days: 7

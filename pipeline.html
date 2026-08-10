@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1200, initial-scale=1">
+<title>Agentic AI Testing Pipeline v2</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:#e8edf3;font-family:"Aptos","Inter","Segoe UI",Arial,sans-serif;color:#1c2b3f}
+.slide{width:1200px;height:800px;margin:12px auto;background:#fff;overflow:hidden;border-radius:8px}
+.title{height:60px;text-align:center;padding:5px 12px 2px}
+.title h1{margin:0 auto;font-size:23px;line-height:28px;font-weight:800;max-width:1140px}
+.title .sub{font-size:15px;font-style:italic;line-height:19px;margin-bottom:3px}
+.rocket{font-size:25px;vertical-align:-3px;margin-right:4px}
+
+.pipeline{min-height:232px;padding:0 15px 18px;
+  display:grid;grid-template-columns:repeat(3,1fr) 1fr repeat(3,1fr);
+  gap:22px;align-items:start
+}
+.card{position:relative;align-self:start;z-index:1;overflow:visible;border:1.8px solid #b3c1cf;border-radius:9px;padding:7px 8px;background:#fff}
+.card.blue{border-color:#b9cbe3}.card.green{border-color:#b9d7c8}.card.purple{border-color:#c9c0df}
+.card.orange{border-color:#e2c8aa}.card.teal{border-color:#b9d7dc}.card.red{border-color:#dfbfc1}
+.head{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.num{width:27px;height:27px;border-radius:7px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex:none}
+.blue .num{background:#275fc6}.green .num{background:#319b68}.purple .num{background:#51379b}
+.orange{z-index:2}.orange .num{background:#bd731e}.teal .num{background:#177f94}.red .num{background:#d0525a}
+.head h3{font-size:11.2px;line-height:12.5px;margin:0;font-weight:800}
+.toolrow{height:34px;display:flex;justify-content:center;align-items:center;gap:7px;margin:1px 0 3px}
+.logo{width:28px;height:28px;display:block;flex:none}
+.logo-label{font-size:9px;font-weight:700;color:#39485a}
+
+.qase-logo{
+  width:28px;height:28px;display:block;flex:none;
+}
+
+.bot{width:39px;height:29px;border:1.5px solid #405167;border-radius:10px;background:linear-gradient(#fff,#e9eff5);display:flex;align-items:center;justify-content:center}
+.bot:before{content:"";position:absolute;margin-top:-36px;width:4px;height:4px;border:1.5px solid #405167;border-radius:50%;background:#fff}
+.eyes{display:flex;gap:6px}.eyes i{width:5px;height:5px;border-radius:50%;background:#2d5eaa}
+.list{margin:0;padding-left:14px;font-size:9.15px;line-height:1.24}
+.list li{margin:2.2px 0}
+.arrow{position:absolute;right:-16px;top:50%;transform:translateY(-50%);font-size:19px;font-weight:700;color:#264f77;z-index:3}
+.human{align-self:start;position:relative;z-index:10;border:1.3px solid #dfc77e;overflow:visible;border-radius:9px;background:#fffdf4;text-align:center;padding:7px 7px;display:flex;flex-direction:column;justify-content:center}
+.human .person{font-size:22px;line-height:23px}.human h3{font-size:9px;color:#8a641e;margin:2px 0 4px}
+.human p{font-size:8.6px;line-height:1.25;margin:3px 0}.human p.review-divider{border-top:1px dashed #c9b36f;padding-top:5px;margin-top:5px}.human .arrow{right:-19px;top:50%;z-index:30;display:block;line-height:1;pointer-events:none}
+
+
+.section-separator{height:22px;
+  margin:0 15px;
+  display:flex;
+  align-items:center;
+  position:relative;
+}
+.section-separator:before{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  height:2.5px;
+  background:#8fa4bb;
+}
+.section-separator span{
+  width:88px;height:5px;border-radius:4px;
+  background:#315d8f;
+  position:relative;
+  margin-left:10px;
+}
+
+.flow{height:130px;padding:8px 15px 7px;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:14px;align-items:center
+}
+.flowbox{height:108px;border:1.1px solid #c6d0db;border-radius:8px;padding:7px 8px;position:relative;background:#fff}
+.flowbox h4{margin:0 0 5px;text-align:center;font-size:10px;line-height:12px}
+.flowcontent{display:flex;gap:7px;align-items:center}
+.flowicon{width:34px;height:34px;flex:none;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.flowicon.j{background:#edf2ff}.flowicon.ai{background:#eef7f2}.flowicon.tm{background:#eef1f6}.flowicon.ts{background:#eaf3ff}.flowicon.rep{background:#f0f4f8}
+.flowtext{font-size:8.7px;line-height:1.28}.flowtext ul{margin:0;padding-left:13px}.flowtext li{margin:2px 0}
+.flowarrow{position:absolute;right:-18px;top:41px;font-size:20px;color:#264f77;z-index:3}
+.label{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:7.8px;white-space:nowrap;color:#5c6877}
+
+.bottom{height:262px;padding:7px 15px 8px;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px
+}
+.panel{border:1.2px solid #c5d0db;border-radius:10px;overflow:hidden;background:#fff}
+.paneltitle{height:29px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.bluehead{background:#173f70;color:#fff}.greenhead{background:#eef8f1;color:#2d7a54}.purplehead{background:#f4efff;color:#593b96}
+.panelbody{padding:9px}
+.stack{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.stackitem{height:38px;border:1px solid #e0e5eb;border-radius:7px;display:flex;align-items:center;gap:7px;padding:5px 6px;font-size:9px;font-weight:700}
+.stackitem .logo{width:25px;height:25px}
+.note{margin-top:5px;padding:5px 8px;border:1px solid #c8d8e8;background:#eef5fc;border-radius:7px;font-size:8.4px;line-height:1.25}
+.outcome{display:flex;gap:7px;margin-bottom:5px}
+.check{width:18px;height:18px;border-radius:50%;background:#49a86e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none}
+.outcome b{display:block;font-size:9.3px;line-height:11px;color:#2e654b}.outcome span{display:block;font-size:8.3px;line-height:10px;color:#46515f}
+.arch{padding:7px 8px}.layer{border:1px solid #c2cdd9;border-radius:7px;padding:5px 6px;margin:4px 0}.layer h5{font-size:8.6px;margin:0 0 3px;color:#2d4f74}
+.chips{display:flex;flex-wrap:wrap;gap:3px}.chip{font-size:7.5px;padding:3px 4px;border-radius:4px;background:#edf3f8;color:#3b5066}
+.hbar{border:1px solid #dfc989;background:#fffaf0;color:#805d20;border-radius:6px;text-align:center;padding:4px;font-size:7.8px;margin:4px 0}
+.aarr{text-align:center;color:#58728d;font-size:10px;line-height:9px}
+
+.horizontal-arch{
+  height:270px;
+  padding:8px 8px 6px;
+}
+.arch-row{
+  display:flex;
+  align-items:stretch;
+  justify-content:center;
+  gap:7px;
+  width:100%;
+}
+.horizontal-arch .layer{
+  margin:0;
+  flex:1 1 0;
+  min-width:0;
+  min-height:68px;
+}
+.horizontal-arch .layer h5{
+  font-size:8px;
+  line-height:9px;
+}
+.horizontal-arch .chips{
+  gap:3px;
+}
+.horizontal-arch .chip{
+  font-size:6.9px;
+  padding:3px 3.5px;
+}
+.horizontal-arch .aarr{
+  flex:0 0 15px;
+  align-self:center;
+  font-size:15px;
+  line-height:1;
+}
+.horizontal-arch .hbar{display:none}
+
+
+.brand-logo{
+  width:28px;height:28px;display:block;flex:none;object-fit:contain;
+}
+.brand-logo.sm{
+  width:24px;height:24px;
+}
+.brand-label{
+  font-size:9px;font-weight:700;color:#39485a;white-space:nowrap;
+}
+
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="title">
+    <h1><span class="rocket">🚀</span>Agentic AI Testing Pipeline: From Jira Story to Self-Maintaining Playwright Tests</h1>
+    <div class="sub">AI Understands. Humans Decide. Quality Stays in Control.</div>
+  </div>
+
+  <section class="pipeline">
+    <article class="card blue">
+      <div class="head"><div class="num">1</div><h3>JIRA AGENT</h3></div>
+      <div class="toolrow"><img class="brand-logo" src="https://jira.atlassian.com/favicon.ico" alt="Jira" loading="eager" decoding="async"><span class="brand-label">Jira</span><div class="bot"><span class="eyes"><i></i><i></i></span></div>
+      </div>
+      <ul class="list"><li>Reads Jira story &amp; acceptance criteria</li><li>Extracts requirements</li><li>Maintains traceability back to Jira</li></ul><span class="arrow">→</span>
+    </article>
+
+    <article class="card green">
+      <div class="head"><div class="num">2</div><h3>PLANNING AGENT</h3></div>
+      <div class="toolrow"><img class="brand-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5Nzc1NyIgc3Ryb2tlLXdpZHRoPSI0LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CjxwYXRoIGQ9Ik0zMiA3djUwIi8+PHBhdGggZD0iTTcgMzJoNTAiLz4KPHBhdGggZD0ibTE0LjMgMTQuMyAzNS40IDM1LjQiLz48cGF0aCBkPSJtNDkuNyAxNC4zLTM1LjQgMzUuNCIvPgo8cGF0aCBkPSJtMjIgMTAuNiAyMCA0Mi44Ii8+PHBhdGggZD0ibTQyIDEwLjYtMjAgNDIuOCIvPgo8cGF0aCBkPSJtMTAuNiAyMiA0Mi44IDIwIi8+PHBhdGggZD0ibTEwLjYgNDIgNDIuOC0yMCIvPgo8L2c+PC9zdmc+" alt="Claude" loading="eager" decoding="sync"><span class="brand-label">Claude</span><div class="bot"><span class="eyes"><i></i><i></i></span></div>
+      </div>
+      <ul class="list"><li>Analyzes Jira requirements and feature scope</li><li>Builds and validates the <b>Test Matrix</b></li><li>Designs <b>State Machine</b> and <b>UI Prototype</b></li><li>Identifies coverage gaps, edge cases &amp; inconsistencies</li><li>Generates <b>BDD test scenarios</b></li></ul><span class="arrow">→</span>
+    </article>
+
+    <article class="card purple">
+      <div class="head"><div class="num">3</div><h3>TEST SCENARIO<br>REVIEW AGENT</h3></div>
+      <div class="toolrow"><div class="bot"><span class="eyes"><i></i><i></i></span></div></div>
+      <ul class="list"><li>Reviews AI-generated test scenarios</li><li>Validates coverage against <b>Test Matrix &amp; State Machine</b></li><li>Identifies missing edge cases, duplicated scenarios &amp; inconsistencies</li><li>Checks scenario quality and alignment with requirements</li><li>Provides improvement suggestions for human review</li></ul><span class="arrow">→</span>
+    </article>
+
+    <article class="human">
+      <div class="person">👤</div><h3>HUMAN REVIEW #1</h3>
+      <p><b>Review &amp; approve generated test scenarios.</b></p>
+      <p class="review-divider">Verify coverage against requirements, Test Matrix &amp; State Machine.</p>
+      <p class="review-divider">QA validates test scope, accuracy &amp; business relevance.</p><span class="arrow">→</span>
+    </article>
+
+    <article class="card orange">
+      <div class="head"><div class="num">4</div><h3>TEST MANAGEMENT<br>AGENT</h3></div>
+      <div class="toolrow">
+        <svg class="qase-logo" viewBox="0 0 32 32" aria-label="Qase">
+          <circle cx="16" cy="16" r="12.5" fill="none" stroke="#172b4d" stroke-width="3"/>
+          <path d="M11 16h10M16 11v10" stroke="#172b4d" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-label">Qase</span>
+        <div class="bot"><span class="eyes"><i></i><i></i></span></div>
+      </div>
+      <ul class="list"><li>Uploads approved test scenarios to <b>Test Management Tools</b></li><li>Links test cases with the <b>Jira ticket</b></li><li>Maintains <b>end-to-end traceability</b></li></ul><span class="arrow">→</span>
+    </article>
+
+    <article class="card teal">
+      <div class="head"><div class="num">5</div><h3>GENERATOR AGENT</h3></div>
+      <div class="toolrow" style="gap:10px"><img class="brand-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5Nzc1NyIgc3Ryb2tlLXdpZHRoPSI0LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CjxwYXRoIGQ9Ik0zMiA3djUwIi8+PHBhdGggZD0iTTcgMzJoNTAiLz4KPHBhdGggZD0ibTE0LjMgMTQuMyAzNS40IDM1LjQiLz48cGF0aCBkPSJtNDkuNyAxNC4zLTM1LjQgMzUuNCIvPgo8cGF0aCBkPSJtMjIgMTAuNiAyMCA0Mi44Ii8+PHBhdGggZD0ibTQyIDEwLjYtMjAgNDIuOCIvPgo8cGF0aCBkPSJtMTAuNiAyMiA0Mi44IDIwIi8+PHBhdGggZD0ibTEwLjYgNDIgNDIuOC0yMCIvPgo8L2c+PC9zdmc+" alt="Claude" loading="eager" decoding="sync"><img class="brand-logo" src="https://openai.com/favicon.ico" alt="OpenAI Codex" loading="eager" decoding="async"><img class="brand-logo" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"></div>
+      <ul class="list"><li>Converts approved test scenarios into <b>automated test cases</b></li><li>Uses <b>Playwright CLI / MCP</b> to interact with and understand the application</li><li>Generates <b>Playwright TypeScript</b> test code</li><li>Creates reusable <b>Page Objects, components &amp; test helpers</b></li><li>Generates <b>test data, configurations &amp; supporting code</b></li></ul><span class="arrow">→</span>
+    </article>
+
+    <article class="card red">
+      <div class="head"><div class="num">6</div><h3>EXECUTION &amp;<br>HEALER AGENT</h3></div>
+      <div class="toolrow"><div class="bot"><span class="eyes"><i></i><i></i></span><span style="margin-left:6px;font-size:18px">⌁</span></div></div>
+      <ul class="list"><li>Executes automated <b>Playwright TypeScript tests</b></li><li>Collects and analyzes <b>test failures, logs &amp; test artifacts</b></li><li>Diagnoses <b>application defects or automation issues</b></li><li>Performs <b>self-healing</b> for automation issues, such as locator updates</li><li>Re-runs affected tests to validate the fix</li><li>Creates a <b>Jira bug</b> only when a real product defect is confirmed</li></ul>
+    </article>
+  </section>
+
+  <div class="section-separator">
+    <span></span>
+  </div>
+
+  <section class="flow">
+    <div class="flowbox"><h4>Jira Ticket</h4><div class="flowcontent"><div class="flowicon j"><img class="brand-logo sm" src="https://jira.atlassian.com/favicon.ico" alt="Jira" loading="eager" decoding="async"></div><div class="flowtext"><ul><li>User Story</li><li>Acceptance Criteria</li><li>Requirements</li></ul></div></div><span class="flowarrow">→</span></div>
+    <div class="flowbox"><h4>Test Planning &amp; Design</h4><div class="flowcontent"><div class="flowicon ai">✦</div><div class="flowtext"><ul><li>Test Matrix</li><li>State Machine</li><li>UI Prototype</li><li>Coverage &amp; Edge Cases</li></ul></div></div><span class="flowarrow">→</span><span class="label">REVIEW &amp; SIGN-OFF</span></div>
+    <div class="flowbox"><h4>Test Scenarios</h4><div class="flowcontent"><div class="flowicon ai">✓</div><div class="flowtext"><ul><li>BDD Scenarios</li><li>Test Conditions</li><li>Expected Results</li><li>Test Data</li></ul></div></div><span class="flowarrow">→</span></div>
+    <div class="flowbox"><h4>Test Management Tools</h4><div class="flowcontent"><div class="flowicon tm">TM</div><div class="flowtext"><ul><li>Approved Test Cases</li><li>Linked to Jira</li><li>Traceability</li><li>Requirements Coverage</li></ul></div></div><span class="flowarrow">→</span><span class="label">APPROVE &amp; UPLOAD</span></div>
+    <div class="flowbox"><h4>Playwright Tests (TypeScript)</h4><div class="flowcontent"><div class="flowicon ts"><img class="brand-logo sm" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"></div><div class="flowtext"><ul><li>Page Objects</li><li>Reusable Components</li><li>Test Helpers / Utils</li><li>Tests (Specs)</li></ul></div></div><span class="flowarrow">→</span><span class="label">RUN &amp; HEAL</span></div>
+    <div class="flowbox"><h4>Test Execution &amp; Reports</h4><div class="flowcontent"><div class="flowicon rep"><svg class="report-icon" viewBox="0 0 32 32" aria-label="Report">
+  <rect x="5" y="3.5" width="22" height="25" rx="3" fill="none" stroke="#50657A" stroke-width="2"/>
+  <path d="M10 10h12M10 15h12M10 20h7" stroke="#50657A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M21 18v5M18.5 20.5h5" stroke="#50657A" stroke-width="1.8" stroke-linecap="round"/>
+</svg></div><div class="flowtext"><ul><li>Pass / Fail</li><li>Screenshots</li><li>Videos</li><li>Logs</li><li>Playwright Smart Reporter</li></ul></div></div></div>
+  </section>
+
+  <section class="bottom">
+    <div class="panel"><div class="paneltitle bluehead">TECH STACK</div><div class="panelbody">
+      <div class="stack">
+        <div class="stackitem"><img class="brand-logo sm" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5Nzc1NyIgc3Ryb2tlLXdpZHRoPSI0LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CjxwYXRoIGQ9Ik0zMiA3djUwIi8+PHBhdGggZD0iTTcgMzJoNTAiLz4KPHBhdGggZD0ibTE0LjMgMTQuMyAzNS40IDM1LjQiLz48cGF0aCBkPSJtNDkuNyAxNC4zLTM1LjQgMzUuNCIvPgo8cGF0aCBkPSJtMjIgMTAuNiAyMCA0Mi44Ii8+PHBhdGggZD0ibTQyIDEwLjYtMjAgNDIuOCIvPgo8cGF0aCBkPSJtMTAuNiAyMiA0Mi44IDIwIi8+PHBhdGggZD0ibTEwLjYgNDIgNDIuOC0yMCIvPgo8L2c+PC9zdmc+" alt="Claude" loading="eager" decoding="sync"><span>Claude</span></div>
+        <div class="stackitem"><img class="brand-logo sm" src="https://openai.com/favicon.ico" alt="OpenAI Codex" loading="eager" decoding="async"><span>Codex</span></div>
+        <div class="stackitem"><img class="brand-logo sm" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"><span>Playwright CLI / MCP</span></div>
+        <div class="stackitem"><img class="brand-logo sm" src="https://www.typescriptlang.org/favicon-32x32.png" alt="TypeScript" loading="eager" decoding="async"><span>Playwright TypeScript</span></div>
+        <div class="stackitem"><img class="brand-logo sm" src="https://jira.atlassian.com/favicon.ico" alt="Jira" loading="eager" decoding="async"><span>Jira</span></div>
+        <div class="stackitem"><div style="font-weight:900;font-size:9px">TM</div>Test Management Tools</div>
+        <div class="stackitem"><img class="brand-logo sm" src="https://github.com/favicon.ico" alt="GitHub" loading="eager" decoding="async"><span>GitHub</span></div>
+        <div class="stackitem"><img class="brand-logo sm" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"><span>Playwright Report</span></div>
+      </div>
+    </div></div>
+    <div class="panel">
+      <div class="paneltitle greenhead">KEY OUTCOMES</div>
+      <div class="panelbody">
+        <div class="outcome"><div class="check">✓</div><div><b>Structured Test Design</b><span>From requirements to structured test artifacts</span></div></div>
+        <div class="outcome"><div class="check">✓</div><div><b>Requirement-Driven Coverage</b><span>Validates coverage before automation</span></div></div>
+        <div class="outcome"><div class="check">✓</div><div><b>Human-in-the-Loop Quality Control</b><span>AI generates. Humans approve.</span></div></div>
+        <div class="outcome"><div class="check">✓</div><div><b>End-to-End Traceability</b><span>Jira → Test Scenarios → Test Management → Automation</span></div></div>
+        <div class="outcome"><div class="check">✓</div><div><b>Reusable &amp; Maintainable Automation</b><span>Generates reusable Playwright test assets</span></div></div>
+        <div class="outcome"><div class="check">✓</div><div><b>Self-Healing &amp; Defect Isolation</b><span>Separates automation issues from real defects</span></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

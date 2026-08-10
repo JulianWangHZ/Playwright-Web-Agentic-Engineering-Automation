@@ -1,0 +1,7 @@
+node_modules
+.auth
+.env
+.features-gen
+playwright-report
+test-results
+dist

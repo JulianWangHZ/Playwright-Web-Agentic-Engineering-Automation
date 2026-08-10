@@ -1,0 +1,57 @@
+---
+description: Conventional Commits format for this project
+globs: []
+alwaysApply: true
+---
+
+# Commit Message Format
+
+## Structure
+
+```
+<type>(<scope>): <subject>
+
+[body — optional]
+```
+
+## Types
+
+| Type | When to use |
+|---|---|
+| `feat` | new feature, new skill, new script |
+| `fix` | fix incorrect behavior |
+| `refactor` | refactor (no behavior change) |
+| `test` | test cases |
+| `chore` | config, maintenance, dependency updates |
+| `docs` | documentation, examples, explanations |
+| `ci` | CI/CD pipeline changes |
+
+## Scope
+
+Fill in the smallest meaningful scope of the change, not limited to skill names, e.g.:
+
+- skill: `open-qa-bug`, `version-test-plan`, `write-bdd`, `tc-merge`
+- rules: `rules`, `gherkin`
+- automation: `e2e`, `scripts`, `ci`
+- config: `config`, `deps`
+- docs: `docs`, `examples`
+
+If it spans multiple scopes, omit the scope or use the closest parent name.
+
+## Rules
+
+- All English, imperative verbs (`add` not `added`)
+- subject ≤ 72 characters, no trailing period
+- wrap body at 72 characters; explain the "why", not the "what"
+
+## Examples
+
+```
+feat(open-qa-bug): add impact and root cause sections to bug report
+fix(bdd): correct gherkin rule reference path
+refactor(version-test-plan): extract output templates to references/
+chore(rules): add git commit and pr message format
+feat(e2e): add smoke test steps for video watch flow
+ci: add GitHub Actions workflow for automated test run
+docs(open-qa-bug): add 3 web-adapted bug report examples
+```
