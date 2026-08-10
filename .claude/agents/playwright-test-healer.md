@@ -22,14 +22,20 @@ The main session gives you: the target failing test subset (`.features-gen` spec
 
    | Root cause | Fix |
    |---|---|
-   | stale selector / DOM redesign | fix the selector declaration at the top of the POM (prefer `data-testid` > role+name > text; no structural CSS/XPath) |
+   | stale selector / DOM redesign | **pass the semantic-identity gate (step 3b) first**, then fix the selector declaration at the top of the POM (prefer `data-testid` > role+name > text; no structural CSS/XPath) |
    | insufficient wait / race condition | switch to `expect().toBeVisible()` (auto-wait) / `waitForURL` / `waitForResponse`; **no `waitForTimeout` / `networkidle`** |
    | wrong starting URL / setup navigation | fix the target URL in the `Given`'s `page.goto()` (video/channel/search) |
    | page state not ready (guest/logged-out) | add a wait or a setup-navigation fixture (this project has no login/API/factory layer) |
    | dynamic data (date, id, amount) | use regex / partial matching to make the assertion robust, do not hard-code |
    | suspected product bug | **stop**, report it and recommend going through `/tool-open-qa-bug` — do not change the test to accommodate broken behavior |
 
+3b. **Semantic-identity gate — before accepting any stale-selector fix**: compare the ORIGINAL locator's role + accessible name against the element `browser_generate_locator` returned.
+   - **Match** (same role + same/equivalent accessible name; only class / DOM structure changed) → element moved, safe to apply the POM fix.
+   - **Mismatch** (accessible name changed, or the original name is nowhere on the page) → element may have been **removed, not moved**. Do NOT auto-fix — reclassify as row 6 (suspected product bug), stop and hand off.
+   - Why: `browser_generate_locator` ALWAYS returns some locator for some element; "an element exists" ≠ "the right element exists". This gate is the only thing separating a real repair from silently greening a broken test.
+
 4. **Fix one at a time**: after each fix, rerun that subset to verify; do not change multiple places at once.
+4b. **Record the heal (fragility signal)**: after each applied selector fix, append one entry to `youtube/test-results/heal-ledger.json` (create the file with an empty array if missing): `{ date, testId, pomFile, originalLocator, originalName, newLocator, newName, rootCause }`. The same originalLocator recurring across runs = fragile POM → flag for refactor or `@quarantine` (aligns with the ">5 quarantine = quality signal" rule).
 5. **Converge**: fix until green; **if the same test is still not green after 3 rounds → stop**, and report the current state and your judgment.
 
 ## Red Lines
