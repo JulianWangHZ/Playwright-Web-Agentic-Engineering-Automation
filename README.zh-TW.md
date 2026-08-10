@@ -118,7 +118,10 @@ Version 階段 → versions/{v}/
 
 → [youtube/README.md](youtube/README.md)
 
-**線上測試報告**（每次 CI 執行後自動發布到 Cloudflare Pages）：[youtube-e2e-smart-report.pages.dev](https://youtube-e2e-smart-report.pages.dev)
+> ### 📊 線上測試報告
+> **→ [youtube-e2e-smart-report.pages.dev](https://youtube-e2e-smart-report.pages.dev)**
+>
+> 每次 CI 執行後自動發布到 Cloudflare Pages。
 
 ---
 

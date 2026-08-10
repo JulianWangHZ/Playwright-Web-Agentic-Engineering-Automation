@@ -114,7 +114,10 @@ An E2E automation framework for YouTube Web, based on **Playwright + playwright-
 
 → [youtube/README.md](youtube/README.md)
 
-**Live test report** (auto-published to Cloudflare Pages after every CI run): [youtube-e2e-smart-report.pages.dev](https://youtube-e2e-smart-report.pages.dev)
+> ### 📊 Live Test Report
+> **→ [youtube-e2e-smart-report.pages.dev](https://youtube-e2e-smart-report.pages.dev)**
+>
+> Auto-published to Cloudflare Pages after every CI run.
 
 ---
 
