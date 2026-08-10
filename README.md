@@ -152,7 +152,7 @@ Playwright-Web-Agentic-Engineering-Automation/
 │   └── skills/                # AI skill definitions (see docs/tutorial/03-skills.md for the list)
 ├── assets/                    # Images (pipeline diagram, skill-guide screenshots)
 ├── docs/
-│   ├── tutorial/              # Getting-started guide (5 steps; 03 = full skill ref, 04 = full workflow)
+│   ├── tutorial/              # Getting-started guide (6 steps; 03 = full skill ref, 04 = full workflow)
 │   ├── qa-workflow-map.md     # Stage → skill single source of truth
 │   └── skills-guide.html      # Which skill to use at each stage (interactive)
 ├── pipeline.html              # Pipeline overview (interactive diagram)

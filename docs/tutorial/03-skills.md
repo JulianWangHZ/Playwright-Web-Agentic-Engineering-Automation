@@ -4,7 +4,7 @@
 |:---|---:|
 | Step 2: Installation and Setup | Step 4: Feature → Version |
 
-**Step 3 / 5**
+**Step 3 / 6**
 
 ---
 

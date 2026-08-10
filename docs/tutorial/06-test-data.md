@@ -4,7 +4,7 @@
 |:---|---:|
 | Step 5: Checklist | Next stop: E2E automation framework |
 
-**Reference material** (not a workflow step)
+**Step 6 / 6** · reference material
 
 ---
 

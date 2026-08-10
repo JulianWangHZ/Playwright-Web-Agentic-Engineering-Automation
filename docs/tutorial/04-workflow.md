@@ -2,9 +2,9 @@
 
 | [← Skill System](03-skills.md) | [Newcomer Checklist →](05-checklist.md) |
 |:---|---:|
-| Step 3: Which skills exist and how to use them | Step 5: Day 1/2/3 task list |
+| Step 3: Which skills exist and how to use them | Step 5: Newcomer checklist |
 
-**Step 4 / 5**
+**Step 4 / 6**
 
 > Interactive visual flow diagram: [pipeline.html](../../pipeline.html) · Which skill to use at each stage: [skills-guide.html](../skills-guide.html) · Stage → skill single source of truth: [qa-workflow-map.md](../qa-workflow-map.md)
 
@@ -155,4 +155,4 @@ The first ones newcomers reach for when getting started:
 
 | [← Skill System](03-skills.md) | [Newcomer Checklist →](05-checklist.md) |
 |:---|---:|
-| Step 3: Which skills exist and how to use them | Step 5: Day 1/2/3 task list |
+| Step 3: Which skills exist and how to use them | Step 5: Newcomer checklist |

@@ -4,7 +4,7 @@
 |:---|---:|
 | Back to overview | Step 2: Installation and Setup |
 
-**Step 1 / 5**
+**Step 1 / 6**
 
 ---
 

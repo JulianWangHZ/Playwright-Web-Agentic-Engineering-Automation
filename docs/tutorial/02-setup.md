@@ -4,7 +4,7 @@
 |:---|---:|
 | Step 1: What is Playwright-Web-Agentic-Engineering-Automation | Step 3: Which skills exist and how to use them |
 
-**Step 2 / 5**
+**Step 2 / 6**
 
 ---
 

@@ -1,14 +1,14 @@
 # Newcomer Checklist
 
-| [← Workflow](04-workflow.md) | [YouTube Automation →](../../youtube/docs/getting-started.md) |
+| [← Workflow](04-workflow.md) | [Test Data Reference →](06-test-data.md) |
 |:---|---:|
-| Step 4: Feature → Version | Next stop: E2E automation framework |
+| Step 4: Feature → Version | Step 6: Test data (reference) |
 
-**Step 5 / 5**
+**Step 5 / 6**
 
 ---
 
-## Day 1: Get the environment up and run your first Skill
+## Part 1 · Get set up and run your first skill
 
 - [ ] Finish reading [README.md](../../README.md) — understand what the project is
 - [ ] Complete [Environment Setup](02-setup.md) (CODEBASE.md, Jira MCP)
@@ -18,7 +18,7 @@
 
 ---
 
-## Day 2: Understand the architecture and the Skill system
+## Part 2 · Learn the architecture and the skill system
 
 - [ ] Read [Skill System](03-skills.md) — the skill system, argument format, and the full skill reference
 - [ ] Read [Workflow](04-workflow.md) — the two Feature → Version stages plus the full workflow rules (merge back, Modified/New)
@@ -26,7 +26,7 @@
 
 ---
 
-## Day 3: Run through a full Feature workflow hands-on
+## Part 3 · Practice a full feature workflow
 
 Pick a ticket within your scope from Jira and walk through the full Feature workflow once:
 
@@ -68,16 +68,14 @@ If you can answer these questions, you are up to speed:
 
 ---
 
-## Next Step: YouTube E2E Automation
+## Next Step: Test Data Reference
 
-The BDD .feature files in Playwright-Web-Agentic-Engineering-Automation are ultimately implemented as automatically runnable Playwright tests inside `youtube/`.
+Before diving into the automation framework, skim how this project organizes its test data (Step 6).
 
-If you want to learn more about E2E automation, read next:
-
-→ **[YouTube Automation — Getting Started](../../youtube/docs/getting-started.md)**
+→ **[Test Data Reference](06-test-data.md)**
 
 ---
 
-| [← Workflow](04-workflow.md) | [YouTube Automation →](../../youtube/docs/getting-started.md) |
+| [← Workflow](04-workflow.md) | [Test Data Reference →](06-test-data.md) |
 |:---|---:|
-| Step 4: Feature → Version | Next stop: E2E automation framework |
+| Step 4: Feature → Version | Step 6: Test data (reference) |
