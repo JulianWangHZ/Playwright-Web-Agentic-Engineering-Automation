@@ -139,7 +139,7 @@ Open Claude Code at the repo root and drive skills with a generic ticket number:
 /stage-tc-merge v1.5
 ```
 
-→ Full skill reference: [docs/skills.md](docs/skills.md)
+→ Full skill reference: [docs/tutorial/03-skills.md](docs/tutorial/03-skills.md)
 
 ---
 
@@ -149,13 +149,12 @@ Open Claude Code at the repo root and drive skills with a generic ticket number:
 Playwright-Web-Agentic-Engineering-Automation/
 ├── .claude/
 │   ├── rules/                 # Gherkin, commit, PR format, and coding style rules
-│   └── skills/                # AI skill definitions (see docs/skills.md for the list)
+│   └── skills/                # AI skill definitions (see docs/tutorial/03-skills.md for the list)
 ├── assets/                    # Images (pipeline diagram, skill-guide screenshots)
 ├── docs/
-│   ├── tutorial/              # Getting-started guide for new members (5 steps)
+│   ├── tutorial/              # Getting-started guide (5 steps; 03 = full skill ref, 04 = full workflow)
 │   ├── qa-workflow-map.md     # Stage → skill single source of truth
-│   ├── skills-guide.html      # Which skill to use at each stage (interactive)
-│   └── skills.md
+│   └── skills-guide.html      # Which skill to use at each stage (interactive)
 ├── pipeline.html              # Pipeline overview (interactive diagram)
 ├── features/{ticket}/         # Feature workspace
 ├── testcases/                 # Main library of stable cases (.feature)

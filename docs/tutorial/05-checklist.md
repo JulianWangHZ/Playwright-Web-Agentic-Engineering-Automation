@@ -20,10 +20,8 @@
 
 ## Day 2: Understand the architecture and the Skill system
 
-- [ ] Read [Skill System](03-skills.md) — understand the skill system and argument format
-- [ ] Read [Workflow](04-workflow.md) — understand the two Feature → Version stages
-- [ ] Read [`docs/workflow.md`](../workflow.md) — deep dive into workflow rules (merge back, Modified/New)
-- [ ] Read [`docs/skills.md`](../skills.md) — detailed documentation for each skill
+- [ ] Read [Skill System](03-skills.md) — the skill system, argument format, and the full skill reference
+- [ ] Read [Workflow](04-workflow.md) — the two Feature → Version stages plus the full workflow rules (merge back, Modified/New)
 - [ ] Read [`.claude/rules/gherkin.md`](../../.claude/rules/gherkin.md) — BDD authoring rules
 
 ---
@@ -62,10 +60,10 @@ If you can answer these questions, you are up to speed:
 
 | Resource | Location |
 |---|---|
-| Workflow (full version) | [`docs/workflow.md`](../workflow.md) |
-| Full skill documentation | [`docs/skills.md`](../skills.md) |
+| Workflow (full detail) | [`04-workflow.md`](04-workflow.md) |
+| Full skill reference | [`03-skills.md`](03-skills.md) |
 | Gherkin rules | [`.claude/rules/gherkin.md`](../../.claude/rules/gherkin.md) |
-| QA visual pipeline | [`docs/qa-lifecycle.html`](../qa-lifecycle.html) |
+| QA visual pipeline | [`pipeline.html`](../../pipeline.html) |
 | Jira project | your-workspace.atlassian.net (all tickets prefixed TICKET-xxx) |
 
 ---

@@ -38,9 +38,9 @@ Playwright-Web-Agentic-Engineering-Automation/
 │   ├── skills/          ← AI skill definitions (full index in docs/qa-workflow-map.md)
 │   └── rules/           ← Gherkin, commit, and PR format rules
 ├── docs/
-│   ├── tutorial/      ← you are here
-│   ├── workflow.md      ← Full Feature→Version workflow
-│   └── skills.md        ← Full skill documentation
+│   ├── tutorial/      ← you are here (03-skills = full skill ref, 04-workflow = full workflow)
+│   ├── qa-workflow-map.md  ← stage → skill single source of truth
+│   └── skills-guide.html   ← which skill to use at each stage (interactive)
 ├── testcases/           ← Stable BDD case main library (single source of truth)
 ├── features/{ticket}/   ← Workspace during Feature development
 ├── versions/{version}/  ← Version acceptance workspace
