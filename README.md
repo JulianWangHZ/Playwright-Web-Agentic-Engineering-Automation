@@ -11,7 +11,7 @@
 
 ---
 
-![QA Pipeline & Stages](docs/pipeline.png)
+![QA Pipeline & Stages](assets/pipeline.png)
 
 ---
 
@@ -113,7 +113,7 @@ An E2E automation framework for YouTube Web, based on **Playwright + playwright-
 
 ## Start Here (New Members)
 
-→ **[Getting Started (Step 1: Project Overview)](docs/onboarding/01-overview.md)**
+→ **[Getting Started (Step 1: Project Overview)](docs/tutorial/01-overview.md)**
 
 Five steps take you from zero to up and running, finishing by connecting to the YouTube Web E2E automation framework.
 
@@ -150,9 +150,9 @@ Playwright-Web-Agentic-Engineering-Automation/
 ├── .claude/
 │   ├── rules/                 # Gherkin, commit, PR format, and coding style rules
 │   └── skills/                # AI skill definitions (see docs/skills.md for the list)
+├── assets/                    # Images (pipeline diagram, skill-guide screenshots)
 ├── docs/
-│   ├── onboarding/            # Getting-started guide for new members (5 steps)
-│   ├── pipeline.png           # Pipeline diagram
+│   ├── tutorial/              # Getting-started guide for new members (5 steps)
 │   ├── qa-workflow-map.md     # Stage → skill single source of truth
 │   ├── skills-guide.html      # Which skill to use at each stage (interactive)
 │   └── skills.md

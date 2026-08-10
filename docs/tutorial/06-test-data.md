@@ -2,7 +2,7 @@
 
 | [← Newcomer Checklist](05-checklist.md) | [YouTube Automation →](../../youtube/docs/getting-started.md) |
 |:---|---:|
-| Step 5: Onboarding check | Next stop: E2E automation framework |
+| Step 5: Checklist | Next stop: E2E automation framework |
 
 **Reference material** (not a workflow step)
 
@@ -74,4 +74,4 @@ SEARCH_QUERY                # Search keyword
 
 | [← Newcomer Checklist](05-checklist.md) | [YouTube Automation →](../../youtube/docs/getting-started.md) |
 |:---|---:|
-| Step 5: Onboarding check | Next stop: E2E automation framework |
+| Step 5: Checklist | Next stop: E2E automation framework |

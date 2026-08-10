@@ -15,7 +15,7 @@ E2E automation testing framework for YouTube Web (guest / logged-out state).
 |   Step 3   | [Writing Tests](docs/writing-tests.md)           | How to write and the conventions for each layer of a new BDD test       |
 |   ↳ Advanced | [Agentic Automation Flow](docs/agentic-automation.md) | The full flow for auto-filling implementation with the `/auto-playwright-agentic-automation-workflow` skill |
 |   Step 4   | [Running Tests](docs/running-tests.md)           | All ways to run: local, Docker, CI                                      |
-|   Step 5   | [Onboarding Checklist](docs/onboarding.md)       | Confirm you can contribute independently                                |
+|   Step 5   | [Checklist](docs/checklist.md)       | Confirm you can contribute independently                                |
 
 **[Start from Step 1 → Getting Started](docs/getting-started.md)**
 

@@ -1,6 +1,6 @@
 # Running Tests
 
-| [← Writing Tests](writing-tests.md) | [Onboarding Checklist →](onboarding.md) |
+| [← Writing Tests](writing-tests.md) | [Checklist →](checklist.md) |
 | :---------------------------------- | --------------------------------------: |
 | Step 3: feature → step → Page Object |               Step 5: confirm you can contribute independently |
 
@@ -318,6 +318,6 @@ Guest-state tests need no prerequisite project (no setup / login / data seeding)
 
 ---
 
-| [← Writing Tests](writing-tests.md) | [Onboarding Checklist →](onboarding.md) |
+| [← Writing Tests](writing-tests.md) | [Checklist →](checklist.md) |
 | :---------------------------------- | --------------------------------------: |
 | Step 3: feature → step → Page Object |               Step 5: confirm you can contribute independently |

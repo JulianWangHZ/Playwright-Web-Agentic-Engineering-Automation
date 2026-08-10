@@ -8,6 +8,10 @@ Skills automatically determine the stage from the argument format: `TICKET-xxx` 
 
 ## Workflow Skills
 
+![Feature stage skills](../assets/skills-feature-stage.png)
+
+![Version stage skills](../assets/skills-version-stage.png)
+
 ### `/stage-test-matrix`
 
 Test Matrix. Generates a structured condition × behavior matrix from a Jira ticket or plan.md. Dimensions are **exhaustively enumerated per the ten functional test-design techniques in `references/coverage-techniques.md`** (equivalence partitioning / boundary value / decision table / positive-negative-exception / error guessing / state transition / role permission / environment / CRUD / pairwise), and it produces a "coverage-technique self-check table" + "cross-boundary indicators" (non-functional items are marked only with a pointer to the dedicated skill).
@@ -79,6 +83,8 @@ Main library merge. **The last step of a Version, the only skill allowed to writ
 
 ## QA Tool Skills
 
+![Persistent tool skills](../assets/skills-tools.png)
+
 ### `/stage-bdd-review`
 
 After BDD is written, dispatch an **independent subagent** to review the `.feature`, score it, and give suggestions, **producing only a report without changing cases** (human-in-the-loop).
@@ -128,6 +134,8 @@ Sprint risk scan — rates each ticket HIGH/MED/LOW risk and produces a **risk m
 ---
 
 ## Automation & Engineering Skills
+
+![Automation & engineering skills](../assets/skills-automation.png)
 
 ### `/auto-playwright-agentic-automation-workflow`
 

@@ -1,4 +1,4 @@
-# Newcomer Onboarding Checklist
+# Newcomer Checklist
 
 | [← Running Tests](running-tests.md) | [Back to README →](../README.md) |
 | :---------------------------------- | -------------------------------: |
