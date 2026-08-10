@@ -79,6 +79,17 @@ jobs:
           mkdir -p dist
           cp smart-report.html dist/index.html
 
+      # Self-provision the Pages project on first run; no-op (fails harmlessly) once it exists
+      - name: Ensure Cloudflare Pages project exists
+        if: ${{ always() }}
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: youtube
+          command: pages project create youtube-e2e-smart-report --production-branch=main
+
       - name: Deploy smart report to Cloudflare Pages
         if: ${{ always() }}
         uses: cloudflare/wrangler-action@v3
