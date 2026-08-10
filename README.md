@@ -5,7 +5,10 @@
 **An end-to-end QA engineering pipeline, driven by AI agents all the way from Jira ticket to release sign-off**
 
 [![Claude Code](https://img.shields.io/badge/Powered%20by-Claude%20Code-7C3AED?logo=anthropic&logoColor=white)](https://claude.ai/code)
+[![OpenAI Codex](https://img.shields.io/badge/Powered%20by-Codex-000000?logo=openai&logoColor=white)](https://openai.com/codex)
 [![Playwright](https://img.shields.io/badge/Playwright-TypeScript-45BA4B?logo=playwright&logoColor=white)](https://playwright.dev)
+
+**English** · [繁體中文](README.zh-TW.md)
 
 </div>
 
