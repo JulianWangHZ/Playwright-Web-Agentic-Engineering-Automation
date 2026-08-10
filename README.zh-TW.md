@@ -8,6 +8,7 @@
 [![OpenAI Codex](https://img.shields.io/badge/Powered%20by-Codex-000000?logo=openai&logoColor=white)](https://openai.com/codex)
 [![Playwright](https://img.shields.io/badge/Playwright-TypeScript-45BA4B?logo=playwright&logoColor=white)](https://playwright.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live Report](https://img.shields.io/badge/Live%20Report-Smart%20Report-F38020?logo=cloudflare&logoColor=white)](https://youtube-e2e-smart-report.pages.dev)
 
 [English](README.md) · **繁體中文**
 
@@ -116,6 +117,8 @@ Version 階段 → versions/{v}/
 一套以 **Playwright + playwright-bdd** 為基礎、針對 YouTube Web 的 E2E 自動化框架。BDD 設計階段產出的 `.feature` 場景，會在這裡被實作成可自動執行的 Playwright 測試（訪客／未登入狀態，涵蓋搜尋／播放／頻道／篩選）。
 
 → [youtube/README.md](youtube/README.md)
+
+**線上測試報告**（每次 CI 執行後自動發布到 Cloudflare Pages）：[youtube-e2e-smart-report.pages.dev](https://youtube-e2e-smart-report.pages.dev)
 
 ---
 

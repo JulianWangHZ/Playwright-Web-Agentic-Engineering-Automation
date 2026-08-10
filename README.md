@@ -8,6 +8,7 @@
 [![OpenAI Codex](https://img.shields.io/badge/Powered%20by-Codex-000000?logo=openai&logoColor=white)](https://openai.com/codex)
 [![Playwright](https://img.shields.io/badge/Playwright-TypeScript-45BA4B?logo=playwright&logoColor=white)](https://playwright.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live Report](https://img.shields.io/badge/Live%20Report-Smart%20Report-F38020?logo=cloudflare&logoColor=white)](https://youtube-e2e-smart-report.pages.dev)
 
 **English** · [繁體中文](README.zh-TW.md)
 
@@ -112,6 +113,8 @@ Text-based single source of truth: [docs/qa-workflow-map.md](docs/qa-workflow-ma
 An E2E automation framework for YouTube Web, based on **Playwright + playwright-bdd**. The `.feature` scenarios produced during the BDD design stage are implemented here as automatically executable Playwright tests (guest/logged-out state, covering search / playback / channel / filters).
 
 → [youtube/README.md](youtube/README.md)
+
+**Live test report** (auto-published to Cloudflare Pages after every CI run): [youtube-e2e-smart-report.pages.dev](https://youtube-e2e-smart-report.pages.dev)
 
 ---
 
