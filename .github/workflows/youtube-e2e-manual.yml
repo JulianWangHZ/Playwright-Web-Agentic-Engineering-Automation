@@ -71,3 +71,19 @@ jobs:
           name: youtube-result-${{ inputs.env }}-${{ inputs.browser }}
           path: youtube/smart-report.html
           retention-days: 7
+
+      # Cloudflare Pages serves the report at the project root, so it must be index.html
+      - name: Prepare report for Cloudflare Pages
+        if: ${{ always() }}
+        run: |
+          mkdir -p dist
+          cp smart-report.html dist/index.html
+
+      - name: Deploy smart report to Cloudflare Pages
+        if: ${{ always() }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: youtube
+          command: pages deploy dist --project-name=youtube-e2e-smart-report --branch=main
