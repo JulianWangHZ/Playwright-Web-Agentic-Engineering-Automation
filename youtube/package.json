@@ -31,7 +31,7 @@
     "youtube",
     "e2e"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "sharp": "^0.34.0"

@@ -7,6 +7,7 @@
 [![Claude Code](https://img.shields.io/badge/Powered%20by-Claude%20Code-7C3AED?logo=anthropic&logoColor=white)](https://claude.ai/code)
 [![OpenAI Codex](https://img.shields.io/badge/Powered%20by-Codex-000000?logo=openai&logoColor=white)](https://openai.com/codex)
 [![Playwright](https://img.shields.io/badge/Playwright-TypeScript-45BA4B?logo=playwright&logoColor=white)](https://playwright.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **English** · [繁體中文](README.zh-TW.md)
 
@@ -165,3 +166,9 @@ Playwright-Web-Agentic-Engineering-Automation/
 └── youtube/                   # YouTube Web E2E automation (Playwright + BDD)
     └── README.md              # → Start here
 ```
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE) · Copyright (c) 2026 JulianWangHZ
