@@ -1,0 +1,70 @@
+name: E2E Automated Regression (on merge to main)
+
+on:
+  push:
+    branches: [main]
+
+# Cancel an in-progress run when a newer commit lands on main
+concurrency:
+  group: youtube-e2e-main
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: E2E @auto sit/chromium Desktop
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: youtube
+    env:
+      TAG: auto
+      ENV: sit
+      BROWSER: chromium
+      DEVICE: Desktop
+      PARALLEL_WORKERS: "8"
+      HEADLESS: "true"
+      VIDEO_ON_FAILURE: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: youtube/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install chromium
+
+      - name: Run E2E (@auto)
+        run: |
+          if [ "$DEVICE" = "Desktop" ]; then export DEVICE=""; fi
+          npm run test:ui
+
+      - name: Upload result JSON
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-result-sit-chromium
+          path: youtube/smart-report.html
+          retention-days: 7
+
+      # Cloudflare Pages serves the report at the project root, so it must be index.html
+      - name: Prepare report for Cloudflare Pages
+        if: ${{ always() }}
+        run: |
+          mkdir -p dist
+          cp smart-report.html dist/index.html
+
+      - name: Deploy smart report to Cloudflare Pages
+        if: ${{ always() }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: youtube
+          command: pages deploy dist --project-name=youtube-e2e-smart-report --branch=main
