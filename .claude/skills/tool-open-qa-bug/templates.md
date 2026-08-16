@@ -66,7 +66,7 @@ When creating a Bug, fill the description field with this Markdown (both `jira_c
 
 | Jira field | Value |
 |---|---|
-| project | HC |
+| project | {PROJECT} |
 | issuetype | Bug (subtask type) |
 | parent | {TICKET-xxx} (feature ticket) |
 | summary | `[Bug] {one-sentence title}` |

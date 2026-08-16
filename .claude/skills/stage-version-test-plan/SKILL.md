@@ -24,10 +24,10 @@ Record: current branch, whether the working tree is clean, whether `feature/{ver
 ## Step 3: Pull this version's tickets by fixVersion
 
 **3a Pull main tickets**:
-- jql: `project = HC AND fixVersion = "{version}" AND issuetype != Sub-task`
+- jql: `project = {PROJECT} AND fixVersion = "{version}" AND issuetype != Sub-task`
 - fields: summary/description/status/issuetype/parent/labels/assignee, maxResults:50
 - Note: `issuetype != Sub-task` does not filter out `Sub-task-bug`; when grouping, classify by issue_type under the parent yourself
-- 0 tickets → the fixVersion may not exist or the version number is wrong; list recent fixVersion candidates from `project = HC` for the user to confirm, do not guess blindly
+- 0 tickets → the fixVersion may not exist or the version number is wrong; list recent fixVersion candidates from `project = {PROJECT}` for the user to confirm, do not guess blindly
 
 **3b** For each main ticket, expand its sub-tickets (jql: `parent in ({main tickets})`, if 3a did not include them).
 

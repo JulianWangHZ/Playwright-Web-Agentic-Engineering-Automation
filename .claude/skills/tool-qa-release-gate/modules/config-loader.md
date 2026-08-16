@@ -31,7 +31,7 @@ Every skill must load `config.json` at startup to bring organization settings in
 
 | Variable | Source | Example |
 |------|------|------|
-| `HC` | `jira.project_key` | `PROJ` |
+| `{PROJECT}` | `jira.project_key` | `PROJ` |
 | `https://your-workspace.atlassian.net` | `jira.instance_url` | `https://company.atlassian.net` |
 | `` | `slack.release_channel_id` | `C0ZZZ` |
 | `` | `slack.user_id` | `U0XXX` |

@@ -29,7 +29,7 @@ Skills auto-detect the stage from the **argument format**, so you don't need to 
 
 | Argument | Stage | Example |
 |---|---|---|
-| `TICKET-xxx` / `PK-xxx` | Feature | `/stage-test-matrix TICKET-1352` |
+| `TICKET-xxx` | Feature | `/stage-test-matrix TICKET-1352` |
 | `vX.X TICKET-xxx` | Version (a ticket merged into a version) | `/stage-write-bdd v4.16 TICKET-1352` |
 | `vX.X` | Version aggregation / wrap-up | `/stage-version-test-plan v4.16`, `/stage-tc-merge v4.16` |
 
@@ -115,7 +115,7 @@ Where to stop-and-ask vs. where to act autonomously. Orchestrators and stage ski
 |---|---|
 | Advancing to the **next stage** (matrix → state machine → BDD → …) | **Execution details within the current stage** |
 | Whether to do an **optional step** (state machine / prototype / review / archive) | **Reading the map**, **creating the artifact directory** |
-| **Argument is unclear** (not a `TICKET-xxx` / `PK-xxx` ticket, or not a `vX.X` version) | The **map-defined required step sequence** |
+| **Argument is unclear** (not a `TICKET-xxx` ticket, or not a `vX.X` version) | The **map-defined required step sequence** |
 | **Outward-facing / hard-to-reverse writes**: editing `testcases/*.feature`, `/stage-jira-sync`, `git commit` / `git push` | Internal-only computation (e.g. risk scoring), moving artifacts into the version container |
 
 **Notes**
