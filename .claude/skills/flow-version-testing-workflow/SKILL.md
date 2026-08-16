@@ -21,7 +21,7 @@ You are a QA workflow guide for version consolidation. The user gives a version 
 
 1. Read `docs/qa-workflow-map.md` (Version stage sequence).
 2. Confirm the artifact container `versions/{version}/`; if the argument is not `vX.X`, ask.
-3. Walk through in order (**one step at a time; after handing off, wait for completion**):
+3. Walk through in order. **Permission boundary = `docs/qa-workflow-map.md` §7**: stop and ask only before advancing to the next stage, before an optional step, when the argument is unclear, or at an outward-facing write (`.feature` / Jira / commit / `tc-merge`). Reading the map, creating the version container, and the required steps within a stage are autonomous — do not ask. When `accept-edits` or auto mode is on and the user asked to run the whole flow, run the required steps continuously, pausing only at those gates.
 
    | # | Step | Hand off skill | Optional/Required |
    |---|---|---|---|

@@ -106,3 +106,19 @@ The following slugs share names or overlap conceptually between the **global/plu
 
 - Just want to know **which skill to use** → `/flow-qa-router <describe scenario>` (picks 1 primary skill and hands off).
 - Want to **be walked through a whole stage step by step** → `/flow-feature-testing-workflow`, `/flow-version-testing-workflow`.
+
+## 7. Permission / Autonomy Boundary (single source)
+
+Where to stop-and-ask vs. where to act autonomously. Orchestrators and stage skills **read this table**; do not re-derive per skill.
+
+| Stop and ask first | Act autonomously (do NOT ask) |
+|---|---|
+| Advancing to the **next stage** (matrix → state machine → BDD → …) | **Execution details within the current stage** |
+| Whether to do an **optional step** (state machine / prototype / review / archive) | **Reading the map**, **creating the artifact directory** |
+| **Argument is unclear** (not a `TICKET-xxx` / `PK-xxx` ticket, or not a `vX.X` version) | The **map-defined required step sequence** |
+| **Outward-facing / hard-to-reverse writes**: editing `testcases/*.feature`, `/stage-jira-sync`, `git commit` / `git push` | Internal-only computation (e.g. risk scoring), moving artifacts into the version container |
+
+**Notes**
+- When `accept-edits` **or auto / bypass-permissions mode** is on and the user asked to run a whole stage/flow, run the required steps **continuously**; only pause at the "stop and ask" cases above. In auto mode the permission prompts disappear, so these four gates are the *only* remaining brake — honour them even harder.
+- An existing artifact directory is a decision point → ask continue / overwrite / cancel.
+- The `.feature` / Jira / commit-push gates are non-negotiable and override any "run continuously" instruction.
