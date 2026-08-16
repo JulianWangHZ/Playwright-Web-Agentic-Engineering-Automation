@@ -23,14 +23,13 @@ Final QA release decision before a version ships.
 
 ```
 jira_search JQL:
-  project = HC AND fixVersion = "{version}" AND priority in (Highest, High) AND status != Done
+  project = {PROJECT} AND fixVersion = "{version}" AND priority in (Highest, High) AND status != Done
 ```
 
 > If `fixVersion` is unset, the query returns empty results instead of an error (a silent failure).
 > Fallback JQL (using the sprint name instead):
-> `project = HC AND sprint = "{sprintName}" AND priority in (Highest, High) AND status != Done`
+> `project = {PROJECT} AND sprint = "{sprintName}" AND priority in (Highest, High) AND status != Done`
 > Prefer fixVersion; if the result is empty, automatically switch to the sprint fallback and inform the user.
-
 ```bash
 cat versions/{v}/plan.md 2>/dev/null
 ls versions/{v}/signoff/ 2>/dev/null

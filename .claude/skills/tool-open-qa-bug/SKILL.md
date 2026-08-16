@@ -42,7 +42,7 @@ Proactively follow up if incomplete; format requirements are in `rider-format.md
 
 ```
 jira_search JQL:
-  project = HC AND issuetype = Bug AND text ~ "{keyword}" AND status != Done
+  project = {PROJECT} AND issuetype = Bug AND text ~ "{keyword}" AND status != Done
   ORDER BY created DESC LIMIT 5
 
 jira_search JQL:
@@ -118,8 +118,8 @@ Take the first result that has an assignee as the assignee for the new ticket. I
 
 ```
 jira_create_issue:
-  project:    HC
-  issuetype:  Sub-task-bug (the subtask bug type of the HC project)
+  project:    {PROJECT}
+  issuetype:  Sub-task-bug (the subtask bug type of your Jira project)
   parent:     {TICKET-xxx}
   summary:    "[{platform}-{function}] {title}"
   assignee:   {RD name / email found in 3-3}
