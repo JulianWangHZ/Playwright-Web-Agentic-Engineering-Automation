@@ -54,6 +54,8 @@ After testing is complete, you can run `/stage-jira-sync` to sync the test artif
 
 **Skill**: `/stage-jira-sync` (optional)
 
+https://github.com/user-attachments/assets/88bab9b6-2507-4102-9b14-899ff714da1d
+
 ---
 
 ## Step 3 — Merge the Feature into the Version Container

@@ -94,6 +94,14 @@ Ticket → BDD Case → TEST Sub-task → Release
 
 ---
 
+## Demo — Feature Flow Testing
+
+A single feature ticket walked end to end: Test Matrix → State Machine → BDD → prototype → review → archive, driven entirely by AI agents.
+
+https://github.com/user-attachments/assets/beb0cd77-d65d-4a76-9506-8db2a74c7fcf
+
+---
+
 ## Workflow
 
 ```
