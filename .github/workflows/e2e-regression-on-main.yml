@@ -60,6 +60,11 @@ jobs:
           mkdir -p dist
           cp smart-report.html dist/index.html
 
+      # Copy failure videos into dist/ and turn file:// links into inline <video> players
+      - name: Embed failure videos into report
+        if: ${{ always() }}
+        run: node scripts/embed-report-videos.mjs
+
       - name: Deploy smart report to Cloudflare Pages
         if: ${{ always() }}
         uses: cloudflare/wrangler-action@v3
