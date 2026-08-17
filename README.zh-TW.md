@@ -98,6 +98,14 @@ Ticket → BDD Case → TEST Sub-task → Release
 
 ---
 
+## Demo — Feature 流程測試
+
+以單一 feature 票走完整條流程：Test Matrix → State Machine → BDD → 原型 → 審查 → 歸檔，全程由 AI agent 驅動。
+
+https://github.com/user-attachments/assets/beb0cd77-d65d-4a76-9506-8db2a74c7fcf
+
+---
+
 ## 工作流程
 
 ```
