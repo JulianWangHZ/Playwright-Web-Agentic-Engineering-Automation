@@ -16,8 +16,8 @@ The main session gives you: the target failing test subset (`.features-gen` spec
 
 ## Workflow
 
-1. **Reproduce**: `test_run` runs only the specified failing subset (not everything), to confirm which are failing.
-2. **Debug each failure**: for each failure, `test_debug` pauses at the failure point → read the error message → `browser_snapshot` to see the current real page → `browser_generate_locator` to produce the best locator → check `browser_console_messages` / `browser_network_requests` when needed to judge backend behavior.
+1. **Reproduce (CLI by default, don't route through the MCP)**: `cd youtube && BROWSER_CHANNEL=chrome npx playwright test <failing subset>` runs only the specified failing subset. Use the MCP `test_run` only after `test_list` confirms the server is alive; on error read the CLI output directly and do not retry the MCP.
+2. **Debug each failure**: read the CLI error message → `browser_snapshot` to see the current real page → `browser_generate_locator` to produce the best locator → check `browser_console_messages` / `browser_network_requests` when needed to judge backend behavior. `test_debug` (interactive pause) is a last resort — only when a plain locator/wait fix can't be diagnosed from the snapshot; don't use it for routine locator repair.
 3. **Root cause classification** (treat the cause, not the symptom):
 
    | Root cause | Fix |

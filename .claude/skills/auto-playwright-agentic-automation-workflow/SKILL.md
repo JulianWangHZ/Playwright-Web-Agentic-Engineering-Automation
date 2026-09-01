@@ -16,6 +16,23 @@ Add automation implementation for **existing @auto scenarios** in the main `test
 
 ---
 
+## Phase −1: Triage (route first; don't default to the full pipeline)
+
+The multi-agent pipeline is built for **batch implementation of many scenarios**; running it for a small task is overkill. A dispatched subagent cold-starts and discards the context the main session already has (the screen you're looking at, the scenario, the bug location), re-reads the rules, and re-walks the whole flow — that cold-restart tax is the biggest waste, not the live-probe itself. Routing rule:
+
+| Situation | How to run |
+|---|---|
+| Single-scenario feasibility check | live-probe **inline in the main session** (Playwright MCP), no planner |
+| Locator / wait fix on already-implemented code, single-failure rerun | **inline in the main session**: inspect the real page → fix the POM/step → run that subset, no healer |
+| The user already handed you the screen + scenario + bug location | **act directly**; don't dispatch an agent to re-explore what it already has |
+| Batch of many scenarios, large cross-file scope, needs systematic exploration | run the full Phase 0–7 pipeline below (dispatch planner/generator/healer) |
+
+**Default to the CLI for running tests, not the MCP**: `cd youtube && BROWSER_CHANNEL=chrome npx playwright test <subset>` (`BROWSER_CHANNEL=chrome` is the local workaround per `youtube-automation.md`; drop it under the official docker image). Use the playwright-test MCP (`test_run` / `test_debug`) only for interactive locator extraction, and only after `test_list` confirms it's alive — on error, fall back to the CLI and don't retry the MCP. `test_debug` pauses interactively and isn't needed for locator fixes.
+
+Proceed below only when triage says "large batch":
+
+---
+
 ## Phase 0: Setup and scope definition
 
 ```bash
