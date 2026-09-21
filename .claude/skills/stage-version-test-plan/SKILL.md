@@ -1,75 +1,76 @@
 ---
 name: stage-version-test-plan
-description: The first step of the Version stage — pull this version's tickets by Jira fixVersion, create the versions/{version}/ version container, and produce the initial plan.md + changes.md. Triggers when the user mentions "start collecting a version", "create the version container", "pull this version's tickets", "which features does this version include", "version plan". Usually called automatically by flow-version-testing-workflow.
-argument-hint: <version vX.X, e.g. v4.16; i.e. the Jira fixVersion>
+description: First step of the Version stage — fetch tickets by Jira fixVersion, create the versions/{version}/ container, and produce an initial plan.md + changes.md. Triggered when the user mentions starting a version, building a version container, pulling version tickets, version plan, or release planning. Typically called automatically by flow-version-testing-workflow.
+argument-hint: <version vX.X, e.g. v4.16 — matches the Jira fixVersion>
 allowed-tools: Read, Write, Bash, mcp__atlassian__jira_search, mcp__atlassian__jira_get_issue
 ---
 
-Version test plan helper. **Only creates the `versions/{version}/` skeleton and `plan.md`/`changes.md`**; cases/ is handled by `/stage-test-matrix` and `/stage-write-bdd`. plan.md covers Feature allocation + integration test flows + regression scope (settled in one pass at Version wrap-up). Forbidden: touching the cases/ main library / commit / push.
-
-Working directory: `Playwright-Web-Agentic-Engineering-Automation`
+Version test plan assistant. **Only creates `versions/{version}/` and the `plan.md` / `changes.md` skeleton.** Cases go to `/stage-test-matrix` and `/stage-write-bdd`. Do not touch cases/, the main testcase library, commit, or push.
 
 ---
 
-# Part 1: Pull tickets + verify
+# Part 1: Fetch tickets & validate scope
 
 ## Step 1: Parse input
 
-The argument is a version number `vX.X` (e.g. `v4.16`, lowercase v), which maps to the artifact container `versions/{version}/` and is also the Jira **fixVersion** value — pull the ticket scope directly with it, **do not scan the sprint** (the sprint is a long-running rolling backlog containing many historical tickets).
+The argument is a version string `vX.X` (e.g. `v4.16`, lowercase v). This maps to the output container `versions/{version}/` and is used as the Jira **fixVersion** value — tickets are fetched directly by it. **Do not scan sprints** (sprints are rolling and include historical tickets).
 
-## Step 2: Environment pre-check (do not touch files)
+## Step 2: Pre-flight check (no file changes)
 
 Record: current branch, whether the working tree is clean, whether `feature/{version}` exists, whether `versions/{version}/` exists.
 
-## Step 3: Pull this version's tickets by fixVersion
+## Step 3: Fetch tickets by fixVersion
 
-**3a Pull main tickets**:
-- jql: `project = {PROJECT} AND fixVersion = "{version}" AND issuetype != Sub-task`
-- fields: summary/description/status/issuetype/parent/labels/assignee, maxResults:50
-- Note: `issuetype != Sub-task` does not filter out `Sub-task-bug`; when grouping, classify by issue_type under the parent yourself
-- 0 tickets → the fixVersion may not exist or the version number is wrong; list recent fixVersion candidates from `project = {PROJECT}` for the user to confirm, do not guess blindly
+**3a — Fetch main tickets:**
+- jql: `project = HC AND fixVersion = "{version}" AND issuetype != Sub-task`
+- fields: summary / description / status / issuetype / parent / labels / assignee, maxResults: 50
+- Note: `issuetype != Sub-task` does not filter `Sub-task-bug` — group these under their parent manually based on issue_type
+- 0 results → fixVersion may not exist or version string is wrong; list recent fixVersion candidates from `project = HC` for the user to confirm
 
-**3b** For each main ticket, expand its sub-tickets (jql: `parent in ({main tickets})`, if 3a did not include them).
+**3b** — For each main ticket, expand sub-tickets (jql: `parent in ({main tickets})`) if not already included.
 
-**3c** The pulled tickets may include some outside this framework's test scope (e.g. non-YouTube-facing, or old tickets that had a fixVersion attached later) → group and list them at Checkpoint 1 for the user to decide; the feature-area labels (search video / video playback / channel / search filters) are only for grouping reference.
+**3c** — Some tickets may be outside the tracked scope (e.g. merchant-side features, old tickets with fixVersion back-filled). Group and surface these at Checkpoint 1 for the user to decide. Platform labels are for grouping only, not authoritative.
 
 ## [Checkpoint 1] Confirm ticket scope
 
 ```
-fixVersion "{version}" has N tickets total
+fixVersion "{version}" — N tickets found
 
-### {group}
+### {Group}
 - {ticket} ({status}) — {summary}
   - {sub-ticket} — {summary}
 
-### Presumed outside the Playwright-Web-Agentic-Engineering-Automation scope
+### Likely out of scope
 - {ticket} — {reason}
 
-Please confirm: (1) Are these N tickets this version's scope? Any to remove/add? (2) Agree to exclude the out-of-scope ones? Mark them as "not covered" in plan.md?
+Please confirm: ① Are these N tickets the full scope for this version? Any to remove or add? ② Agreed to exclude out-of-scope tickets? Should they be noted as "not covered" in plan.md?
 ```
 
-**Wait for an explicit user reply before proceeding to Part 2.**
+**Wait for an explicit reply before proceeding to Part 2.**
 
 ---
 
 # Part 2: Branch strategy
 
-## [Checkpoint 2] Ask about the branch
+## [Checkpoint 2] Ask for branch + basic info
 
 ```
-git status: current branch {x} | working tree {clean/has N changes} | feature/{version} {does not exist/exists} | versions/{version}/ {does not exist/exists}
+Git status: current branch {x} | working tree {clean / N changes} | feature/{version} {not found / exists} | versions/{version}/ {not found / exists}
 
-Which branch?
-A. Stay on the current "{current_branch}"
-B. Cut a new feature/{version} from main (Recommended)
-C. Cut a new feature/{version} from the current branch
+Please provide:
+① Which branch?
+   A. Stay on current "{current_branch}"
+   B. Cut new feature/{version} from main (Recommended)
+   C. Cut new feature/{version} from current branch
+② QA lead (owner):
+③ Target release date (YYYY-MM-DD):
 ```
 
-**Wait for the user to choose A/B/C before touching git.**
+**Wait for the user's reply before touching git.**
 
-## Step 6: Execute the branch
+## Step 6: Execute branch
 
-Cut the branch per the choice; if the working tree is not clean, handle it first (stash/commit/carry over):
+Apply the chosen option. If the working tree is not clean, resolve it first (stash / commit / carry over):
 
 ```bash
 mkdir -p versions/{version}
@@ -77,83 +78,75 @@ mkdir -p versions/{version}
 
 ---
 
-# Part 3: Write the documents
+# Part 3: Write documents
 
 ## Step 7: Classify tickets (internal analysis)
 
-- Feature tickets (with RD changes) → version container (versions/{version}/testcases/{ticket}/)
-- Regression-type cases (cross-Feature, neighboring features) → versions/{version}/testcases/regression/
-- Feature areas: search video / video playback / channel / search filters (can be multiple)
-- Infer QA from the Jira assignee, or leave blank
+- Feature tickets (with RD changes) → version container (`versions/{version}/testcases/{ticket}/`)
+- Regression cases (cross-feature, neighbouring modules) → `versions/{version}/testcases/regression/`
+- Platform: pickday / join1 (may be both)
+- QA owner: infer from Jira assignee, or leave blank
 
 ## Step 8: Write versions/{version}/plan.md
 
-```markdown
-# {version} Version Test Plan
-fixVersion: {version}
-Branch: {branch}
-Feature areas: {...}
+Generate from the template in `references/templates.md`, populating all known fields:
+- `Owner`, `Target Release`, `Branch`: from the user's reply at Checkpoint 2
+- `Scope`: one-sentence summary of the core change derived from ticket summaries; "Out of scope" and regression modules are filled at Checkpoint 3
+- `Risk-based Prioritization`: derive P0 / P1 / P2 from the change surface and Integration Risk analysis
+- `Integration Risk`: cross-ticket impact points; if none, write "All tickets are independent — no integration risk"
+- `Dependencies & Blockers`: list known feature flags / staging build requirements; others filled at Checkpoint 3
+- All other placeholders (Assumptions detail / Test Approach specifics / Exit Criteria numbers / Open Questions) stay as `{fill in}` for the QA to complete
 
-## Feature allocation
-| Feature ticket | Title | Lead QA |
-|---|---|---|
+> Regression modules, Integration Risk details, and Exit Criteria thresholds are confirmed at Checkpoint 3 — do not invent them.
 
-## Scope per Feature
-### {ticket} — {title}
-- Affected areas: {search video / video playback / channel / search filters}
-- Main function: {what changed}
-- Jira: https://your-workspace.atlassian.net/browse/{ticket}
-
-## Integration tests (cross-Feature end-to-end flows; Version wrap-up)
-1. **{Flow A}** — Features: TICKET-XXXX + TICKET-ZZZZ
-   - {step description} | Expected: {...}
-
-## Regression tests (versions/{version}/testcases/regression/)
-- `{path}` — {why regression}
-
-## Risks
-## Not covered (outside the Playwright-Web-Agentic-Engineering-Automation scope)
-- {ticket} — {reason}
-```
-
-> The integration flows + regression scope rely on Checkpoint 3 to confirm with the user; do not invent cross-Feature flows yourself. When integration tests run, they reference each Feature's testcases/, not copies.
-
-## Step 9: Write the versions/{version}/changes.md skeleton
+## Step 9: Write versions/{version}/changes.md skeleton
 
 ```markdown
-# {version} diff against the main library
+# {version} Changes vs Main
 
-## Version (grouped by Feature)
+## Version (by feature ticket)
 ### {ticket} — {title}
 **Modified**
-- testcases/{ticket}/cases/{path}.feature — {what changed} (@changed-in-{version})
-**New**
-- testcases/{ticket}/cases/{path}.feature — {what was added} (@new-in-{version})
+- testcases/{ticket}/cases/{platform}/{path}.feature — {what changed} (@changed-in-{version})
 
-## Regression (not tied to a Feature, cross-Feature / neighboring modules)
-**Modified**: testcases/regression/{path} — {reason for strengthening}
-**New**: testcases/regression/{path} — {reason for filling the gap}
+**New**
+- testcases/{ticket}/cases/{platform}/{path}.feature — {what was added} (@new-in-{version})
+
+## Regression (not tied to a single feature — cross-feature / neighbouring modules)
+**Modified**: testcases/regression/{path} — {reason for update}
+**New**: testcases/regression/{path} — {reason for addition}
+
+## Removed (exists in main but dropped this version)
+- (none)
+
+## Co-modified files (multiple features touching the same file)
+- (none)
 ```
 
-## [Checkpoint 3] Verify
+## [Checkpoint 3] Review
 
 ```
 Written: versions/{version}/plan.md, versions/{version}/changes.md
 
-fixVersion {version} | feature areas {x} | Feature {N} tickets (QA allocated {X}/pending {Y}) | not covered {N} tickets
+fixVersion {version} | Platform {x} | Features {N} tickets (QA assigned {X} / unassigned {Y}) | Out of scope {N}
 
-Please confirm: (1) Feature allocation (2) Lead QA (3) Risk additions (4) Not-covered assessment
-              (5) Key integration test flows (cross-Feature chaining, at least one; if none, fill in "no integration flow")
-              (6) Regression scope (affected neighboring modules; if none, fill in "no regression needed")
+Please confirm or add:
+① Out-of-scope tickets / modules (with reason)
+② Modules that need regression (reason; if none, confirm "no regression needed — reason: {fill in}")
+③ Any cross-ticket integration risks missed
+④ Exit Criteria thresholds (automation pass rate % / max P1 open count)
+⑤ Any additional Dependencies & Blockers (owner / deadline)
+⑥ Open Questions (owner / deadline)
+⑦ Out-of-scope ticket disposition (mark as "not covered" or exclude entirely)
 
-After confirming, run /stage-test-matrix vX.X TICKET-XXXX to add a test matrix for each Feature.
+Once confirmed, run /stage-test-matrix vX.X HC-XXXX to build the test matrix for each feature ticket.
 ```
 
 ---
 
 ## Rules
 
-- Version number format `vX.X` (e.g. v4.16); reject anything that violates it
-- Always pull ticket scope with `fixVersion = "{version}"`; do not scan the whole sprint (a rolling sprint contains historical tickets, and even a scan would need to reverse-infer version boundaries from status)
-- Part 1 does not touch git or files; if a branch with the same version number already exists → ask how to handle at Checkpoint 2
-- Do not touch the cases/ main library; always write files with `Write`
+- Version format must be `vX.X` (e.g. v4.16) — reject anything that doesn't match
+- Always fetch tickets with `fixVersion = "{version}"` — never scan the full sprint (rolling sprints contain historical tickets)
+- Part 1 must not touch git or files; if a branch for this version already exists, raise it at Checkpoint 2
+- Do not modify the cases/ library; always use `Write` for file output
