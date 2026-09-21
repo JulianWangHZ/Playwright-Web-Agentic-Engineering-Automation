@@ -236,7 +236,7 @@ YouTube Web automation implementation orchestration — adds step definitions / 
 
 ### `/auto-responsive-layout-check`
 
-YouTube Web responsive layout scan — detects horizontal overflow, text truncation, element overlap, undersized touch targets, and breakpoint-boundary bugs across multiple viewports. Follows `tests/api/` as a standalone spec (non-BDD); the detection tool lands in `src/utils/overflow-detector.ts` and the viewport list in `src/data/viewports.ts`. Adapted from Pramod/responsive-layout-breaker, aligned with `youtube-automation.md`.
+YouTube Web responsive layout scan — detects horizontal overflow, text truncation, element overlap, undersized touch targets, and breakpoint-boundary bugs across multiple viewports. Follows `tests/api/` as a standalone spec (non-BDD); the detection tool lands in `src/utils/overflow-detector.ts` and the viewport list in `src/data/viewports.ts`.
 
 - **Parameters**: `<page path list | empty = scan main consumer-facing pages>`
 
@@ -244,7 +244,7 @@ YouTube Web responsive layout scan — detects horizontal overflow, text truncat
 
 ### `/auto-console-error-collector`
 
-Console error interception during YouTube Web testing — a fixture collects console errors / uncaught exceptions / unhandled promise rejections, with classification + severity grading + allowlist, giving every E2E an extra layer of JS error protection. The fixture lands in `src/fixtures/console.fixtures.ts` and is merged via mergeTests in `test.fixtures.ts` (§7). Adapted from Pramod/console-error-hunter, aligned with `youtube-automation.md`.
+Console error interception during YouTube Web testing — a fixture collects console errors / uncaught exceptions / unhandled promise rejections, with classification + severity grading + allowlist, giving every E2E an extra layer of JS error protection. The fixture lands in `src/fixtures/console.fixtures.ts` and is merged via mergeTests in `test.fixtures.ts` (§7).
 
 - **Parameters**: none (creates / inspects the console fixture)
 
