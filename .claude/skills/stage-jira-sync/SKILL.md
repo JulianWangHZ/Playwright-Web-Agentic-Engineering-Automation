@@ -50,11 +50,38 @@ For each target directory, read the existing artifacts in parallel:
 
 `issuetype: Sub-task`, `parent: {corresponding TICKET-xxx}`
 
+### Presentation style (readable × polished, applies to Ticket A / Ticket C)
+
+The readers are PMs / designers, so the description must be "understandable at a glance + visually polished". Use Jira **native ADF visual elements**, not just plain table lines:
+
+- **Feature purpose / conclusion as a Panel (colored info box)**: put the feature preamble in an ℹ️ info panel (blue); put the BDD Review verdict, per score, in a ✅ success panel (met) or ⚠️ warning panel (not met).
+- **Type / status as colored emoji labels**: 🔵 smoke, 🟢 positive, 🔴 negative, 🟡 boundary; use ✅ / ❌ for the "Allowed?" column of state transitions.
+- **Feature section headings with emoji**: `## 📋 {feature name} (New)`.
+- **Tables**: bold headers, concise aligned columns; prefix the expected result with ✅ to guide the eye.
+- **Clear layering**: feature → section → table; collapse overly long detail with Expand.
+- **Fallback rule**: if the MCP ADF does not support an element (panel/lozenge) → degrade to emoji + bold + table; **never dump raw `{panel}` / `{status}` syntax for the PM to read**.
+
 ### Ticket A: `[TEST] Cases + BDD Review` (always create)
 
-1. BDD Review summary (add only if bdd_review.md exists; take the verdict + score, do not paste the full text; do not add "→ estimated XX+ after update", only write the actual score)
+Content (**the readers are PMs / designers — always translate into plain language, never paste raw Gherkin**):
+
+1. **BDD Review summary** (add only if bdd_review.md exists; take the verdict + score, do not paste the full text; do not add "→ estimated XX+ after update", only write the actual score).
 2. `----`
-3. For each .feature file: use `{filename} (Modified / New)` as the section heading, and place the content in a ` ```gherkin ` code block (Jira ADF supports gherkin highlighting; the MCP-returned text displays as noformat, but the ADF `language` attribute is written correctly)
+3. **Each .feature file → one feature section** (**title uses the business name, not the filename**):
+   - Section heading: `## 📋 {the business name after Feature: in that file} (New / Modified)` — e.g. `home_navigation.feature` → `## 📋 Home Navigation (New)`. **Never** use `xxx.feature` as the heading (the PM cannot map it to the AC).
+   - Under the heading, place the **feature purpose** (the condensed three-line preamble) as an ℹ️ **info panel (colored info box)**: As a {role}, I want {goal}, so that {value} — the basis for the PM/designer to map ACs.
+   - If the feature has `# ####` section groups → sub-group them with `### {section name}`.
+   - **Each Scenario → one row in an acceptance table**:
+
+     | # | Test scenario | Preconditions | Action | Expected result | Type |
+     |---|---|---|---|---|---|
+
+     - Test scenario = Scenario title (de-teched)
+     - Preconditions = `Given` (incl. `Background`) condensed into plain words
+     - Action = `When` (incl. `And`) condensed into one business action
+     - Expected result = `Then` (incl. `And`) condensed into plain words
+     - Type = inferred from tags into a **colored emoji label**: 🔵 smoke (`@smoke`), 🟢 positive, 🔴 negative, 🟡 boundary (`@boundary`) (execution/suite tags like `@auto`/`@regression` are **not shown** to the PM)
+4. **Do not paste raw Gherkin code** (PMs/designers map ACs from the table; the raw `.feature` stays in the repo for QA/dev).
 
 ### Ticket B: `[TEST] Test Matrix + Prototype` (always create)
 
@@ -84,7 +111,15 @@ fi
 
 ### Ticket C: `[TEST] State Machine` (create only if state_machine.md exists)
 
-Full text of state_machine.md (put the Mermaid diagram in a code block, keep table format)
+**Turn it into a state-transition table, do not paste the raw Mermaid** (PMs/designers cannot read diagram code). Convert the Mermaid diagram + the "transition coverage self-check" table of state_machine.md into one plain-language transition table:
+
+| From | Trigger | To | Allowed? |
+|---|---|---|---|
+
+- One row per **legal transition** (one edge of the Mermaid), "Allowed?" = ✅
+- One row per **illegal / unreachable transition**, "To" left as `—`, "Allowed?" = ❌ + a one-line reason (e.g. "cannot go back")
+- If state_machine.md has a "new/modified UI element summary" → merge it as a short paragraph (component name / page it's on), omit the rest of the technical detail
+- **Do not paste the Mermaid code block**; the raw state_machine.md stays in the repo for QA/dev
 
 > Version mode: each Feature ticket goes through Phase 3 separately and creates its own TEST Sub-tasks.
 
@@ -122,6 +157,6 @@ Assignee: {name} | Status: Done
 - `issuetype: Sub-task` (not Sub-task-bug)
 - state_machine.md missing → skip Ticket C; prototype.html missing **or curl credentials missing** → skip the attachment (do not error out, note "not uploaded" in Phase 5)
 - bdd_review.md missing → omit the Review section in Ticket A
-- Description format: separate sections with `----`, keep tables as tables, put Gherkin in a ` ```gherkin ` code block, put other code in a ` ``` ` code block
+- Description format: separate sections with `----`, keep tables as tables; **the Cases ticket ([TEST] Cases) always renders as plain-language acceptance tables, never pastes raw Gherkin** (only the State Machine ticket's Mermaid / other code goes in a code block)
 - Version mode: create a separate set of TEST Sub-tasks for each Feature ticket (do not merge)
 - Do not commit / push

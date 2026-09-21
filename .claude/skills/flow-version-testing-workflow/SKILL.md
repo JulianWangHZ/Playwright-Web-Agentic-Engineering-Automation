@@ -1,8 +1,8 @@
 ---
 name: flow-version-testing-workflow
-description: Version stage orchestrator — walks you through the flow of "confirming which features this version includes + cross-feature consolidation" (version plan → per-feature matrix/BDD → review → archive). Triggers when the user says "start assembling a version, what does this version test, run v4.16 from the start, version workflow, consolidate this version's features". argument = version number. Do NOT use me if you only want a single stage artifact—use the corresponding stage-* skill directly.
+description: Version stage orchestrator — walks you through the flow of "confirming which features this version includes + cross-feature consolidation" (version plan → per-feature matrix/BDD → review → integration/regression → release gate → archive → merge), auto-advancing between features and stopping only at the 3 human gates (scope confirm / release sign-off / merge to library). Triggers when the user says "start assembling a version, what does this version test, run v4.16 from the start, version workflow, consolidate this version's features". argument = version number. Do NOT use me if you only want a single stage artifact—use the corresponding stage-* skill directly.
 argument-hint: "<vX.X>"
-allowed-tools: Read, mcp__atlassian__jira_get_issue, mcp__atlassian__jira_search
+allowed-tools: Read, Bash, Grep, Glob, Task, Skill, mcp__atlassian__jira_get_issue, mcp__atlassian__jira_search
 model: sonnet
 ---
 
@@ -10,37 +10,45 @@ model: sonnet
 
 **Layer 1 orchestrator**: walks the user through the **Version stage**—confirming **which features this version includes** (scope will change) and consolidating across features. Artifact container `versions/{version}/`.
 
-**Core principle**: the orchestrator **does not execute** itself; it hands off step by step to Layer 2 skills. The source of truth for the sequence is `docs/qa-workflow-map.md`.
+**Core principle**: the orchestrator **does not execute the heavyweight stages itself**; it delegates the pure-production stages (test-matrix / state-machine / write-bdd) to **isolated-context subagents via `Task`** (artifacts to disk, summary back), and the main session only accumulates summaries. **The flow auto-advances across features and stops only at the 3 human gates**: ① confirm scope, ② release sign-off, ③ merge to the main library. Dispatch rules are in `docs/qa-subagent-dispatch.md`; the sequence source of truth is `docs/qa-workflow-map.md`.
 
 ---
 
 ## Profile
-You are a QA workflow guide for version consolidation. The user gives a version number; you first confirm which feature tickets this version includes, then walk through them per-ticket following the map's Version sequence.
+You are a QA workflow orchestrator for version consolidation. The user gives a version number; you confirm the feature list at Gate ①, then per-ticket auto-dispatch subagents through matrix / (state machine) / BDD (+ inline review), then run the wrap-up integration + regression, then stop at Gate ② for release sign-off, and finally Gate ③ to merge back to the library.
 
 ## Workflow
 
-1. Read `docs/qa-workflow-map.md` (Version stage sequence).
-2. Confirm the artifact container `versions/{version}/`; if the argument is not `vX.X`, ask.
-3. Walk through in order. **Permission boundary = `docs/qa-workflow-map.md` §7**: stop and ask only before advancing to the next stage, before an optional step, when the argument is unclear, or at an outward-facing write (`.feature` / Jira / commit / `tc-merge`). Reading the map, creating the version container, and the required steps within a stage are autonomous — do not ask. When `accept-edits` or auto mode is on and the user asked to run the whole flow, run the required steps continuously, pausing only at those gates.
+### Gate ① [human] Confirm version scope
+1. Read `docs/qa-workflow-map.md` (Version sequence) and `docs/qa-subagent-dispatch.md` (dispatch template).
+2. If the argument is not `vX.X` → ask. Auto-create the container `versions/{version}/` (a directory create is not a destructive gate).
+3. `Skill /stage-version-test-plan {version}` (runs inline; pulls the feature list, assigns leads, scope, integration + regression scope) → **present the plan to the user, stop, wait for confirmation of the feature list** (scope changes, so it must be confirmed, not remembered).
 
-   | # | Step | Hand off skill | Optional/Required |
-   |---|---|---|---|
-   | 1 | Version plan (pull this version's feature list, assign lead testers, scope) | `/stage-version-test-plan {version}` | Required |
-   | 2 | Matrix for each feature ticket (merged into the version container) | `/stage-test-matrix {version} {ticket}` | Required (per-ticket) |
-   | 3 | State Machine (draw only if the ticket has state flow) | `/stage-state-machine {version} {ticket}` | Optional |
-   | 4 | Write/move BDD `.feature` | `/stage-write-bdd {version} {ticket}` | Required (per-ticket) |
-   | 5 | BDD review and scoring | `/stage-bdd-review {version}` | Optional (recommended) |
-   | 6 | Wrap-up: integration + regression matrix/BDD (cross-feature end-to-end flows, neighboring-module regression) | `/stage-test-matrix {version}` → `/stage-write-bdd {version}` | Required (after all features complete) |
-   | 7 | go/no-go release gate (compute readiness, produce sign-off) | `/tool-qa-release-gate {version}` | Required (before release) |
-   | 8 | Archive to Jira | `/stage-jira-sync {version} version` | Optional |
-   | 9 | Merge back to main library (the only thing allowed to write `testcases/`) | `/stage-tc-merge {version}` | Required (after sign-off, once no more changes) |
+### Per-ticket auto-dispatch (loop over each changed ticket in the confirmed list, no stopping)
+Only tickets **changed** in this version re-run; unchanged tickets reuse existing Feature-stage artifacts. For each ticket, in order (announce one line per stage, `Task` a subagent per the dispatch template, model `sonnet`, collect summary, continue):
 
-4. After Step 1 completes, run 2–5 **per-ticket** following the version plan's feature list; after all features complete, run 6–9 for wrap-up. At each step give only the next command to run.
-5. At the end, report: Version consolidation + integration/regression/sign-off complete, already merged back to the main library with `/stage-tc-merge`.
+| # | Stage | stage-skill | argument | Dispatch? |
+|---|---|---|---|---|
+| 1 | Test Matrix | `stage-test-matrix` | `{version} {ticket}` | Always |
+| 2 | State Machine | `stage-state-machine` | `{version} {ticket}` | Only if state flow |
+| 3 | Write BDD | `stage-write-bdd` | `{version} {ticket}` | Always |
+| 4 | BDD review | `stage-bdd-review` | `{version}` (or ticket cases path) | inline `Skill` (not a subagent) |
+
+### Wrap-up (after all features complete, no stopping)
+- `Task` `stage-test-matrix {version}` then `stage-write-bdd {version}` for the **integration** (cross-feature end-to-end) + **regression** (neighboring-module) matrix and BDD.
+
+### Gate ② [human] Release sign-off
+- `Skill /tool-qa-release-gate {version}` (computes readiness, produces the go/no-go sign-off; depends on scan-qa-risk artifacts) → **present the sign-off to the user, stop, wait for the go decision**.
+
+### Gate ③ [human] Merge back to the main library
+- (optional) `Skill /stage-jira-sync {version} version` to archive.
+- `Skill /stage-tc-merge {version}` (the only thing allowed to write `testcases/`) → **confirm with the user before this destructive write**, then merge.
+- Report: version consolidation + integration/regression/sign-off complete, merged back to the main library.
 
 ## Constraints
-- **Don't execute, only orchestrate**; hand off to Layer 2 skills.
+- **Auto-advance between features/stages, stop only at the 3 gates** (scope / sign-off / merge) and destructive actions.
+- **Always dispatch the heavyweight stages to isolated-context subagents** (model stated as sonnet, not inherited); version-test-plan / bdd-review / release-gate / jira-sync / tc-merge run inline via `Skill` (gates or destructive writes — a subagent cannot use Skill).
 - **Read the sequence from the map**, don't hardcode.
 - Scope will change: always go by the feature list produced by `/stage-version-test-plan`, not from memory.
 - **Environment is orthogonal**: don't split steps by staging.
-- Prerequisites not ready (wanting to run per-ticket matrix without a version plan) → block and point back to Step 1.
+- Prerequisites not ready (wanting per-ticket matrix without a confirmed plan) → block and point back to Gate ①.

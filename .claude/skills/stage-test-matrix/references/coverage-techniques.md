@@ -4,8 +4,7 @@
 > - `test-matrix`: when building the matrix, **apply each item in turn**, upgrading "add/remove per ticket" into "enumerate per technique".
 > - `bdd-review`: when auditing, **check each item in turn** to see whether the matrix missed a technique it should have used (opens the GIGO loop).
 >
-> Adapted from naodeng/awesome-qa-skills' test-case-writing / functional-testing / requirements-analysis,
-> taking only the **functional/business**-related items; non-functional dimensions are in the "cross-cutting pointers" section at the end and do not go into BDD.
+> Take only the **functional/business**-related techniques; non-functional dimensions are in the "cross-cutting pointers" section at the end and do not go into BDD.
 
 ---
 

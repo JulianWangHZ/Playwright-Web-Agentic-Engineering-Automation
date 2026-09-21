@@ -1,6 +1,6 @@
 ---
 name: auto-responsive-layout-check
-description: YouTube responsive layout scanning techniques — detect horizontal overflow, text truncation, element overlap, undersized touch targets, image distortion, and breakpoint-boundary bugs across multiple viewports. Mobile-first web focused. Triggers when the user mentions "responsive, responsive design, RWD, breakpoint, mobile view, overflow, horizontal scroll, broken layout, layout shift, touch target, viewport, font-size overflow" and needs to implement automation on YouTube. Adapted from Pramod/responsive-layout-breaker, aligned with the layering and red lines in youtube-automation.md.
+description: YouTube responsive layout scanning techniques — detect horizontal overflow, text truncation, element overlap, undersized touch targets, image distortion, and breakpoint-boundary bugs across multiple viewports. Mobile-first web focused. Triggers when the user mentions "responsive, responsive design, RWD, breakpoint, mobile view, overflow, horizontal scroll, broken layout, layout shift, touch target, viewport, font-size overflow" and needs to implement automation on YouTube.
 argument-hint: "<page path list | empty=scan main consumer pages>"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet

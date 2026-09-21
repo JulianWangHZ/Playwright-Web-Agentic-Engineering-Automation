@@ -1,6 +1,6 @@
 ---
 name: auto-console-error-collector
-description: Console error interception techniques during YouTube testing — use a Playwright fixture to collect console errors/warnings, uncaught exceptions, and unhandled promise rejections, with classification + severity grading + a known-errors allowlist, giving every E2E an extra layer of JS error protection for free. Triggers when the user mentions "console error, JS error, uncaught exception, uncaught, unhandled rejection, page error, frontend error, capture console, error interception, error monitoring" and needs to implement it on YouTube. Adapted from Pramod/console-error-hunter, aligned with the layering and red lines in youtube-automation.md.
+description: Console error interception techniques during YouTube testing — use a Playwright fixture to collect console errors/warnings, uncaught exceptions, and unhandled promise rejections, with classification + severity grading + a known-errors allowlist, giving every E2E an extra layer of JS error protection for free. Triggers when the user mentions "console error, JS error, uncaught exception, uncaught, unhandled rejection, page error, frontend error, capture console, error interception, error monitoring" and needs to implement it on YouTube.
 argument-hint: "<empty=create/review console fixture>"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
