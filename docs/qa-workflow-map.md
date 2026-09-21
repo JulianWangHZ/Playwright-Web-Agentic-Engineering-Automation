@@ -12,6 +12,8 @@
 | **Layer 1 orchestration** | `/flow-qa-router` (dispatcher) · `/flow-feature-testing-workflow` · `/flow-version-testing-workflow` | High-level entry: pick a skill, or walk you through a whole stage |
 | **Layer 2 execution** | test-matrix / state-machine / write-bdd / ui-prototype / bdd-review / version-test-plan / tc-merge / jira-sync … (see §4 below) | The individual skills that do the actual work |
 
+> **The two flow orchestrators delegate the heavyweight, pure-production stages (test-matrix / state-machine / write-bdd / ui-prototype) to isolated-context subagents via `Task`** (artifacts to disk, only a summary returned) — keeping Figma / repo / Grep process tokens out of the main context. They auto-advance and stop only at the human gates: **Feature = 1 gate** (BDD review), **Version = 3 gates** (scope confirm / release sign-off / merge to library). bdd-review / jira-sync / release-gate / tc-merge run inline via the `Skill` tool, not through a subagent. Dispatch rules → `docs/qa-subagent-dispatch.md`.
+
 ## 1. Intent Stage Model (sliced by "work intent", not by environment)
 
 **Core**: the same feature is tested in dev and also in staging — so **you cannot slice stages by environment**. Slice by work intent; **environment (dev/staging/pre-release) is an orthogonal attribute** (which environment a given test ran in is an annotation, not a stage).
@@ -44,7 +46,7 @@ Skills auto-detect the stage from the **argument format**, so you don't need to 
 
 > **The Version "per Feature" is not always re-run**: only tickets **changed** in this version re-run the corresponding stages (matrix / BDD…) according to the change scope; unchanged tickets reuse the existing Feature-stage artifacts.
 > Do not skip the order: drawing the state machine before validating the matrix easily skews scope; writing cases before drawing the state machine easily misses boundaries.
-> Want to be walked through step by step → use that stage's orchestrator directly (`/flow-feature-testing-workflow`, `/flow-version-testing-workflow`).
+> Want the whole stage driven for you → use that stage's orchestrator directly (`/flow-feature-testing-workflow`, `/flow-version-testing-workflow`); it auto-advances and stops only at the human gate(s).
 
 ## 4. Full Skill Index (Layer 2 execution skills)
 
@@ -105,7 +107,7 @@ The following slugs share names or overlap conceptually between the **global/plu
 ## 6. Not Sure Which to Use?
 
 - Just want to know **which skill to use** → `/flow-qa-router <describe scenario>` (picks 1 primary skill and hands off).
-- Want to **be walked through a whole stage step by step** → `/flow-feature-testing-workflow`, `/flow-version-testing-workflow`.
+- Want the **whole stage driven for you** (auto-advances, stops only at the human gate(s)) → `/flow-feature-testing-workflow`, `/flow-version-testing-workflow`.
 
 ## 7. Permission / Autonomy Boundary (single source)
 

@@ -1,8 +1,8 @@
 ---
 name: flow-feature-testing-workflow
-description: Feature stage orchestrator — walks you through the complete test design flow for a "single feature" (Test Matrix → State Machine → BDD → prototype → review → archive). Triggers when the user says "start testing this feature ticket, run the full feature flow, how to test one ticket, TICKET-xxx end to end, feature workflow". argument = feature ticket number. Do NOT use me if you only want a single stage artifact (matrix / state machine / BDD / prototype)—use the corresponding stage-* skill directly.
+description: Feature stage orchestrator — walks you through the complete test design flow for a "single feature" (Test Matrix → State Machine → BDD → prototype → review → archive), auto-advancing and stopping only once at BDD review. Triggers when the user says "start testing this feature ticket, run the full feature flow, how to test one ticket, TICKET-xxx end to end, feature workflow". argument = feature ticket number. Do NOT use me if you only want a single stage artifact (matrix / state machine / BDD / prototype)—use the corresponding stage-* skill directly.
 argument-hint: "<TICKET-xxx>"
-allowed-tools: Read, Skill, mcp__atlassian__jira_get_issue
+allowed-tools: Read, Bash, Grep, Glob, Task, Skill, mcp__atlassian__jira_get_issue
 model: sonnet
 ---
 
@@ -10,36 +10,46 @@ model: sonnet
 
 **Layer 1 orchestrator**: walks the user through the **Feature stage** (design and test a single feature). Testing the same feature in dev or staging both belong to this stage—**the environment is just an attribute, not a stage**.
 
-**Core principle**: the orchestrator **runs the Feature stage end to end autonomously** — it invokes each Layer 2 stage skill in order (via the Skill tool) and advances automatically, **without asking whether an optional step is needed and without pausing between stages**. It still **delegates the actual work** to Layer 2 skills (does not re-implement matrix / BDD logic itself). The **only** mandatory stop is the `.feature` write confirmation in step 3. The stage sequence source of truth is `docs/qa-workflow-map.md` (not hardcoded in this file).
-
-> **Autonomy override (this flow only)**: this flow deliberately overrides the `docs/qa-workflow-map.md` §7 gates for "advancing to the next stage" and "whether to do an optional step" — here both are autonomous. The **only** gates kept are: unclear argument (ask) and the `.feature` write confirmation (ask). Archiving to Jira (step 6) runs automatically. §7 is unchanged and still governs the version flow.
+**Core principle**: the orchestrator **does not execute each step itself**; it delegates the heavyweight, pure-production stages to **isolated-context subagents via `Task`** (artifacts written to disk, only a summary returned), and the main session only accumulates summaries — keeping Figma / repo / Grep process tokens from blowing up the context. **The whole flow auto-advances and stops only once, at the BDD review report**, for the user to confirm. Dispatch rules are in `docs/qa-subagent-dispatch.md`; the stage sequence source of truth is `docs/qa-workflow-map.md` (not hardcoded here).
 
 ---
 
 ## Profile
-You are a QA workflow guide for new-feature test design. The user gives a feature ticket, and following the map's Feature sequence, you walk them through it step by step, handing off to the corresponding skill at each step.
+You are a QA workflow orchestrator for new-feature test design. The user gives a feature ticket; you collect the up-front decisions in one pass, then auto-dispatch subagents through each stage, and finally present the BDD review result for the user to confirm.
 
 ## Workflow
 
-1. Read `docs/qa-workflow-map.md` (Feature stage sequence = the single source of truth).
-2. Confirm the artifact directory `features/{ticket}/`; if the argument is not `TICKET-xxx`, ask.
-3. Run steps 1–6 in order **autonomously and continuously** — invoke each stage skill via the Skill tool and advance automatically. Do **not** print a command for the user to run, do **not** ask whether an optional step is needed, and do **not** pause between stages. For optional steps, **you decide** from the ticket whether the condition applies (state flow? new UI?) and run or skip accordingly — silently. The **only** stops are: (a) the argument is not `TICKET-xxx` → ask; (b) before writing any `.feature` in step 3 → ask for confirmation (honours the global "confirm before editing `.feature`" rule).
+### 1. Up-front collection (done in one pass, stops only at a destructive action)
+- Read `docs/qa-workflow-map.md` (Feature sequence = the single source of truth) and `docs/qa-subagent-dispatch.md` (dispatch template).
+- If the argument is not `TICKET-xxx` → ask.
+- `jira_get_issue` to read the ticket + `git status` / `git branch --show-current` → **the main orchestrator decides for itself**:
+  - The feature area / page under test (per qa-workflow-map §7).
+  - Whether the state machine / prototype **is needed** (per the "auto-deciding optional steps" table in subagent-dispatch; when unsure, lean toward doing it).
+- **Destructive gate (the only mid-flow up-front stop)**: dirty branch, or `features/{ticket}/` already exists → stop once to ask (switch branch / reuse / overwrite); otherwise auto-create `feature/{ticket}` (or piggyback the version branch) and `features/{ticket}/`.
 
-   | # | Step | Invoke skill | Auto-run policy |
-   |---|---|---|---|
-   | 1 | Test Matrix (exhaustive coverage techniques) | `/stage-test-matrix {ticket}` | **Always** run |
-   | 2 | State Machine (draw only if there is state flow) | `/stage-state-machine {ticket}` | **Auto-decide**: run if the ticket has state flow, else skip — don't ask |
-   | 3 | Write BDD `.feature` | `/stage-write-bdd {ticket}` | **Always** run — **confirm before writing `.feature`** |
-   | 4 | Interactive prototype (only for new UI / alignment) | `/stage-ui-prototype {ticket}` | **Auto-decide**: run if new UI / alignment needed, else skip — don't ask |
-   | 5 | BDD review and scoring | `/stage-bdd-review {ticket}` | **Always** run |
-   | 6 | Archive to Jira | `/stage-jira-sync {ticket}` | **Always** run (auto) |
+### 2. Auto-dispatch sequence (dispatch a subagent per stage via `Task`, no stopping)
+Per stage: announce one line (`▶ Test Matrix`) → `Task` a subagent (subagent_type `general-purpose`, **model `sonnet`**, prompt using the subagent-dispatch template) → collect the summary → **continue straight to the next step**.
 
-4. Execute each step yourself by invoking the stage skill; between steps just report what ran and move on — no command prompts, no optional-step questions.
-5. At the end, report: Feature stage complete, the next step can proceed to Version (`/flow-version-testing-workflow {version}`).
+| # | Stage | stage-skill | Dispatch? |
+|---|---|---|---|
+| 1 | Test Matrix | `stage-test-matrix` | Always |
+| 2 | State Machine | `stage-state-machine` | Only if judged needed |
+| 3 | Write BDD | `stage-write-bdd` | Always |
+| 4 | Interactive prototype | `stage-ui-prototype` | Only if judged needed |
+
+If a subagent's summary reports a blocker → announce one line, stop and explain (don't force the next step).
+
+### 3. [The only human gate] BDD review
+Invoke `/stage-bdd-review {ticket}` via `Skill` (runs inline; it carries its own independent review subagent + a <85 auto-fix loop, uninterrupted). Once you have the final scoring report → **present it to the user, stop, and wait for confirmation**.
+
+### 4. Wrap-up after confirmation
+- User confirms → (optional) `Skill /stage-jira-sync {ticket}` to archive.
+- Report: Feature stage complete; the next step can proceed to Version (`/flow-version-testing-workflow {version}`).
 
 ## Constraints
-- **Delegate, don't re-implement**: run each step by invoking the Layer 2 stage skill — don't hand-build matrices / write BDD with your own logic. "Autonomous" means you invoke and advance without asking, **not** that you bypass the stage skills.
+- **Auto-advance, stop only at BDD review and destructive actions**: no more "shall I continue?" at every step.
+- **Always dispatch heavyweight stages to isolated-context subagents** (model stated as sonnet, not inherited); bdd-review / jira-sync run inline via `Skill` (they carry their own subagent or must be presented).
 - **Read the sequence from the map**, don't hardcode (prevents drift).
 - **Order cannot be skipped**: drawing the state machine before the matrix is verified easily skews scope; writing cases before the state machine is drawn easily misses edge cases.
 - **Environment is orthogonal**: don't split steps by dev/staging; which environment testing runs in is an attribute of the test record.
-- Prerequisites not ready (e.g. wanting to run state-machine without a test_matrix) → block and point back to the previous step.
+- Prerequisites not ready (a subagent reports a missing test_matrix, etc.) → block and point back to the previous step, don't force through.

@@ -83,7 +83,7 @@
       <div class="n">Layer 1 · Orchestration</div>
       <h3>Guides you / picks for you</h3>
       <p><code>/flow-qa-router</code> — when you don't know which one to use, describe your scenario and it picks the skill.</p>
-      <p><code>/flow-feature-testing-workflow</code> and <code>/flow-version-testing-workflow</code> walk you step by step through an entire stage.</p>
+      <p><code>/flow-feature-testing-workflow</code> and <code>/flow-version-testing-workflow</code> drive an entire stage end to end — dispatching the heavyweight stages to isolated-context subagents, auto-advancing, and stopping only at the human gate(s).</p>
     </div>
     <div class="step">
       <div class="n">Layer 2 · Execution</div>
@@ -142,7 +142,7 @@
       <p class="meta">argument <code>TICKET-xxx</code></p>
     </div>
   </div>
-  <div class="note">Want to be walked through step by step without memorizing the order → just run <b><code>/flow-feature-testing-workflow TICKET-xxx</code></b>.</div>
+  <div class="note">Want the whole stage driven for you without memorizing the order → just run <b><code>/flow-feature-testing-workflow TICKET-xxx</code></b> (auto-advances, stops only at the BDD review gate).</div>
 
   <h2>Version Stage <span class="tag">which features the version includes → aggregate → release gate</span></h2>
   <div class="row">
@@ -179,7 +179,7 @@
       <p class="meta">argument <code>vX.X</code> · prerequisite: signed off, no further changes</p>
     </div>
   </div>
-  <div class="note">Want to be walked through step by step → <b><code>/flow-version-testing-workflow v4.16</code></b>.</div>
+  <div class="note">Want the whole stage driven for you → <b><code>/flow-version-testing-workflow v4.16</code></b> (auto-advances, stops only at the 3 gates: scope confirm / release sign-off / merge to library).</div>
 
   <h2>Persistent Tools <span class="tag">not stage-bound · available anytime</span></h2>
   <div class="grid2">
