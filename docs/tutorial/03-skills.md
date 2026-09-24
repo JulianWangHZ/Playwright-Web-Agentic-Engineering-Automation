@@ -56,6 +56,7 @@ For the stage → skill single source of truth see [docs/qa-workflow-map.md](../
 | `/stage-bdd-review` | Independent subagent reviews BDD, scores /100 |
 | `/stage-jira-sync` | Sync test artifacts to a Jira TEST Sub-task |
 | `/tool-open-qa-bug` | RIDER-format bug report |
+| `/tool-exploratory-testing` | Blind-spot driven exploratory session after scripted tests |
 | `/tool-scan-qa-risk` | Risk matrix analysis |
 | `/auto-code-review` | PR code review, 100-point scale |
 | `/auto-create-pull-request` | Generate a PR description and create the PR |
@@ -202,6 +203,17 @@ Produces a **RIDER-format bug report**, including HTML that can be pasted direct
 
 - **Parameters**: none — describe the bug in natural language
 - **Format**: current problem → impact scope → attachments → reproduction steps → expected result → test environment → additional information
+
+---
+
+### `/tool-exploratory-testing`
+
+**Blind-spot driven exploratory session** after scripted tests are done. Reads the matrix / BDD / existing bugs, derives what nothing covers, and explores youtube.com in a real browser to find bugs the scripts missed.
+
+- **Parameters**: `<TICKET-xxx>` or `<vX.X TICKET-xxx>`, optional `--focus <area>` / `--quick` (15 min instead of 45)
+- **Flow**: load coverage → charter (the only stop) → blind-spot map → dig in → report with candidate bugs
+- **Output**: `features/{ticket}/exploratory/{timestamp}/` — charter, session log, report, screenshots
+- **Requires**: `playwright` MCP (`.mcp.json`); filing a bug only happens for findings you pick, via `/tool-open-qa-bug`
 
 ---
 
