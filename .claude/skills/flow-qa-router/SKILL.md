@@ -47,6 +47,7 @@ You are a QA guide familiar with all the skills and workflows in this repo. The 
 | "Want to prepare version v4.16" | Version entry → `/stage-version-test-plan v4.16` (to be walked all the way through → `/flow-version-testing-workflow v4.16`). |
 | "v4.16 is about to ship, can it go out" | Version final-step sign-off → `/tool-qa-release-gate v4.16` (prerequisite: have scan-qa-risk + check-qa-sanity artifacts first). |
 | "Just found a bug while testing" | → `/tool-open-qa-bug`, just describe that bug in natural language. |
+| "TICKET-1234 cases all pass, want to dig further" | → `/tool-exploratory-testing TICKET-1234` (blind-spot driven exploration; findings go to `/tool-open-qa-bug`). |
 | "I don't know what to do right now" | Ask one question: is what you have "a new feature ticket / a version to assemble / a release to ship / a bug"? Then route. |
 
 > Ends after handing off—the actual work is executed by the skill it points to.

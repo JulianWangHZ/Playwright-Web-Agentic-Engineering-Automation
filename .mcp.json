@@ -10,6 +10,10 @@
         "-c",
         "cd youtube && exec node_modules/.bin/playwright run-test-mcp-server -c playwright.config.ts"
       ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
     }
   }
 }

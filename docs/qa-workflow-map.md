@@ -74,6 +74,7 @@ Skills auto-detect the stage from the **argument format**, so you don't need to 
 |---|---|---|
 | `/tool-root-cause-analysis` | CS reported it, the ticket is already open, and you need to reproduce + confirm whether it's a bug (reproduce → confirm → privately judge frontend vs backend; by default no new ticket, root cause not written into the ticket) | `<symptom or existing TICKET-xxx>` |
 | `/tool-open-qa-bug` | Caught a bug and need to open a report | none (natural language) |
+| `/tool-exploratory-testing` | Scripted tests are done; hunt the blind spots for bugs nobody thought of (charter → explore → candidate bug list; asks before filing) | `<TICKET-xxx｜vX.X TICKET-xxx> [--quick]` |
 | `/tool-scan-qa-risk` | Rate risk priority during sprint planning | `<sprint name>` or `<TICKET-xxx …>` |
 | `/tool-qa-release-gate` | Version wrap-up / pre-release go/no-go release gate | `<version vX.X>` (depends on scan-qa-risk) |
 
