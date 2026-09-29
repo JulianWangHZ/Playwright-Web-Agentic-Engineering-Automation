@@ -1,6 +1,6 @@
 ---
 name: qa-context
-description: Stage 1 of the qa-ticket pipeline — collect the facts for one ticket (Jira ticket and sub-tasks, design links, live target-site behavior, optional product repo, existing main-library features) into runs/{ticket}/context.md. Facts only; no risk judgment, no case design. Usually dispatched by /qa-ticket.
+description: Stage 1 of the qa-ticket pipeline — collect the facts for one ticket (Jira ticket and sub-tasks, design links, live target-site behavior, optional product repo, existing main-library features) into runs/{ticket}/context.md. Facts only; no risk judgment, no case design. Usually loaded by /qa-ticket in the main session.
 argument-hint: "<TICKET-xxx>"
 allowed-tools: Read, Write, Bash, Grep, Glob, mcp__atlassian__jira_get_issue, mcp__atlassian__jira_search, mcp__atlassian__jira_get_issue_development_info, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_take_screenshot
 ---

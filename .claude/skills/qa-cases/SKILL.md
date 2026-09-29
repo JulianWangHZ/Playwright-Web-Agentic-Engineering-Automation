@@ -74,7 +74,7 @@ Only for new pages / complex UI flows; spec and template in `references/prototyp
 
 ## 6. Review
 
-Per `references/review-rubric.md`: dispatch an **independent** subagent to score (dispatched by /qa-ticket when called from it; by you when this skill is used directly). <85 → verify → fix → brand-new reviewer, at most 4 rounds. Write `bdd_review.md` once at the end.
+Per `references/review-rubric.md`: design and fixes stay in the main session; **scoring goes to an independent subagent** (`general-purpose`, model sonnet, wait in the foreground). Print `▶ [3/8 Review] dispatching independent reviewer, ~2 min` first. <85 → verify → fix → brand-new reviewer, at most 4 rounds. Write `bdd_review.md` once at the end.
 
 ## 7. Review page `review.html`
 

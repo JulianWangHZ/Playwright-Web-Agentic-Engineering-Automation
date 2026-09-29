@@ -33,7 +33,7 @@ Environment (dev / staging / prod) is an annotation in `progress.md`, not a stag
 One progress line at the start and end of each stage:
 
 ```
-▶ [3/8 Case design] dispatching design subagent, ~3–5 min
+▶ [3/8 Case design] starting design (2 features), ~3–5 min
 ✓ [3/8 Case design] 14 scenarios. Next: review
 ```
 
@@ -75,7 +75,7 @@ It stops again only when truly stuck: Jira can't read the ticket, browser toolin
    | `# remove from main library on merge` | same-name Scenario deleted |
 
 5. **scripts** (`qa-scripts`) — the planner walks each `@auto` scenario in a real browser and writes an evidence map with a feasibility verdict (`AUTOMATABLE` / `NEEDS_URL_SETUP` / `NOT_FEASIBLE` / `TC_STALE`); the generator writes code where every selector traces back to the evidence map.
-6. **run** (`qa-run`) — runs the subset, audits assertions against the evidence map, breaks one key assertion per scenario to prove it turns red, and dispatches the healer for remaining failures (at most 2 rounds per test).
+6. **run** (`qa-run`) — runs the subset, audits assertions against the evidence map, breaks one key assertion per scenario to prove it turns red, and fixes remaining failures in the main session (at most 2 rounds per test).
 7. **review** (`auto-code-review`) — only when stages 5–6 changed automation code.
 8. **close** — the Close section of `progress.md`: verdict ✅ / ⚠️ / ❌, numbers, HIGH-risk coverage, **manual checks** (scenarios automation can't cover), candidate bugs.
 

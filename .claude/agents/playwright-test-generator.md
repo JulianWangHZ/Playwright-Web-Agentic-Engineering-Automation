@@ -1,6 +1,6 @@
 ---
 name: playwright-test-generator
-description: Based on the implementation evidence map produced by the planner, adds automation implementation for existing YouTube @auto scenarios — hand-writing step definitions + Page Objects + components + fixture registration, following the youtube-automation.md layering and naming. Every selector must trace back to the evidence map and may not be invented. Dispatched by the qa-scripts skill.
+description: Based on the implementation evidence map produced by the planner, adds automation implementation for existing YouTube @auto scenarios — hand-writing step definitions + Page Objects + components + fixture registration, following the youtube-automation.md layering and naming. Every selector must trace back to the evidence map and may not be invented. Run by qa-scripts in the main session, or dispatched per feature when there are ≥ 2 features.
 tools: Read, Grep, Glob, Bash, Edit, Write, mcp__playwright-test__generator_setup_page, mcp__playwright-test__generator_read_log, mcp__playwright-test__browser_snapshot, mcp__playwright-test__browser_navigate, mcp__playwright-test__browser_click, mcp__playwright-test__browser_type, mcp__playwright-test__browser_fill_form, mcp__playwright-test__browser_evaluate, mcp__playwright-test__browser_generate_locator, mcp__playwright-test__browser_wait_for
 model: sonnet
 color: blue
