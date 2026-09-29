@@ -1,7 +1,7 @@
 ---
 name: tool-exploratory-testing
 description: Exploratory testing session — after scripted tests (matrix / BDD / automation) are done, derive blind spots from what is already covered, then use a charter, risk-based time allocation and three question sets ("where to test / how to test / how to tell it's wrong") to explore YouTube in a real browser, surface bugs the scripts never thought of, and produce a session report with candidate bugs. Triggers when the user mentions "exploratory testing, exploratory, free testing, dig deeper after testing, find bugs we didn't think of, blind spots, one more exploration round, bug hunt, poke around". ⛔ To reproduce a known symptom use tool-root-cause-analysis; to file a confirmed bug use tool-open-qa-bug.
-argument-hint: "<TICKET-xxx | vX.X TICKET-xxx> [--focus <area>] [--quick]"
+argument-hint: "<TICKET-xxx> [--focus <area>] [--quick]"
 allowed-tools: Read, Write, Bash, Grep, Glob, Skill, mcp__atlassian__jira_get_issue, mcp__atlassian__jira_search, mcp__playwright__*
 model: sonnet
 ---
@@ -20,8 +20,7 @@ Method details (where to test, how to test, how to tell it's wrong, attack lists
 
 | argument | Output directory |
 |---|---|
-| `TICKET-xxx` | `features/{ticket}/exploratory/{YYYY-MM-DD-HHmm}/` |
-| `vX.X TICKET-xxx` | `versions/{version}/exploratory/{ticket}-{YYYY-MM-DD-HHmm}/` |
+| `TICKET-xxx` | `runs/{ticket}/exploratory/{YYYY-MM-DD-HHmm}/` |
 
 - Target is `https://www.youtube.com` in the guest (logged-out) state. It is production: **read-only** — no sign-in, no uploads, no comments, no reports/flags on real content.
 - `--focus`: limit to one area (e.g. "search filters", "watch page seek").
@@ -34,8 +33,8 @@ Method details (where to test, how to test, how to tell it's wrong, attack lists
 Read in order (skip what's missing, never block):
 
 1. `jira_get_issue({ticket})` — summary / description / AC / design links.
-2. `test_matrix.md`, `state_machine.md` (under `features/` or `versions/`).
-3. This ticket's `.feature` (first `versions/{version}/testcases/{ticket}/`, then the main library `testcases/`).
+2. `test_matrix.md`, `state_machine.md`, `risks.md`, `progress.md` (incl. the Close section) under `runs/{ticket}/`.
+3. This ticket's `.feature` (first `runs/{ticket}/cases/`, then the main library `testcases/`).
 4. Existing bugs: `jira_search` for Bug subtasks under the ticket (summary + status).
 
 Produce a **coverage list**: paths / state transitions / boundary values already covered by scenarios, plus known bugs. **Don't re-run these** during exploration unless probing an adjacent area.
@@ -124,7 +123,7 @@ Which ones to file? Reply F-01,F-03 → each goes through /tool-open-qa-bug
 ```
 
 4. Only findings the user names are handed to `/tool-open-qa-bug` (with reproduction steps, expected, actual, environment, screenshot path). The rest stay in the report.
-5. Findings that could become regression scenarios are only listed as suggestions; whether to add them via `/stage-write-bdd` is the user's call.
+5. Findings that could become regression scenarios are only listed as suggestions; whether to add them via `/qa-cases` is the user's call.
 
 ---
 

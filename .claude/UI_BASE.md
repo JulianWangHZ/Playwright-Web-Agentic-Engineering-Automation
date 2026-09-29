@@ -1,6 +1,6 @@
 # Apple Store Online
 
-All HTML output (pipeline, skills-guide, prototype, plan, report, etc.) must use this as the visual foundation to keep the UI consistent across the repo.
+HTML output such as prototypes must use this as the visual foundation. `pipeline.html` and the review page instead follow `.claude/skills/qa-cases/references/review-template.html`.
 
 ## Mission
 Create implementation-ready, token-driven UI guidance for Apple Store Online that is optimized for consistency, accessibility, and fast delivery across e-commerce storefront.

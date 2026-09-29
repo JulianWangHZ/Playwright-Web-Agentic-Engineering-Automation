@@ -94,7 +94,7 @@ Try these in order; if you can solve it earlier, don't go further:
    "Does this step violate the declarative principle? [paste code]"
    ```
 
-6. **Playwright MCP**: if a Playwright MCP server is configured, Claude Code can directly control the browser to screenshot and read the DOM, so you don't have to manually open a browser to inspect selectors; to add automation implementation for an existing `@auto` scenario, pair it with the `/auto-playwright-agentic-automation-workflow` skill, letting the planner agent automatically run live to produce an evidence map and the generator write the implementation from it
+6. **Playwright MCP**: if a Playwright MCP server is configured, Claude Code can directly control the browser to screenshot and read the DOM, so you don't have to manually open a browser to inspect selectors; to add automation implementation for an existing `@auto` scenario, pair it with the `/qa-scripts` skill, letting the planner agent automatically run live to produce an evidence map and the generator write the implementation from it
 7. **Check common issues**: [Getting Started — Common issues](getting-started.md#common-issues)
 8. **Ask a QA colleague**
 

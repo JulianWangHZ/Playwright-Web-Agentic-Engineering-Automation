@@ -8,13 +8,13 @@ base branch: `{BASE}`
 ## Step A: Run deterministic checks first (execute on the spot with Bash; any FAIL → final verdict is always BLOCK)
 
 **A-1 Cross-skill dead references (run for every PR)**
-Scan the **added lines** of changed `.md` files for skill references (`/stage-*`, `/flow-*`, `/tool-*`, `/auto-*`) and confirm each has a corresponding `.claude/skills/{name}/` directory. **Two guards against false positives**: exclude "mid-path" matches (the preceding character is a path character) and "derived artifacts prefixed with an existing skill name" (such as `signoff/tool-qa-release-gate-v1`):
+Scan the **added lines** of changed `.md` files for skill references (`/qa-*`, `/tool-*`, `/auto-*`) and confirm each has a corresponding `.claude/skills/{name}/` directory. **Two guards against false positives**: exclude "mid-path" matches (the preceding character is a path character) and "derived artifacts prefixed with an existing skill name" (such as `signoff/tool-qa-release-gate-v1`):
 
 ```bash
 { git diff "{BASE}"...HEAD -- '*.md' | grep '^+'; \
   git ls-files --others --exclude-standard -- '*.md' | while read -r f; do sed 's/^/+/' "$f"; done; } \
-  | grep -oE '(^|[^A-Za-z0-9/_.-])/(stage|flow|tool|auto)-[a-z0-9-]+' \
-  | grep -oE '/(stage|flow|tool|auto)-[a-z0-9-]+' | sed 's#^/##' | sort -u \
+  | grep -oE '(^|[^A-Za-z0-9/_.-])/(qa|tool|auto)-[a-z0-9-]+' \
+  | grep -oE '/(qa|tool|auto)-[a-z0-9-]+' | sed 's#^/##' | sort -u \
   | while read -r name; do
       [ -d ".claude/skills/$name" ] && continue
       derived=0
@@ -52,7 +52,7 @@ Put a summary of the results into the "Deterministic checks" section of the repo
    Do destructive operations (git push, gh pr create, writing to testcases/) have clear guardrails? Are there any hardcoded secrets?
 
 4. **Integration** (20 points)
-   Do all cross-skill references point to existing skills (see A-1)? Are the output paths (versions/, features/, testcases/) correct?
+   Do all cross-skill references point to existing skills (see A-1)? Are the output paths (runs/, testcases/) correct?
 
 5. **Readability and maintainability** (20 points)
    Are the instructions clear? Are the steps followable? Are the examples accurate?
@@ -69,6 +69,8 @@ Put a summary of the results into the "Deterministic checks" section of the repo
 | < 60   | 🔴 Poor, Critical issues must be fixed first | BLOCK |
 
 > **Single veto**: if any deterministic check in Step A FAILs, or a Critical issue appears (missing security guardrail, cross-skill dead reference, destructive operation without protection) → always `BLOCK`, regardless of total score.
+>
+> **The total must equal the sum of the five dimension scores**, and the rating is looked up from that total. A veto only changes the verdict; never lower the total or rating to match a BLOCK — note "veto: {reason}" after the total instead.
 
 ---
 

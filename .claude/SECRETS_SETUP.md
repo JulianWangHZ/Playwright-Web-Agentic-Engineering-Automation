@@ -1,6 +1,6 @@
 # Secrets Setup Guide
 
-`secrets.env` stores the Jira REST API credentials used by the `jira-sync` skill to upload attachments (`prototype.html`).  
+`secrets.env` stores the Jira REST API credentials used by `/tool-jira-sync` to upload attachments (`review.html`) and by the Jira MCP (`uvx mcp-atlassian`) to authenticate.  
 MCP does not support attachment uploads, so Claude runs curl + Basic Auth to call the Jira REST API instead.
 
 ---
@@ -26,9 +26,14 @@ cp .claude/secrets.template.env .claude/secrets.env
 Open `.claude/secrets.env` and replace the placeholders with your details:
 
 ```env
+# Jira MCP (without these the MCP starts but exposes 0 tools)
+JIRA_URL=https://your-workspace.atlassian.net
+JIRA_USERNAME=your-email@example.com
+JIRA_API_TOKEN=paste the token you just copied
+
+# /tool-jira-sync attachment upload (same account)
 JIRA_USER=your-email@example.com
 JIRA_BASE_URL=https://your-workspace.atlassian.net
-JIRA_API_TOKEN=paste the token you just copied
 ```
 
 ---

@@ -18,15 +18,15 @@ feature file (scenario) → step definitions (bridge) → Page Object (UI operat
 
 > [!IMPORTANT]
 > **feature files are not written in this repo.**
-> BDD Scenarios are authored by QA in the QA workflow, and after validation are merged into the main library `testcases/`.
+> BDD Scenarios are produced by the `/qa-ticket` pipeline and, after human sign-off, merged into the main library `testcases/` by `qa-merge`.
 > `youtube/` is only responsible for implementing step definitions and Page Objects.
 
 **The flow for adding an automated test in youtube:**
 
 Prerequisite: the corresponding Scenario has been merged into the main library `testcases/` (automation only reads the main library), and it is already tagged `@auto` (see "Automation scope: `@auto`" below).
 
-**Recommended main path: orchestrate with the `/auto-playwright-agentic-automation-workflow` skill**—planner runs live to produce the evidence map → feasibility gate →
-generator writes step + POM from the evidence map → verify → (only if it fails) healer. For the full flow, the three agents, and the evidence map format, see
+**Recommended main path: stages 5–6 of `/qa-ticket` (or `/qa-scripts` on its own)**—planner runs live to produce the evidence map → feasibility verdict →
+generator writes step + POM from the evidence map → `qa-run` verifies → (only if it fails) healer. For the full flow, the three agents, and the evidence map format, see
 **[Agentic Automation Flow](agentic-automation.md)**.
 
 **The rest of this doc covers the manual path** (what you do yourself when not using the skill, which is also what the generator above actually does)—how to write each layer, naming,
@@ -125,7 +125,7 @@ async assertFilterSectionVisible(name: string): Promise<void> {
 **Principle: selectors always come from running the real DOM live.** YouTube is an external site with no source code to inspect, so selectors can only be extracted from the actual page.
 Before implementing a step / POM for the first time, walk through the flow in the browser once following the scenario.
 
-> On the `/auto-playwright-agentic-automation-workflow` main path, this live exploration is done automatically by the `playwright-test-planner` agent
+> On the `/qa-scripts` main path, this live exploration is done automatically by the `playwright-test-planner` agent
 > via Playwright MCP and captured into an evidence map (`evidence/{path}.md`); the generator implements directly from the
 > locators in the evidence map. The playwright-cli below is a **manual fallback**—use it only when you are not using the skill and exploring yourself.
 
@@ -286,7 +286,7 @@ And I wait for the filter panel to appear
 
 ## Tag usage rules
 
-feature file tag rules are owned by the QA workflow (page tags, test-level tags, scenario tags). What the automation side needs to know are the **workflow key tags**:
+feature file tag rules are defined in `.claude/rules/gherkin.md` (page tags, test-level tags, scenario tags). What the automation side needs to know are the **workflow key tags**:
 
 | Tag           | Workflow meaning                                                          |
 | ------------- | ------------------------------------------------------------------------ |

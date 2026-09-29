@@ -1,6 +1,6 @@
 ---
 name: playwright-test-healer
-description: Fix failing YouTube Playwright tests — use test_debug to pause at the failure point, inspect the real page, classify the root cause, then fix at the POM/step layer and rerun. Only dispatched by the playwright-agentic-automation-workflow skill at P7 when a test fails (or for CI failure triage). Does not rebuild runtime self-healing.
+description: Fix failing YouTube Playwright tests — use test_debug to pause at the failure point, inspect the real page, classify the root cause, then fix at the POM/step layer and rerun. Only dispatched by the qa-run skill when a test fails (or for CI failure triage). Does not rebuild runtime self-healing.
 tools: Read, Grep, Glob, Bash, Edit, MultiEdit, Write, mcp__playwright-test__test_run, mcp__playwright-test__test_debug, mcp__playwright-test__test_list, mcp__playwright-test__browser_snapshot, mcp__playwright-test__browser_generate_locator, mcp__playwright-test__browser_console_messages, mcp__playwright-test__browser_network_requests, mcp__playwright-test__browser_evaluate
 model: sonnet
 color: red

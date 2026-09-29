@@ -2,7 +2,7 @@
 
 | [← Project Overview](01-overview.md) | [Skill System →](03-skills.md) |
 |:---|---:|
-| Step 1: What is Playwright-Web-Agentic-Engineering-Automation | Step 3: Which skills exist and how to use them |
+| Step 1: What this project is | Step 3: Which skills exist and how to use them |
 
 **Step 2 / 6**
 
@@ -10,10 +10,13 @@
 
 ## Prerequisites
 
-- macOS (Windows not supported yet)
-- Claude Code CLI installed (`claude --version` works)
-- GitHub CLI installed (`gh --version` works)
-- Node.js 20+ (`node --version` works)
+macOS (Windows not supported yet).
+
+- Claude Code CLI (`claude --version`)
+- GitHub CLI (`gh --version`)
+- Node.js 20+ (`node --version`)
+- uv (`uvx --version`, for the Jira MCP)
+- Google Chrome (headless runs use the system Chrome via `BROWSER_CHANNEL=chrome`)
 
 ---
 
@@ -22,107 +25,83 @@
 ```bash
 git clone https://github.com/JulianWangHZ/Playwright-Web-Agentic-Engineering-Automation.git
 cd Playwright-Web-Agentic-Engineering-Automation
+cd youtube && npm install && cd ..
 ```
 
 ---
 
-## Step 2: Create the Codebase Map (can be left empty)
+## Step 2: Codebase map (can stay empty)
 
 ```bash
 cp .claude/CODEBASE.template.md .claude/CODEBASE.md
 ```
 
-This project uses `https://www.youtube.com` as its product under test, so **no private product repo is required**. This file can be left entirely empty or keep its placeholders.
-
-You only need to open `.claude/CODEBASE.md` in an editor and fill in the local paths of your repos if you are applying this framework to your own product:
-
-```markdown
-| <your-platform-1> | <your-local-path>/<your-repo-1> | staging |
-| <your-platform-2> | <your-local-path>/<your-repo-2> | dev     |
-...
-```
-
-> Repos you have not cloned can be left empty and filled in later when you need to look up business rules. When www.youtube.com is the product under test, confirm behavior by walking through it directly in the browser.
+With `https://www.youtube.com` as the product under test, **no product repo is needed** — `qa-context` confirms behavior by walking the site live. When adopting this for your own product, fill in your repo paths; `qa-context` then pulls them and reads business rules as `file:line`. Empty entries never block.
 
 ---
 
-## Step 3: Configure Jira MCP
-
-Skills such as `/stage-test-matrix`, `/stage-jira-sync`, and `/tool-scan-qa-risk` need to read Jira tickets, which requires configuring the Atlassian MCP server.
-
-Add the following to `~/Library/Application Support/Claude/claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "atlassian": {
-      "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-atlassian"],
-      "env": {
-        "ATLASSIAN_EMAIL": "your Jira email",
-        "ATLASSIAN_TOKEN": "your Atlassian API token",
-        "ATLASSIAN_SITE_URL": "https://your-workspace.atlassian.net"
-      }
-    }
-  }
-}
-```
-
-Atlassian API token: [id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
-
----
-
-## Step 4: Configure jira-sync attachment upload credentials (optional)
-
-`/stage-jira-sync` needs REST API credentials when uploading prototype.html attachments.
+## Step 3: Jira credentials
 
 ```bash
 cp .claude/secrets.template.env .claude/secrets.env
 ```
 
-Open `.claude/secrets.env` and fill in:
+Fill in both groups in `.claude/secrets.env` (same account, same token):
 
 ```env
-JIRA_EMAIL=your Jira email
-JIRA_API_TOKEN=your Atlassian API token
+# Jira MCP (without these the MCP starts but exposes 0 tools)
+JIRA_URL=https://your-workspace.atlassian.net
+JIRA_USERNAME=you@example.com
+JIRA_API_TOKEN=your API token
+
+# /tool-jira-sync attachment upload (review.html)
+JIRA_USER=you@example.com
 JIRA_BASE_URL=https://your-workspace.atlassian.net
 ```
 
-> `secrets.env` is already in `.gitignore` and will not be committed to git.
+API token: [id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens). Details in [`.claude/SECRETS_SETUP.md`](../../.claude/SECRETS_SETUP.md). `secrets.env` is git-ignored.
 
 ---
 
-## Step 5: Verify the setup
+## Step 4: MCP servers
 
-Start Claude Code in the `Playwright-Web-Agentic-Engineering-Automation/` directory:
+The repo ships a `.mcp.json`:
+
+| Server | Used by | Needed when |
+|---|---|---|
+| `atlassian` | every skill that reads or creates tickets | always |
+| `playwright` | `qa-context` / `qa-cases` live checks on the target site | always |
+| `playwright-test` | planner / generator / healer agents | writing automation (run `npm install` in `youtube/` first) |
+
+---
+
+## Step 5: Verify
 
 ```bash
 claude
 ```
 
-Try running any skill:
-
 ```
-/stage-test-matrix TICKET-1352
+/qa-context TICKET-1
 ```
 
-If Jira MCP is configured correctly, Claude should start reading the contents of TICKET-1352.
+Claude reads the ticket and writes `runs/TICKET-1/context.md` → setup works.
 
 ---
 
 ## FAQ
 
-**Q: `/stage-test-matrix` says it cannot find the Jira ticket**
-→ Confirm that `ATLASSIAN_TOKEN` in the MCP server config is correct and that the account has access to that ticket.
+**Q: Can't read the Jira ticket / no `jira_*` tools**
+→ Check `secrets.env` has `JIRA_URL` / `JIRA_USERNAME` (the most common cause), then the token and your access to the ticket. Restart Claude Code after changes.
 
-**Q: I do not see the skill commands after starting Claude Code**
-→ Confirm the working directory is `Playwright-Web-Agentic-Engineering-Automation/` (the level that contains `CLAUDE.md`).
+**Q: The Jira MCP works in the terminal but not in VS Code**
+→ VS Code launched from the Dock doesn't have `~/.local/bin` on its PATH, so it can't find `uvx`. Run `ln -s ~/.local/bin/uvx /opt/homebrew/bin/uvx`, then Reload Window.
 
-**Q: Which repos should I put in `.claude/CODEBASE.md`?**
-→ When www.youtube.com is the product under test, it can all be left empty. If applying to your own product, first fill in the scope you currently own, leave the rest empty, and add more when a skill cannot find a business rule.
+**Q: I don't see `/qa-ticket` and the other commands**
+→ Start Claude Code at the repo root (the directory with `CLAUDE.md`).
 
 ---
 
 | [← Project Overview](01-overview.md) | [Skill System →](03-skills.md) |
 |:---|---:|
-| Step 1: What is Playwright-Web-Agentic-Engineering-Automation | Step 3: Which skills exist and how to use them |
+| Step 1: What this project is | Step 3: Which skills exist and how to use them |

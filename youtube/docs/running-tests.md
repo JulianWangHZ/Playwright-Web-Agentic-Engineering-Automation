@@ -296,7 +296,7 @@ Claude Code can:
 
 If a Playwright MCP server is installed, Claude Code can directly control the browser to screenshot, click, and read the DOM in real time, suited for selector exploration like "help me confirm the current role/name of the YouTube search filter panel".
 
-> To **generate / add automation implementation for an existing `@auto` scenario**, use the `/auto-playwright-agentic-automation-workflow` skill:
+> To **generate / add automation implementation for an existing `@auto` scenario**, use `/qa-scripts` (stage 5 of `/qa-ticket`):
 > the planner agent runs live via Playwright MCP to produce an evidence map, and the generator writes step + POM from it.
 > For the full flow see [Agentic Automation Flow](agentic-automation.md).
 

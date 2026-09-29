@@ -27,7 +27,7 @@ git diff --stat "$BASE"...HEAD 2>/dev/null
 - `.claude/skills/**` → skill added / modified
 - `.claude/rules/**` → working rules
 - `scripts/**` / `.github/workflows/**` → automation scripts
-- `versions/**` / `features/**` / `testcases/**` → QA documents
+- `testcases/**` → QA documents
 
 ### B. Test-layer / documentation impact
 
@@ -35,12 +35,11 @@ Determine which parts of this repo a skill change affects (the product under tes
 
 | Skill change | Affected area |
 |-----------|---------------|
-| matrix / bdd / state-machine | QA documents under features/ or versions/ |
-| tc-merge | testcases/ main library |
+| qa-cases | QA artifacts under runs/ (not committed) |
+| qa-merge | testcases/ main library |
 | jira-sync | Jira ticket sync (no codebase change) |
-| bdd-review | No codebase change (report only) |
 | open-qa-bug | Jira tracking (no codebase change) |
-| playwright-agentic-automation-workflow | youtube/ (this repo's E2E test layer) |
+| qa-scripts / qa-run | youtube/ (this repo's E2E test layer) |
 
 ## Phase 3: Generate PR title and body
 

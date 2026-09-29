@@ -13,7 +13,7 @@ E2E automation testing framework for YouTube Web (guest / logged-out state).
 | **Step 1** | **[Getting Started](docs/getting-started.md)**   | Environment install, Docker setup, run your first test                  |
 |   Step 2   | [Architecture](docs/architecture.md)             | Layer responsibilities, BDD declarative principle, why it's designed this way |
 |   Step 3   | [Writing Tests](docs/writing-tests.md)           | How to write and the conventions for each layer of a new BDD test       |
-|   ↳ Advanced | [Agentic Automation Flow](docs/agentic-automation.md) | The full flow for auto-filling implementation with the `/auto-playwright-agentic-automation-workflow` skill |
+|   ↳ Advanced | [Agentic Automation Flow](docs/agentic-automation.md) | The full flow for auto-filling implementation with the `/qa-scripts` skill |
 |   Step 4   | [Running Tests](docs/running-tests.md)           | All ways to run: local, Docker, CI                                      |
 |   Step 5   | [Checklist](docs/checklist.md)       | Confirm you can contribute independently                                |
 

@@ -237,9 +237,9 @@ settings.json
 # conductor
 .conductor/
 
-# QA workflow working directories (per-ticket/version artifacts; final testcases merge into the main testcases/, working files not committed)
-/features/
-/versions/
+# /qa-ticket working directories (per-ticket artifacts and release sign-offs; signed-off .feature files are merged into testcases/ by qa-merge, working files not committed)
+/runs/
+/releases/
 # Playwright MCP exploration scratch (snapshots/console logs; not committed)
 .playwright-mcp/
 

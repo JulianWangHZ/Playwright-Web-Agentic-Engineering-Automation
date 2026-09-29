@@ -11,7 +11,7 @@
 > [!IMPORTANT]
 > **`youtube/` has no feature files of its own.**
 > BDD cases are managed centrally by the Playwright-Web-Agentic-Engineering-Automation main testcases library (`testcases/`), which `playwright.config.ts` reads directly; no local copy is made.
-> To add or modify a BDD case, follow the QA workflow—**do not create `.feature` files in this directory**.
+> To add or modify a BDD case, run the `/qa-ticket` pipeline—**do not create `.feature` files in this directory**.
 
 ---
 

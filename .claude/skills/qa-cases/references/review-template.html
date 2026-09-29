@@ -1,0 +1,714 @@
+<!-- review.html style template (example data: TICKET-001 YouTube video search). Copy the whole file and replace only the content; do not change CSS / JS. -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case review · TICKET-001 Video search (example)</title>
+<script>
+
+  (() => {
+    const saved = localStorage.getItem('qa-theme');
+    const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+
+  --ink: #121314;
+  --ink-2: #2a2c30;
+  --slate: #5a5e6e;
+  --slate-2: #5e6771;
+  --paper: #ffffff;
+  --wash: #f5f6f8;
+  --rule: #e4e6ea;
+  --rule-2: #b3b8c2;
+  --marker: #3a7de8;
+  --marker-soft: #eaf2fd;
+  --marker-ink: #2560c4;
+  --flare: #e8651a;
+  --flare-soft: #fdeee4;
+  --flare-ink: #a8430a;
+  --on-marker: #ffffff;
+  --marker-fill: #2f6fd6;
+  --marker-hl: #c9dcfa;
+  --bar-bg: rgba(255, 255, 255, 0.94);
+  color-scheme: light;
+
+  --font: "Helvetica Neue", -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --fs-xs: 11px;
+  --fs-sm: 12.5px;
+  --fs-md: 14px;
+  --fs-lg: 17px;
+  --fs-xl: 24px;
+  --fs-2xl: 34px;
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
+  --radius: 6px;
+  --label-col: 208px;
+  --page: 1240px;
+}
+
+:root[data-theme="dark"] {
+  --ink: #ffffff;
+  --ink-2: #dcdee3;
+  --slate: #a4a9b6;
+  --slate-2: #8b93a0;
+  --paper: #000000;
+  --wash: #0d0e10;
+  --rule: #22252a;
+  --rule-2: #3a3f47;
+  --marker: #3a7de8;
+  --marker-soft: rgba(58, 125, 232, 0.18);
+  --marker-ink: #7aa9f2;
+  --flare: #f07a33;
+  --flare-soft: rgba(240, 122, 51, 0.14);
+  --flare-ink: #ff9c5e;
+  --marker-hl: #3a7de8;
+  --on-marker: #ffffff;
+  --marker-fill: #2f6fd6;
+  --bar-bg: rgba(0, 0, 0, 0.92);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 var(--fs-md)/1.65 var(--font); -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 2px; }
+.mono, code { font-family: var(--mono); font-size: 0.92em; letter-spacing: -0.01em; }
+.muted { color: var(--slate); }
+.faint { color: var(--slate-2); }
+.wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--s6); }
+
+.mark {
+  background: linear-gradient(100deg, transparent 0 1%, var(--marker-hl) 3% 96%, transparent 99%) no-repeat 0 62% / 100% 58%;
+  padding: 0 2px; margin: 0 -2px; color: var(--ink);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.flare-text { color: var(--flare-ink); }
+
+:root[data-theme="dark"] .mark {
+  background: var(--marker-fill); padding: 0 4px; margin: 0; border-radius: 2px; color: var(--on-marker);
+}
+
+.masthead { border-bottom: 1px solid var(--rule); background: var(--paper); }
+.masthead .top {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s4);
+  padding: var(--s5) 0 0; font-size: var(--fs-sm); color: var(--slate);
+}
+.masthead .kicker { font-weight: 600; color: var(--ink); letter-spacing: 0.02em; }
+.masthead .kicker::before {
+  content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 8px; vertical-align: -1px;
+  background: var(--marker); border: 1px solid var(--ink);
+}
+.masthead h1 {
+  margin: var(--s4) 0 var(--s5); max-width: 30em;
+  font-size: var(--fs-2xl); line-height: 1.25; font-weight: 700; letter-spacing: -0.01em;
+}
+.stamp {
+  display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 10px;
+  border: 1.5px solid currentColor; border-radius: 999px; font-size: var(--fs-sm); font-weight: 600; white-space: nowrap;
+}
+.stamp::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.stamp.pending { color: var(--flare-ink); }
+.stamp.confirmed { color: var(--marker-ink); background: var(--marker-soft); }
+.stamp.stale { color: #fff; background: var(--flare); border-color: var(--flare); }
+.masthead .right { display: flex; align-items: center; gap: var(--s3); }
+.theme-toggle {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid var(--rule-2); border-radius: 999px;
+  background: var(--paper); color: var(--slate); font: inherit; font-size: var(--fs-sm); cursor: pointer;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+.theme-toggle svg { width: 14px; height: 14px; }
+.theme-toggle .sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+.tabs-bar { position: sticky; top: 0; z-index: 20; background: var(--bar-bg); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+nav.tabs { display: flex; gap: var(--s6); overflow-x: auto; scrollbar-width: none; }
+nav.tabs a {
+  position: relative; padding: 14px 0 13px; font-size: var(--fs-md); color: var(--slate);
+  text-decoration: none; white-space: nowrap;
+}
+nav.tabs a .n { font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); margin-right: 6px; }
+nav.tabs a:hover { color: var(--ink); }
+nav.tabs a.on { color: var(--ink); font-weight: 600; }
+nav.tabs a.on::after {
+  content: ""; position: absolute; left: -3px; right: -3px; bottom: -1px; height: 5px; background: var(--marker);
+}
+
+main { padding-bottom: var(--s8); }
+.page { display: none; }
+.page.on { display: block; animation: rise 0.28s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .page.on { animation: none; } }
+
+.intro { padding: var(--s6) 0 var(--s4); max-width: 46em; color: var(--slate); font-size: var(--fs-md); }
+.row {
+  display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr); gap: var(--s6);
+  padding: var(--s6) 0; border-top: 1px solid var(--rule-2);
+}
+.row:first-of-type { border-top: 0; }
+.row-label h2 { margin: 0; font-size: var(--fs-md); font-weight: 600; letter-spacing: 0.01em; }
+.row-label p { margin: 6px 0 0; font-size: var(--fs-sm); color: var(--slate); line-height: 1.55; }
+.row-label .count { display: block; margin-top: var(--s3); font-family: var(--mono); font-size: var(--fs-sm); color: var(--ink); }
+.row-body { min-width: 0; }
+@media (max-width: 860px) {
+  .wrap { padding: 0 var(--s4); }
+  .row { grid-template-columns: 1fr; gap: var(--s3); }
+  .masthead h1 { font-size: var(--fs-xl); }
+}
+
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+th {
+  text-align: left; font-weight: 500; color: var(--slate-2); font-size: var(--fs-xs); letter-spacing: 0.04em;
+  padding: 0 var(--s3) var(--s2); border-bottom: 1px solid var(--ink); white-space: nowrap;
+}
+td { padding: 11px var(--s3); border-bottom: 1px solid var(--rule); vertical-align: top; }
+th:first-child, td:first-child { padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+tr.skip td { color: var(--slate-2); }
+tr:target td, tr.target td { background: var(--marker-soft); }
+td.id { font-family: var(--mono); white-space: nowrap; color: var(--slate); }
+td ul { margin: 0; padding-left: 1.1em; }
+
+.tag {
+  display: inline-block; padding: 0 7px; border: 1px solid var(--rule-2); border-radius: 4px;
+  font-size: var(--fs-xs); line-height: 20px; color: var(--slate); white-space: nowrap; margin: 0 4px 2px 0;
+}
+.tag.p0 { border-color: var(--flare); color: var(--flare-ink); font-weight: 600; }
+.tag.p1 { border-color: var(--ink); color: var(--ink); font-weight: 600; }
+.tag.smoke { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.tag.label { border-color: transparent; background: var(--wash); color: var(--ink-2); }
+.tag.boundary { border-color: var(--flare); color: var(--flare-ink); }
+.tag.manual { border-style: dashed; }
+a.ref {
+  font-family: var(--mono); font-size: var(--fs-sm); color: var(--ink); text-decoration: none;
+  border-bottom: 1px solid var(--rule-2); margin-right: 4px; white-space: nowrap;
+}
+a.ref:hover { border-bottom-color: var(--ink); background: var(--marker-soft); }
+.status-ok { color: var(--marker-ink); font-weight: 600; }
+.status-bad { color: var(--flare-ink); font-weight: 600; }
+.status-na { color: var(--slate-2); }
+
+.notes { list-style: none; margin: 0; padding: 0; }
+.notes li { position: relative; padding: 8px 0 8px 18px; border-bottom: 1px solid var(--rule); }
+.notes li:last-child { border-bottom: 0; }
+.notes li::before { content: ""; position: absolute; left: 0; top: 16px; width: 8px; height: 2px; background: var(--flare); }
+.notes.neutral li::before { background: var(--slate-2); }
+
+@media print {
+  .tabs-bar, .toolbar, button.copy { display: none !important; }
+  .page { display: block !important; break-before: page; }
+  .proto-frame { display: none; }
+}
+
+.flow { margin: var(--s2) 0 var(--s7); }
+.flow .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); column-gap: 28px; }
+.flow .step {
+  position: relative; display: flex; flex-direction: column; min-height: 112px;
+  padding: 12px 12px 10px; border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--paper);
+}
+.flow .step:not(:last-child)::before {
+  content: ""; position: absolute; top: 50%; right: -29px; width: 28px; height: 1.5px; background: var(--ink);
+}
+.flow .step:not(:last-child)::after {
+  content: ""; position: absolute; top: calc(50% - 4px); right: -30px; width: 7px; height: 7px;
+  border-top: 1.5px solid var(--ink); border-right: 1.5px solid var(--ink); transform: rotate(45deg);
+}
+.flow .no { font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); }
+.flow .star { margin-left: 6px; color: var(--flare); }
+.flow .name { margin-top: 4px; font-weight: 600; font-size: var(--fs-md); line-height: 1.35; }
+.flow .out { margin-top: 4px; font-size: var(--fs-sm); color: var(--slate); line-height: 1.4; }
+.flow .state { margin-top: auto; padding-top: 8px; font-size: var(--fs-xs); font-weight: 600; }
+.flow .step.done .state { color: var(--marker-ink); }
+.flow .step.done .state::before { content: "✓ "; }
+.flow .step.todo { border-style: dashed; background: transparent; }
+.flow .step.todo .name, .flow .step.todo .out, .flow .step.todo .state { color: var(--slate-2); }
+.flow .step.todo:not(:last-child)::before { background: var(--rule-2); }
+.flow .step.todo:not(:last-child)::after { border-color: var(--rule-2); }
+.flow .step.here {
+  background: var(--marker-fill); border: 1.5px solid var(--ink); color: var(--on-marker);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.flow .step.here .no, .flow .step.here .out, .flow .step.here .state { color: var(--on-marker); }
+.flow .step.here .out { opacity: 0.8; }
+.flow .step.here .state::before { content: "● "; }
+.flow .step.gate:not(.here) { border-color: var(--flare); }
+
+.flow .design-branch {
+  display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); column-gap: 28px; margin-top: 18px; position: relative;
+}
+.flow .branch-label {
+  grid-column: 3 / span 1; position: relative; font-size: var(--fs-xs); letter-spacing: 0.04em; color: var(--slate);
+  padding-top: 12px; text-align: center;
+}
+.flow .branch-label::before { content: ""; position: absolute; left: 50%; top: -18px; height: 26px; border-left: 1.5px dashed var(--rule-2); }
+.flow .substeps {
+  grid-column: 2 / span 5; list-style: none; margin: 8px 0 0; padding: 12px 14px; display: flex; gap: 22px; align-items: flex-start;
+  border: 1px dashed var(--rule-2); border-radius: var(--radius); background: var(--wash);
+}
+.flow .substeps li { position: relative; flex: 1; min-width: 0; }
+.flow .substeps li:not(:last-child)::after { content: "→"; position: absolute; right: -17px; top: 0; color: var(--slate-2); }
+.flow .substeps .name { display: block; margin: 0; font-size: var(--fs-sm); font-weight: 600; }
+.flow .substeps .out { display: block; margin: 2px 0 0; font-size: var(--fs-xs); }
+.flow .legend-line { margin: var(--s4) 0 0; font-size: var(--fs-sm); color: var(--slate); }
+.flow .legend-line b { color: var(--ink); }
+@media (max-width: 1080px) {
+  .flow .steps { grid-template-columns: 1fr; row-gap: 22px; }
+  .flow .step { min-height: 0; }
+  .flow .step:not(:last-child)::before { top: auto; bottom: -23px; right: auto; left: 24px; width: 1.5px; height: 22px; }
+  .flow .step:not(:last-child)::after { top: auto; bottom: -23px; right: auto; left: 20.5px; transform: rotate(135deg); }
+  .flow .design-branch { display: block; }
+  .flow .branch-label { display: block; text-align: left; padding-top: 0; }
+  .flow .branch-label::before { display: none; }
+  .flow .substeps { flex-direction: column; gap: 8px; }
+  .flow .substeps li::after { display: none; }
+}
+
+.figures { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+.figures div { padding: 14px 16px 4px 0; }
+.figures div + div { padding-left: 16px; border-left: 1px solid var(--rule); }
+.figures b { display: block; font-family: var(--mono); font-weight: 500; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; }
+.figures b small { font-size: 14px; color: var(--slate-2); font-weight: 400; }
+.figures span { display: block; margin-top: 6px; font-size: var(--fs-sm); color: var(--slate); }
+@media (max-width: 860px) { .figures { grid-template-columns: repeat(3, 1fr); } .figures div:nth-child(4) { border-left: 0; padding-left: 0; } }
+
+.sources { margin: 0; padding: 0; list-style: none; }
+.sources li { display: grid; grid-template-columns: 72px 1fr; gap: var(--s3); padding: 6px 0; font-size: var(--fs-sm); }
+.sources li span:first-child { font-family: var(--mono); color: var(--slate-2); }
+
+.risk-list { list-style: none; margin: 0; padding: 0; }
+.risk-list li {
+  display: grid; grid-template-columns: 48px 34px minmax(0, 1.4fr) minmax(0, 1fr) 96px; gap: var(--s3); align-items: baseline;
+  padding: 12px 0; border-bottom: 1px solid var(--rule);
+}
+.risk-list li:first-child { border-top: 1px solid var(--ink); }
+.risk-list .rid { font-family: var(--mono); font-size: var(--fs-sm); color: var(--slate); }
+.risk-list .impact { display: block; font-size: var(--fs-sm); color: var(--slate); }
+.risk-list .state { text-align: right; font-size: var(--fs-sm); }
+@media (max-width: 860px) { .risk-list li { grid-template-columns: 44px 34px 1fr; } .risk-list li > :nth-child(4), .risk-list .state { grid-column: 3; text-align: left; } }
+
+.techniques { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--ink); border-left: 1px solid var(--rule); }
+.techniques > div { min-width: 0; overflow-wrap: anywhere; padding: 14px 14px 16px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); min-height: 118px; }
+.techniques h3 { margin: 0; font-size: var(--fs-md); font-weight: 600; }
+.techniques .en { display: block; font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); margin-top: 2px; }
+.techniques p { margin: 10px 0 0; font-size: var(--fs-sm); line-height: 1.5; }
+.techniques .na h3 { color: var(--slate); font-weight: 500; }
+.techniques .na { background: repeating-linear-gradient(135deg, transparent 0 7px, var(--wash) 7px 8px); }
+.techniques .na p { color: var(--slate); }
+@media (max-width: 860px) { .techniques { grid-template-columns: 1fr 1fr; } }
+
+.score { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--s6); align-items: start; }
+.score .total b { font-family: var(--mono); font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -0.03em; }
+.score .total small { font-family: var(--mono); font-size: 16px; color: var(--slate-2); }
+.score .total p { margin: var(--s3) 0 0; font-size: var(--fs-sm); color: var(--slate); }
+.bars { list-style: none; margin: 0; padding: 0; }
+.bars li { display: grid; grid-template-columns: 116px minmax(0, 1fr) 56px; gap: var(--s3); align-items: center; padding: 5px 0; font-size: var(--fs-sm); }
+.bars .bar { height: 6px; background: var(--wash); position: relative; }
+.bars .bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); }
+.bars .v { font-family: var(--mono); text-align: right; color: var(--slate); }
+.review-notes { margin: var(--s5) 0 0; }
+@media (max-width: 860px) { .score { grid-template-columns: 1fr; } }
+
+.matrix + .matrix { margin-top: var(--s7); }
+.matrix-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s4); margin-bottom: var(--s3); }
+.matrix-head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 600; }
+.matrix-head .meta { font-size: var(--fs-sm); color: var(--slate); white-space: nowrap; }
+.matrix-desc { margin: -4px 0 var(--s3); font-size: var(--fs-sm); color: var(--slate); }
+td.skipped { color: var(--slate); font-size: var(--fs-sm); }
+td.skipped em { font-style: normal; font-weight: 600; margin-right: 6px; }
+
+.diagram {
+  border: 1px solid var(--rule); padding: var(--s6); overflow-x: auto; text-align: center;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--rule) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.diagram pre.mermaid { margin: 0; white-space: pre; font-size: var(--fs-sm); color: var(--slate); text-align: left; display: block; }
+.diagram pre.mermaid[data-processed] { text-align: center; }
+.diagram svg { display: block; margin: 0 auto; min-width: 640px; }
+.diagram .edgeLabel rect, .diagram .edgeLabel .background { fill: var(--marker-fill) !important; opacity: 1 !important; }
+.diagram .node rect, .diagram .node path { stroke-width: 1.5px; }
+
+.diagram .node.start .label, .diagram .node.start text { display: none; }
+.diagram .node.start circle, .diagram .node.start path, .diagram .node.start rect { fill: var(--ink) !important; stroke: var(--ink) !important; }
+.arrow { color: var(--slate-2); margin: 0 6px; }
+
+.diagram .edgeLabel, .diagram .edgeLabel * { color: var(--on-marker) !important; fill: var(--on-marker) !important; }
+
+.proto-frame { display: block; width: 100%; height: calc(100vh - 150px); min-height: 760px; border: 1px solid var(--rule); background: var(--wash); }
+.proto-open { font-size: var(--fs-sm); }
+
+.toolbar {
+  position: sticky; top: 49px; z-index: 10; background: var(--paper);
+  display: flex; gap: var(--s3); align-items: center; flex-wrap: wrap; padding: var(--s4) 0; border-bottom: 1px solid var(--rule);
+}
+.toolbar input[type=search], .toolbar select {
+  height: 36px; border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--paper);
+  font: inherit; font-size: var(--fs-sm); color: var(--ink); padding: 0 12px;
+}
+.toolbar input[type=search] { flex: 1; min-width: 220px; }
+.toolbar input[type=search]:focus, .toolbar select:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
+.progress { display: flex; align-items: center; gap: 10px; font-size: var(--fs-sm); color: var(--slate); white-space: nowrap; }
+.progress .meter { width: 120px; height: 6px; background: var(--wash); position: relative; }
+.progress .meter i { position: absolute; inset: 0 auto 0 0; background: var(--marker); transition: width 0.2s; }
+.progress .meter { box-shadow: inset 0 0 0 1px var(--rule); }
+
+.feature { padding-top: var(--s7); }
+.feature-head h2 { margin: 0; font-size: var(--fs-xl); font-weight: 700; letter-spacing: -0.01em; }
+.feature-head .file { font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); }
+.story { margin: var(--s3) 0 var(--s5); padding-left: var(--s4); border-left: 3px solid var(--marker); color: var(--ink-2); font-size: var(--fs-md); }
+.story span { display: block; }
+.rule-head { margin: var(--s6) 0 0; padding-bottom: 6px; font-size: var(--fs-md); font-weight: 600; color: var(--ink); }
+.rule-head .count { margin-left: 8px; font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); font-weight: 400; }
+
+.scenario { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 0 var(--s3); padding: var(--s5) 0; border-bottom: 1px solid var(--rule); }
+.rule-head + .scenario, .story + .scenario { border-top: 1px solid var(--ink); }
+.scenario .check { padding-top: 3px; }
+.scenario .check input {
+  appearance: none; width: 20px; height: 20px; margin: 0; border: 1.5px solid var(--ink); border-radius: 4px; cursor: pointer; background: var(--paper);
+  display: grid; place-items: center;
+}
+.scenario .check input:checked { background: var(--marker-fill); }
+.scenario .check input:checked { border-color: var(--marker-fill); }
+.scenario .check input:checked::after { content: ""; width: 9px; height: 5px; border: 2px solid var(--on-marker); border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+.scenario .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--s3); }
+.scenario .sid { font-family: var(--mono); font-size: var(--fs-sm); color: var(--slate); }
+.scenario h3 { margin: 0; font-size: var(--fs-lg); font-weight: 600; line-height: 1.45; }
+.scenario .tags { margin-left: auto; }
+.scenario.checked h3 .t { color: var(--ink); background: linear-gradient(100deg, transparent 0 1%, var(--marker-hl) 3% 96%, transparent 99%) no-repeat 0 62% / 100% 58%; }
+:root[data-theme="dark"] .scenario.checked h3 .t { color: var(--on-marker); background: var(--marker-fill); padding: 0 4px; border-radius: 2px; }
+.gwt { grid-column: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s5); margin-top: var(--s4); }
+.gwt h4 { margin: 0 0 6px; font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.06em; color: var(--slate-2); }
+.gwt ul { margin: 0; padding: 0; list-style: none; font-size: var(--fs-md); }
+.gwt li { padding: 2px 0 2px 14px; position: relative; }
+.gwt li::before { content: ""; position: absolute; left: 0; top: 12px; width: 6px; height: 1px; background: var(--slate-2); }
+.gwt .then li::before { width: 8px; height: 4px; top: 8px; border: 1.5px solid var(--marker-ink); border-top: 0; border-right: 0; background: none; transform: rotate(-45deg); }
+.examples { grid-column: 2; margin-top: var(--s4); max-width: 560px; }
+.examples h4 { margin: 0 0 4px; font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.06em; color: var(--slate-2); }
+.examples td { padding: 6px var(--s3); font-size: var(--fs-sm); }
+.empty-filter { padding: var(--s7) 0; color: var(--slate); text-align: center; display: none; }
+@media (max-width: 860px) { .gwt { grid-template-columns: 1fr; gap: var(--s3); } .scenario .tags { margin-left: 0; } }
+
+/* ---------- 6. BDD ---------- */
+.legend { display: flex; flex-wrap: wrap; gap: 6px var(--s5); font-size: var(--fs-sm); color: var(--slate); }
+.legend code { color: var(--ink); }
+.file-block + .file-block { margin-top: var(--s6); }
+.file-head {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s3);
+  padding: 10px 0; border-bottom: 1px solid var(--ink); position: sticky; top: 49px; background: var(--paper); z-index: 5;
+}
+.file-head .mono { font-size: var(--fs-sm); }
+button.copy {
+  height: 30px; padding: 0 12px; border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--paper);
+  font: inherit; font-size: var(--fs-sm); color: var(--ink); cursor: pointer;
+}
+button.copy:hover { border-color: var(--ink); }
+pre.code { margin: 0; padding: var(--s4) 0; overflow-x: auto; font: 13px/1.7 var(--mono); background: var(--paper); }
+pre.code .ln { display: block; padding-right: var(--s4); white-space: pre; }
+pre.code .ln::before { content: attr(data-n); display: inline-block; width: 36px; margin-right: 18px; color: var(--rule-2); text-align: right; }
+pre.code .ln:hover { background: var(--wash); }
+:root {
+  --step-given: #1f5fb8; --step-given-bg: #e7effb;
+  --step-when: #7a3cc4; --step-when-bg: #f1e9fb;
+  --step-then: #2e6e1c; --step-then-bg: #e6f3df;
+  --step-str: #8a5200;
+}
+:root[data-theme="dark"] {
+  --step-given: #8ab8ff; --step-given-bg: rgba(138, 184, 255, 0.14);
+  --step-when: #c9a6ff; --step-when-bg: rgba(201, 166, 255, 0.14);
+  --step-then: #a6e27f; --step-then-bg: rgba(166, 226, 127, 0.13);
+  --step-str: #f0c36a;
+}
+.g-kw { color: var(--ink); font-weight: 600; }
+.g-step { font-weight: 600; padding: 0 5px; margin-left: -5px; border-radius: 3px; }
+.g-given { color: var(--step-given); background: var(--step-given-bg); }
+.g-when { color: var(--step-when); background: var(--step-when-bg); }
+.g-then { color: var(--step-then); background: var(--step-then-bg); }
+.step-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 26px; font-size: var(--fs-sm); }
+.step-legend .g-step { font-family: var(--mono); margin: 0 8px 0 0; }
+.g-tag { color: var(--slate); }
+.g-tc { color: var(--ink); background: var(--marker-soft); }
+.g-str { color: var(--step-str); }
+.g-cmt { color: var(--slate-2); font-style: italic; }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap">
+    <div class="top">
+      <span class="kicker">Case review · TICKET-001</span>
+      <span class="right">
+        <span class="stamp pending" title="Nobody has signed off these scenarios yet. Automation starts after sign-off.">Awaiting sign-off</span>
+        <button type="button" class="theme-toggle" aria-label="Toggle dark / light" title="Toggle dark / light">
+  <svg class="moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7Z"/></svg>
+  <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3 3l1 1M12 12l1 1M3 13l1-1M12 4l1-1"/></svg>
+</button>
+      </span>
+    </div>
+    <h1>TICKET-001 Video search (example)</h1>
+  </div>
+</header>
+<div class="tabs-bar"><div class="wrap"><nav class="tabs" aria-label="sections"><a href="#overview"><span class="n">1</span>How it was built</a><a href="#matrix"><span class="n">2</span>Test matrix</a><a href="#state"><span class="n">3</span>State machine</a><a href="#prototype"><span class="n">4</span>Prototype</a><a href="#acceptance"><span class="n">5</span>Acceptance list</a><a href="#bdd"><span class="n">6</span>BDD features</a></nav></div></div>
+<main class="wrap">
+<div class="page" id="page-overview" data-page="overview"><p class="intro">The workflow has 8 stages; the diagram shows each stage's output and where this run stands. Case design is broken down underneath: test matrices, a state machine and a prototype expand the scenarios, which are then written as BDD and scored by an independent reviewer.</p>
+<div class="flow" role="img" aria-label="Context → Risk analysis → Case design → Sign-off → Scripts → Run &amp; repair → Code review → Close">
+    <ol class="steps"><li class="step done"><span class="no">01</span><span class="name">Context</span><span class="out">2 sources</span><span class="state">Done</span></li><li class="step done"><span class="no">02</span><span class="name">Risk analysis</span><span class="out">2 risks</span><span class="state">Done</span></li><li class="step done"><span class="no">03</span><span class="name">Case design</span><span class="out">4 scenarios</span><span class="state">Done</span></li><li class="step here gate"><span class="no">04<span class="star" aria-hidden="true">★</span></span><span class="name">Sign-off</span><span class="out">Waiting for you</span><span class="state">In progress</span></li><li class="step todo"><span class="no">05</span><span class="name">Scripts</span><span class="out">3 @auto scenarios</span><span class="state">Not started</span></li><li class="step todo"><span class="no">06</span><span class="name">Run &amp; repair</span><span class="out">Run and fix tests</span><span class="state">Not started</span></li><li class="step todo"><span class="no">07</span><span class="name">Code review</span><span class="out">Review tests and code</span><span class="state">Not started</span></li><li class="step todo"><span class="no">08</span><span class="name">Close</span><span class="out">Verdict &amp; manual checks</span><span class="state">Not started</span></li></ol>
+    <div class="design-branch">
+      <span class="branch-label">How cases are designed</span>
+      <ol class="substeps"><li><span class="name">Test matrix</span><span class="out">1 matrices · 5 rows</span></li><li><span class="name">State machine</span><span class="out">3 transitions</span></li><li><span class="name">Prototype</span><span class="out">Not applicable</span></li><li><span class="name">BDD scenarios</span><span class="out">4 scenarios</span></li><li><span class="name">Independent review</span><span class="out">90 pts</span></li></ol>
+    </div>
+    <p class="legend-line"><b>★ Sign-off is the only step that needs your decision; </b>every other stage is done by AI and gated by /qa-ticket. Automation starts only after sign-off.</p>
+  </div>
+<section class="row"><div class="row-label"><h2>Coverage</h2><p>Calculated from the design artifacts.</p></div><div class="row-body"><div class="figures"><div><b>4</b><span>Scenarios</span></div><div><b>3</b><span>P0 / P1</span></div><div><b>2<small>/2</small></b><span>High risks covered</span></div><div><b>4<small>/5</small></b><span>Matrix rows covered</span></div><div><b>3</b><span>Transitions</span></div><div><b>1</b><span>Manual checks</span></div></div></div></section>
+<section class="row"><div class="row-label"><h2>Scope</h2><p>What is being accepted, and where it comes from.</p></div><div class="row-body"><ul class="sources"><li><span>issue</span><span>TICKET-001</span></li><li><span>site</span><span>https://www.youtube.com</span></li></ul></div></section>
+<section class="row"><div class="row-label"><h2>Risks &amp; coverage</h2><p>P0 and P1 must be covered or explicitly deferred.</p></div><div class="row-body"><ul class="risk-list"><li><span class="rid">R-001</span><span class="tag p0">P0</span><span>Search submit does not navigate to results<span class="impact">Core discovery flow broken</span></span><span><a class="ref" href="#acceptance/case-TC-001">TC-001</a></span><span class="state"><span class="status-ok">Covered</span></span></li><li><span class="rid">R-002</span><span class="tag p1">P1</span><span>No-match keyword shows a blank page<span class="impact">User cannot tell search worked</span></span><span><a class="ref" href="#acceptance/case-TC-003">TC-003</a></span><span class="state"><span class="status-ok">Covered</span></span></li></ul></div></section>
+<section class="row"><div class="row-label"><h2>Design techniques</h2><p>All 12 techniques are judged; not applicable needs a reason.</p></div><div class="row-body"><div class="techniques"><div><h3><span class="mark">Equivalence partitioning</span></h3><span class="en">equivalence</span><p><a class="ref" href="#acceptance/case-TC-001">TC-001</a> <a class="ref" href="#acceptance/case-TC-002">TC-002</a> <a class="ref" href="#acceptance/case-TC-003">TC-003</a></p></div><div><h3><span class="mark">Boundary values</span></h3><span class="en">boundary</span><p><a class="ref" href="#acceptance/case-TC-004">TC-004</a></p></div><div class="na"><h3>Decision table</h3><span class="en">decision-table · Not applicable</span><p>A single input drives the outcome</p></div><div><h3><span class="mark">Happy / negative / error paths</span></h3><span class="en">path</span><p><a class="ref" href="#acceptance/case-TC-001">TC-001</a> <a class="ref" href="#acceptance/case-TC-002">TC-002</a> <a class="ref" href="#acceptance/case-TC-003">TC-003</a></p></div><div><h3><span class="mark">State transitions</span></h3><span class="en">state-transition</span><p><a class="ref" href="#acceptance/case-TC-001">TC-001</a> <a class="ref" href="#acceptance/case-TC-002">TC-002</a> <a class="ref" href="#acceptance/case-TC-003">TC-003</a></p></div><div class="na"><h3>Roles &amp; permissions</h3><span class="en">role-permission · Not applicable</span><p>Guest only</p></div><div class="na"><h3>Data lifecycle</h3><span class="en">data-lifecycle · Not applicable</span><p>Search does not create data</p></div><div class="na"><h3>Pairwise</h3><span class="en">pairwise · Not applicable</span><p>No multi-parameter combinations</p></div><div><h3><span class="mark">Error guessing</span></h3><span class="en">error-guessing</span><p><a class="ref" href="#acceptance/case-TC-003">TC-003</a></p></div><div class="na"><h3>Concurrency &amp; repeats</h3><span class="en">concurrency · Not applicable</span><p>Single-user read flow</p></div><div class="na"><h3>Dependency failure</h3><span class="en">dependency-failure · Not applicable</span><p>No third-party dependency in scope</p></div><div class="na"><h3>Environment &amp; config</h3><span class="en">environment · Not applicable</span><p>Same behavior across environments</p></div></div></div></section>
+<section class="row"><div class="row-label"><h2>Independent review</h2><p>Scored against the rubric by a reviewer who did not write the cases.</p></div><div class="row-body"><div class="score">
+    <div class="total"><b>90</b><small>/100</small>
+      <p>Pass mark 85 · 1 review rounds</p></div>
+    <div><ul class="bars"><li><span>Traceability</span><span class="bar"><i style="width:95%"></i></span><span class="v">19/20</span></li><li><span>Matrix &amp; techniques</span><span class="bar"><i style="width:92%"></i></span><span class="v">23/25</span></li><li><span>Gherkin rules</span><span class="bar"><i style="width:90%"></i></span><span class="v">18/20</span></li><li><span>Business rules</span><span class="bar"><i style="width:85%"></i></span><span class="v">17/20</span></li><li><span>Clarity</span><span class="bar"><i style="width:90%"></i></span><span class="v">9/10</span></li><li><span>Modified scope</span><span class="bar"><i style="width:80%"></i></span><span class="v">4/5</span></li></ul><div class="review-notes"><ul class="notes neutral"><li>Result count per page is undefined; listed as an open question</li></ul></div></div>
+  </div></div></section>
+<section class="row"><div class="row-label"><h2>Open questions</h2><p>Answers may change expected results.</p></div><div class="row-body"><ul class="notes "><li>Is there a maximum keyword length? Not stated in the ticket</li></ul></div></section>
+</div>
+<div class="page" id="page-matrix" data-page="matrix"><p class="intro">Each row is a condition combination to verify. Covered rows list their scenarios; rows not tested state why.</p><div class="matrix" id="M-001">
+      <div class="matrix-head"><h3>Keyword input classes</h3><span class="meta"><span class="mono">M-001</span> · Equivalence partitioning · 4 / 5 rows covered</span></div>
+      <p class="matrix-desc">Each input class maps to one expected search outcome</p>
+      <table><thead><tr><th>Keyword</th><th>Class</th><th>Expected</th><th>Scenarios</th></tr></thead><tbody><tr><td>playwright</td><td>valid text</td><td>results page with videos</td><td><a class="ref" href="#acceptance/case-TC-001">TC-001</a></td></tr><tr><td>(empty)</td><td>invalid</td><td>stay on home</td><td><a class="ref" href="#acceptance/case-TC-002">TC-002</a></td></tr><tr><td>zxqv9981…</td><td>valid, no match</td><td>no-results message</td><td><a class="ref" href="#acceptance/case-TC-003">TC-003</a></td></tr><tr><td>200 chars</td><td>upper bound</td><td>results page</td><td><a class="ref" href="#acceptance/case-TC-004">TC-004</a></td></tr><tr class="skip"><td>emoji only</td><td>special chars</td><td>results page</td><td class="skipped"><em>Not tested</em>Covered by the valid-text class; no distinct behavior</td></tr></tbody></table>
+    </div></div>
+<div class="page" id="page-state" data-page="state"><p class="intro">States and transitions. Every allowed transition has a scenario; every blocked transition has a negative scenario.</p>
+<section class="row"><div class="row-label"><h2>Search page</h2><p>Allowed transitions only.</p></div><div class="row-body"><div class="diagram"><pre class="mermaid">flowchart LR
+  start((&quot;·&quot;)):::start
+  s0(&quot;Home&quot;)
+  s1(&quot;Results&quot;)
+  s2(&quot;No results&quot;)
+  start --&gt; s0
+  s0 --&gt;|&quot;submit keyword with matches&quot;| s1
+  s0 --&gt;|&quot;submit keyword without matches&quot;| s2
+  classDef start fill:#5e6771,stroke:#5e6771</pre></div><p class="diagram-note muted" hidden>Diagram unavailable (offline?). See the transition table.</p></div></section>
+<section class="row"><div class="row-label"><h2>Transitions</h2><p>Allowed and blocked transitions.</p></div><div class="row-body"><table><thead><tr><th>From</th><th>Trigger</th><th>To</th><th>Result</th><th>Scenarios</th></tr></thead><tbody><tr><td>Home</td><td>submit keyword with matches</td><td>Results</td><td><span class="status-ok">Allowed</span></td><td><a class="ref" href="#acceptance/case-TC-001">TC-001</a> <a class="ref" href="#acceptance/case-TC-004">TC-004</a></td></tr><tr><td>Home</td><td>submit keyword without matches</td><td>No results</td><td><span class="status-ok">Allowed</span></td><td><a class="ref" href="#acceptance/case-TC-003">TC-003</a></td></tr><tr><td>Home</td><td>submit empty keyword</td><td><span class="faint">—</span></td><td><span class="status-bad">Blocked</span><span class="muted"> · must stay on home</span></td><td><a class="ref" href="#acceptance/case-TC-002">TC-002</a></td></tr></tbody></table></div></section></div>
+<div class="page" id="page-prototype" data-page="prototype"><p class="intro">Pick a scenario on the left and the device plays it out; you can also click and type freely to walk through the flow.</p><p class="muted">No prototype: Existing page; no new UI</p></div>
+<div class="page" id="page-acceptance" data-page="acceptance"><p class="intro">One block per scenario: preconditions, action, expected result. Tick each one as you verify it; ticks stay in your browser.</p><div class="toolbar">
+    <input type="search" id="ac-search" placeholder="Search scenarios or steps" aria-label="Search scenarios or steps">
+    <select id="ac-priority" aria-label="All priorities"><option value="">All priorities</option><option>P0</option><option>P1</option><option>P2</option><option>P3</option></select>
+    <select id="ac-type" aria-label="All types"><option value="">All types</option><option value="positive">Positive</option><option value="negative">Negative</option><option value="boundary">Boundary</option></select>
+    <span class="progress"><span class="meter"><i id="ac-meter"></i></span><span id="ac-progress" data-label="Checked {n} / {total}"></span></span>
+  </div><section class="feature" data-feature="search.feature"><div class="feature-head"><span class="file">search.feature</span><h2>YouTube Video Search</h2></div><p class="story"><span>As a visitor</span><span>I want to search for videos</span><span>So that I can quickly find the content I want to watch</span></p><h3 class="rule-head">Keyword Search<span class="count">2</span></h3><article class="scenario" id="case-TC-001" data-case="TC-001" data-priority="P0" data-type="positive">
+    <label class="check"><input type="checkbox" aria-label="TC-001"></label>
+    <div class="head"><span class="sid">TC-001</span><h3><span class="t">Search a keyword from home and land on the results page</span></h3><span class="tags"><span class="tag label">search-results</span><span class="tag label">keyword-search</span><span class="tag">Positive</span><span class="tag smoke">Smoke</span><span class="tag p0">P0</span></span></div>
+    <div class="gwt">
+      <div><h4>Given</h4><ul><li>I open the YouTube home page</li></ul></div>
+      <div><h4>When</h4><ul><li>I search for &quot;playwright&quot;</li></ul></div>
+      <div class="then"><h4>Then</h4><ul><li>I should be taken to the search results page</li><li>I should see video search results</li></ul></div>
+    </div>
+  </article><article class="scenario" id="case-TC-002" data-case="TC-002" data-priority="P1" data-type="negative">
+    <label class="check"><input type="checkbox" aria-label="TC-002"></label>
+    <div class="head"><span class="sid">TC-002</span><h3><span class="t">Submitting an empty keyword keeps the user on the home page</span></h3><span class="tags"><span class="tag label">search-results</span><span class="tag label">empty-keyword</span><span class="tag">Negative</span><span class="tag p1">P1</span></span></div>
+    <div class="gwt">
+      <div><h4>Given</h4><ul><li>I open the YouTube home page</li></ul></div>
+      <div><h4>When</h4><ul><li>I search for &quot;&quot;</li></ul></div>
+      <div class="then"><h4>Then</h4><ul><li>I should stay on the home page</li></ul></div>
+    </div>
+  </article><h3 class="rule-head">Edge Cases<span class="count">2</span></h3><article class="scenario" id="case-TC-003" data-case="TC-003" data-priority="P1" data-type="boundary">
+    <label class="check"><input type="checkbox" aria-label="TC-003"></label>
+    <div class="head"><span class="sid">TC-003</span><h3><span class="t">A keyword with no matches shows the empty state</span></h3><span class="tags"><span class="tag label">search-results</span><span class="tag label">no-results</span><span class="tag">Boundary</span><span class="tag boundary">Boundary</span><span class="tag p1">P1</span></span></div>
+    <div class="gwt">
+      <div><h4>Given</h4><ul><li>I open the YouTube home page</li></ul></div>
+      <div><h4>When</h4><ul><li>I search for &quot;zxqv9981nonexistentterm&quot;</li></ul></div>
+      <div class="then"><h4>Then</h4><ul><li>I should see a no-results message</li></ul></div>
+    </div>
+  </article><article class="scenario" id="case-TC-004" data-case="TC-004" data-priority="P2" data-type="boundary">
+    <label class="check"><input type="checkbox" aria-label="TC-004"></label>
+    <div class="head"><span class="sid">TC-004</span><h3><span class="t">A very long keyword is still searchable</span></h3><span class="tags"><span class="tag label">search-results</span><span class="tag label">long-keyword</span><span class="tag">Boundary</span><span class="tag boundary">Boundary</span><span class="tag manual">Manual</span><span class="tag ">P2</span></span></div>
+    <div class="gwt">
+      <div><h4>Given</h4><ul><li>I open the YouTube home page</li></ul></div>
+      <div><h4>When</h4><ul><li>I search for a 200-character keyword</li></ul></div>
+      <div class="then"><h4>Then</h4><ul><li>I should be taken to the search results page</li></ul></div>
+    </div>
+  </article></section><p class="empty-filter" id="ac-empty">No scenarios match these filters.</p></div>
+<div class="page" id="page-bdd" data-page="bdd"><p class="intro">The Gherkin below is the source of truth and becomes the automated tests after sign-off.</p><section class="row"><div class="row-label"><h2>Step colors</h2><p>Given, When and Then each have their own color.</p></div><div class="row-body"><div class="step-legend"><span><span class="g-step g-given">Given</span>precondition</span><span><span class="g-step g-when">When</span>action</span><span><span class="g-step g-then">Then</span>expected result</span><span class="muted">And / But inherit the previous step color</span></div></div></section><section class="row"><div class="row-label"><h2>Tags</h2><p>The reviewer checks coverage from tags.</p></div><div class="row-body"><table><tbody><tr><td style="width:88px"><b>Suite</b></td><td>Every scenario has @regression; core happy paths also get @smoke</td></tr><tr><td style="width:88px"><b>Execution</b></td><td>@auto means automatable; without it the scenario is checked manually</td></tr><tr><td style="width:88px"><b>Nature</b></td><td>Boundary tags mark only extremes: limits, exhaustion, races, failures</td></tr><tr><td style="width:88px"><b>Labels</b></td><td>Other tags describe the page and condition</td></tr><tr><td style="width:88px"><b>IDs</b></td><td>IDs, priority and risks live in design.json, not in tags</td></tr></tbody></table></div></section><div class="file-block"><div class="file-head"><span class="mono">design/features/search.feature</span>
+      <button class="copy" type="button" data-src="raw-0" data-label="Copy" data-done="Copied">Copy</button></div>
+      <pre class="code"><span class="ln" data-n="1"><span class="g-cmt"># Note: target site https://www.youtube.com (public site, no in-house page code path)</span></span><span class="ln" data-n="2"><span class="g-kw">Feature:</span> YouTube Video Search</span><span class="ln" data-n="3">  As a visitor</span><span class="ln" data-n="4">  I want to search for videos</span><span class="ln" data-n="5">  So that I can quickly find the content I want to watch</span><span class="ln" data-n="6"> </span><span class="ln" data-n="7"><span class="g-cmt">  # ############################################</span></span><span class="ln" data-n="8"><span class="g-cmt">  # Keyword Search</span></span><span class="ln" data-n="9"><span class="g-cmt">  # ############################################</span></span><span class="ln" data-n="10">  <span class="g-tag">@search-results</span> <span class="g-tag">@smoke</span> <span class="g-tag">@regression</span> <span class="g-tag">@auto</span> <span class="g-tag">@keyword-search</span></span><span class="ln" data-n="11">  <span class="g-kw">Scenario:</span> Search a keyword from home and land on the results page</span><span class="ln" data-n="12">    <span class="g-step g-given">Given</span> I open the YouTube home page</span><span class="ln" data-n="13">    <span class="g-step g-when">When</span> I search for <span class="g-str">&quot;playwright&quot;</span></span><span class="ln" data-n="14">    <span class="g-step g-then">Then</span> I should be taken to the search results page</span><span class="ln" data-n="15">    <span class="g-step g-then">And</span> I should see video search results</span><span class="ln" data-n="16"> </span><span class="ln" data-n="17">  <span class="g-tag">@search-results</span> <span class="g-tag">@regression</span> <span class="g-tag">@auto</span> <span class="g-tag">@empty-keyword</span></span><span class="ln" data-n="18">  <span class="g-kw">Scenario:</span> Submitting an empty keyword keeps the user on the home page</span><span class="ln" data-n="19">    <span class="g-step g-given">Given</span> I open the YouTube home page</span><span class="ln" data-n="20">    <span class="g-step g-when">When</span> I search for <span class="g-str">&quot;&quot;</span></span><span class="ln" data-n="21">    <span class="g-step g-then">Then</span> I should stay on the home page</span><span class="ln" data-n="22"> </span><span class="ln" data-n="23"><span class="g-cmt">  # ############################################</span></span><span class="ln" data-n="24"><span class="g-cmt">  # Edge Cases</span></span><span class="ln" data-n="25"><span class="g-cmt">  # ############################################</span></span><span class="ln" data-n="26">  <span class="g-tag">@search-results</span> <span class="g-tag">@regression</span> <span class="g-tag">@auto</span> <span class="g-tag">@boundary</span> <span class="g-tag">@no-results</span></span><span class="ln" data-n="27">  <span class="g-kw">Scenario:</span> A keyword with no matches shows the empty state</span><span class="ln" data-n="28">    <span class="g-step g-given">Given</span> I open the YouTube home page</span><span class="ln" data-n="29">    <span class="g-step g-when">When</span> I search for <span class="g-str">&quot;zxqv9981nonexistentterm&quot;</span></span><span class="ln" data-n="30">    <span class="g-step g-then">Then</span> I should see a no-results message</span><span class="ln" data-n="31"> </span><span class="ln" data-n="32">  <span class="g-tag">@search-results</span> <span class="g-tag">@regression</span> <span class="g-tag">@boundary</span> <span class="g-tag">@long-keyword</span></span><span class="ln" data-n="33">  <span class="g-kw">Scenario:</span> A very long keyword is still searchable</span><span class="ln" data-n="34">    <span class="g-step g-given">Given</span> I open the YouTube home page</span><span class="ln" data-n="35">    <span class="g-step g-when">When</span> I search for a 200-character keyword</span><span class="ln" data-n="36">    <span class="g-step g-then">Then</span> I should be taken to the search results page</span></pre><textarea id="raw-0" hidden># Note: target site https://www.youtube.com (public site, no in-house page code path)
+Feature: YouTube Video Search
+  As a visitor
+  I want to search for videos
+  So that I can quickly find the content I want to watch
+
+  # ############################################
+  # Keyword Search
+  # ############################################
+  @search-results @smoke @regression @auto @keyword-search
+  Scenario: Search a keyword from home and land on the results page
+    Given I open the YouTube home page
+    When I search for &quot;playwright&quot;
+    Then I should be taken to the search results page
+    And I should see video search results
+
+  @search-results @regression @auto @empty-keyword
+  Scenario: Submitting an empty keyword keeps the user on the home page
+    Given I open the YouTube home page
+    When I search for &quot;&quot;
+    Then I should stay on the home page
+
+  # ############################################
+  # Edge Cases
+  # ############################################
+  @search-results @regression @auto @boundary @no-results
+  Scenario: A keyword with no matches shows the empty state
+    Given I open the YouTube home page
+    When I search for &quot;zxqv9981nonexistentterm&quot;
+    Then I should see a no-results message
+
+  @search-results @regression @boundary @long-keyword
+  Scenario: A very long keyword is still searchable
+    Given I open the YouTube home page
+    When I search for a 200-character keyword
+    Then I should be taken to the search results page
+</textarea></div></div>
+</main>
+<footer class="wrap faint" style="padding:var(--s5) var(--s6) var(--s6);font-size:var(--fs-xs);border-top:1px solid var(--rule)">TICKET-001 · 2026-09-29 03:20 UTC · design 000000000000</footer>
+<script>
+
+  const pages = [...document.querySelectorAll('.page')];
+  const links = [...document.querySelectorAll('nav.tabs a')];
+  const show = (id) => {
+    const target = pages.some((p) => p.dataset.page === id) ? id : pages[0].dataset.page;
+    pages.forEach((p) => p.classList.toggle('on', p.dataset.page === target));
+    links.forEach((a) => {
+      const on = a.getAttribute('href') === '#' + target;
+      a.classList.toggle('on', on);
+      a.setAttribute('aria-current', on ? 'page' : 'false');
+    });
+  };
+  const route = () => {
+    const [page, anchor] = location.hash.slice(1).split('/');
+    show(page);
+    document.querySelectorAll('.target').forEach((el) => el.classList.remove('target'));
+    const el = anchor && document.getElementById(anchor);
+    if (el) {
+      el.classList.add('target');
+      el.scrollIntoView({ block: 'center' });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
+  window.addEventListener('hashchange', route);
+  route();
+
+  const storeKey = 'qa-review:TICKET-001';
+  const checked = new Set(JSON.parse(localStorage.getItem(storeKey) || '[]'));
+  const items = [...document.querySelectorAll('.scenario[data-case]')];
+  const progressText = document.getElementById('ac-progress');
+  const meter = document.getElementById('ac-meter');
+  const updateProgress = () => {
+    if (!progressText) return;
+    progressText.textContent = progressText.dataset.label.replace('{n}', checked.size).replace('{total}', items.length);
+    meter.style.width = items.length ? `${(checked.size / items.length) * 100}%` : '0';
+  };
+  items.forEach((item) => {
+    const box = item.querySelector('input[type=checkbox]');
+    const sync = () => item.classList.toggle('checked', box.checked);
+    box.checked = checked.has(item.dataset.case);
+    sync();
+    box.addEventListener('change', () => {
+      box.checked ? checked.add(item.dataset.case) : checked.delete(item.dataset.case);
+      sync();
+      localStorage.setItem(storeKey, JSON.stringify([...checked]));
+      updateProgress();
+    });
+  });
+  updateProgress();
+
+  const search = document.getElementById('ac-search');
+  const priority = document.getElementById('ac-priority');
+  const type = document.getElementById('ac-type');
+  const emptyFilter = document.getElementById('ac-empty');
+  const applyFilter = () => {
+    const q = (search.value || '').trim().toLowerCase();
+    let visible = 0;
+    items.forEach((item) => {
+      const hit = (!q || item.textContent.toLowerCase().includes(q))
+        && (!priority.value || item.dataset.priority === priority.value)
+        && (!type.value || item.dataset.type === type.value);
+      item.hidden = !hit;
+      if (hit) visible += 1;
+    });
+    document.querySelectorAll('.feature').forEach((f) => { f.hidden = !f.querySelector('.scenario:not([hidden])'); });
+    emptyFilter.style.display = visible ? 'none' : 'block';
+  };
+  if (search) [search, priority, type].forEach((el) => el.addEventListener('input', applyFilter));
+
+  const applyTheme = (theme) => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('qa-theme', theme);
+    document.querySelectorAll('iframe.proto-frame').forEach((f) => f.contentWindow?.postMessage({ qaTheme: theme }, '*'));
+    window.dispatchEvent(new CustomEvent('qa-theme', { detail: theme }));
+  };
+  document.querySelectorAll('.theme-toggle').forEach((btn) => btn.addEventListener('click', () => {
+    applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  }));
+  document.querySelectorAll('iframe.proto-frame').forEach((f) => f.addEventListener('load', () => {
+    f.contentWindow?.postMessage({ qaTheme: document.documentElement.dataset.theme }, '*');
+  }));
+
+  document.querySelectorAll('button.copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = document.getElementById(btn.dataset.src).value;
+      try { await navigator.clipboard.writeText(text); btn.textContent = btn.dataset.done; } catch { btn.textContent = '✗'; }
+      setTimeout(() => { btn.textContent = btn.dataset.label; }, 1600);
+    });
+  });
+</script>
+<script type="module">
+
+  const nodes = [...document.querySelectorAll('pre.mermaid')];
+  if (nodes.length > 0) {
+    nodes.forEach((n) => { n.dataset.source = n.textContent; });
+    const palette = () => {
+      const css = getComputedStyle(document.documentElement);
+      const v = (name) => css.getPropertyValue(name).trim();
+      return {
+        fontFamily: 'Helvetica Neue, PingFang TC, sans-serif', fontSize: '14px',
+        primaryColor: v('--paper'), primaryBorderColor: v('--ink'), primaryTextColor: v('--ink'),
+        lineColor: v('--slate'), edgeLabelBackground: v('--marker-fill'), tertiaryColor: v('--paper'),
+        labelTextColor: v('--ink'), textColor: v('--ink'), background: v('--paper')
+      };
+    };
+    try {
+      const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+
+      mermaid.initialize({ startOnLoad: false });
+
+      let drawnTheme = null;
+      const visible = () => nodes.some((n) => n.offsetParent !== null);
+      const render = async () => {
+        const theme = document.documentElement.dataset.theme;
+        if (!visible() || drawnTheme === theme) return;
+        drawnTheme = theme;
+        mermaid.initialize({
+          startOnLoad: false, theme: 'base', themeVariables: palette(),
+          flowchart: { htmlLabels: false, curve: 'basis', nodeSpacing: 48, rankSpacing: 90, padding: 12 }
+        });
+        nodes.forEach((n) => { n.removeAttribute('data-processed'); n.textContent = n.dataset.source; });
+        await mermaid.run({ nodes });
+      };
+      await render();
+      window.addEventListener('qa-theme', render);
+      window.addEventListener('hashchange', () => setTimeout(render, 0));
+    } catch {
+      document.querySelectorAll('.diagram-note').forEach((n) => { n.hidden = false; });
+    }
+  }
+</script>
+</body>
+</html>
