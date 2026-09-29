@@ -1,6 +1,6 @@
 ---
 name: qa-scripts
-description: Stage 5 of the qa-ticket pipeline — add automation for @auto scenarios in the testcases/ main library. Dispatch playwright-test-planner to walk each scenario live in a real browser, extract real locators into an implementation evidence map and judge feasibility, then dispatch playwright-test-generator to write step definitions / Page Objects / fixtures from the evidence map. Triggers on "write YouTube automation", "implement steps", "add step definition", "page object", "youtube automation", "automate a feature", "playwright agentic".
+description: Stage 5 of the qa-ticket pipeline — add automation for @auto scenarios in the testcases/ main library. The main session runs the planner per feature (walk each scenario live in a real browser, extract real locators into an implementation evidence map, judge feasibility), then the generator writes step definitions / Page Objects / fixtures from the evidence map; with multiple features, generators run as parallel subagents. Triggers on "write YouTube automation", "implement steps", "add step definition", "page object", "youtube automation", "automate a feature", "playwright agentic".
 argument-hint: "<TICKET-xxx | feature path | @tag | scenario name | empty=scan all gaps>"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent
 ---
@@ -17,9 +17,9 @@ The `.feature` files are signed off and merged into the main library, so this st
 
 | Situation | How to run |
 |---|---|
-| Single-scenario feasibility | live-probe inline in the main session, no planner |
+| Single-scenario feasibility | live-probe directly, no full evidence map |
 | Locator / wait fix on existing code | inline: inspect the real page → fix POM/step → run the subset (qa-run territory) |
-| The user already gave the screen + scenario + location | act directly; don't dispatch an agent to re-explore |
+| The user already gave the screen + scenario + location | act directly; don't re-explore |
 | Batch of many scenarios (almost every ticket) | run steps 1–4 below |
 
 ## 1. Scope
@@ -29,7 +29,7 @@ cd youtube
 ```
 
 - `TICKET-xxx` → the @auto scenarios in the main-library files mapped from `runs/{ticket}/cases/`; a feature path / `@tag` / scenario name works the same; empty → scan all gaps.
-- The main session does not read `youtube-automation.md` / `gherkin.md` in full upfront; the generator consults them as needed.
+- The planner step does not read `youtube-automation.md` / `gherkin.md`; the generator step consults them as needed.
 - Scenarios always come from `../testcases/**/*.feature` (read-only).
 
 ## 2. Gap discovery
@@ -43,7 +43,7 @@ List the missing layers per scenario (step / POM method / component / fixture). 
 
 ## 3. Planner → evidence map
 
-Dispatch **`playwright-test-planner`** with: feature path + gap scenario list + start URL. **Do not attach existing POM / step summaries** — the planner's first action is opening the browser, not reading code. Multiple features → one planner per feature, at most 4 in parallel.
+The main session follows the body of `.claude/agents/playwright-test-planner.md`, **one feature at a time**: the first action is opening the browser, not reading POM / step code. The browser is a single session — no parallel runs, no subagent. After each feature, write its evidence map and report one line before the next.
 
 It writes `youtube/evidence/{feature relative path}.md`: verified locator per step + feasibility:
 
@@ -57,9 +57,12 @@ It writes `youtube/evidence/{feature relative path}.md`: verified locator per st
 
 ## 4. Generator
 
-Dispatch **`playwright-test-generator`** for feasible scenarios with: scenario list + evidence map path + gaps + summary of existing POM / step / fixture. **Every selector must trace back to the evidence map; never invent one.**
+Write code following the body of `.claude/agents/playwright-test-generator.md` and `youtube-automation.md`. **Every selector must trace back to the evidence map; never invent one.**
 
-Multiple features in parallel: first one generator for the shared base (BasePage, fixture merge file, common steps, tags), then one per feature writing only its own domain files, then one to merge shared requests and run `npm run check`.
+| Feasible features | How |
+|---|---|
+| 1 | the main session writes it directly |
+| ≥ 2 | 1. The main session writes the shared base (BasePage, fixture merge file, common steps, tags)<br>2. In one message, dispatch one `playwright-test-generator` subagent per feature with the scenario list, evidence map path, gaps, and shared-base summary; each writes only its own domain files and lists shared-file requests in its reply<br>3. The main session merges shared requests and runs `npm run check` |
 
 ## Report
 

@@ -1,6 +1,6 @@
 ---
 name: playwright-test-planner
-description: Does "implementation evidence exploration" for existing YouTube BDD scenarios — using Playwright MCP to walk each @auto scenario in a real browser, extracting verified real locators, confirming feasibility step by step, and producing an implementation evidence map with feasibility tags. Writes no automation code. Dispatched by the qa-scripts skill.
+description: Does "implementation evidence exploration" for existing YouTube BDD scenarios — using Playwright MCP to walk each @auto scenario in a real browser, extracting verified real locators, confirming feasibility step by step, and producing an implementation evidence map with feasibility tags. Writes no automation code. Run by qa-scripts in the main session.
 tools: Read, Grep, Glob, Bash, Write, mcp__playwright-test__planner_setup_page, mcp__playwright-test__browser_snapshot, mcp__playwright-test__browser_navigate, mcp__playwright-test__browser_navigate_back, mcp__playwright-test__browser_click, mcp__playwright-test__browser_type, mcp__playwright-test__browser_fill_form, mcp__playwright-test__browser_hover, mcp__playwright-test__browser_select_option, mcp__playwright-test__browser_press_key, mcp__playwright-test__browser_wait_for, mcp__playwright-test__browser_evaluate, mcp__playwright-test__browser_generate_locator, mcp__playwright-test__browser_console_messages, mcp__playwright-test__browser_network_requests
 model: sonnet
 color: green
@@ -16,7 +16,7 @@ The main session gives you:
 
 ## Core Principles
 
-- **Your first action is always to open the browser**: the first tool call after dispatch must be `planner_setup_page` (→ `browser_navigate` to the target URL if needed) → `browser_snapshot`. **Before the browser is open, Read / Grep / Glob on any codebase or rules file is forbidden** — live observation of the real page is faster and more accurate than reading code, and reading code only burns context. Do not read `youtube-automation.md` / `gherkin.md`; the selector priority you need is inlined below.
+- **Your first action is always to open the browser**: the first tool call must be `planner_setup_page` (→ `browser_navigate` to the target URL if needed) → `browser_snapshot`. **Before the browser is open, Read / Grep / Glob on any codebase or rules file is forbidden** — live observation of the real page is faster and more accurate than reading code, and reading code only burns context. Do not read `youtube-automation.md` / `gherkin.md`; the selector priority you need is inlined below.
 - **Explore only, never assume**: always obtain locators from the actually-rendered page and verify a unique match; never fabricate them from source code or imagination.
 - **Rely on snapshot, not screenshots**: use `browser_snapshot` to read the aria tree for role/name/ref; do not screenshot unless necessary.
 - **Finish everything, then report — never stop mid-run**: walk **all** scenarios in the list in one pass; do not come back to ask the user in between. Record every deviation (step vs Gherkin mismatch / TC_STALE), suspected product bug, and required setup URL into the evidence map as you go, and list them all at once in your final message.

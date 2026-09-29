@@ -7,7 +7,7 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, Skill, mcp__atlassian
 
 # qa-ticket — orchestrator
 
-The main session only orchestrates, talks to the user, and reads/writes `progress.md`. Heavy stages are always dispatched to a subagent (`general-purpose`, model sonnet); artifacts go to disk and only a summary comes back, so Jira / browser / repo content never floods the main context.
+**The main session loads each stage's qa-* skill with Skill and runs it itself**, reporting progress at every step and reading/writing `progress.md`. No subagents by default: the user sees progress live, and nothing has to re-read the context from scratch. Subagents are used only where they add speed or independence (see §When to dispatch a subagent).
 
 ```
 context → risk → cases → ★sign-off → scripts → run → review → close → done
@@ -53,37 +53,40 @@ Update `stage:` and the stage row after each stage; resuming relies on this file
 
 | stage | Runs | Done when (checked by the main session) |
 |---|---|---|
-| 1 context | subagent → `qa-context` | `context.md` exists with target behaviors and main-library mapping |
-| 2 risk | subagent → `qa-risk` | `risks.md` exists, every risk has a level |
-| 3 cases | design subagent → `qa-cases`; review by a separate independent subagent (see qa-cases §Review) | `test_matrix.md` self-check has all 10 techniques, `.feature` files exist, `bdd_review.md` ≥ 85 or 4 rounds reached |
-| 4 sign-off | **main session + user** | explicit user approval |
-| 5 scripts | per `qa-scripts` (planner → generator) | every `@auto` scenario has an evidence map and feasibility |
-| 6 run | per `qa-run` (verify → oracle audit → healer) | feasible scenarios green or reason recorded |
+| 1 context | load `qa-context` | `context.md` exists with target behaviors and main-library mapping |
+| 2 risk | load `qa-risk` | `risks.md` exists, every risk has a level |
+| 3 cases | load `qa-cases`: design → independent review → fix | `test_matrix.md` self-check has all 10 techniques, `.feature` files exist, `bdd_review.md` ≥ 85 or 4 rounds reached |
+| 4 sign-off | **you + user** | explicit user approval |
+| 5 scripts | load `qa-scripts`: planner → generator, one feature at a time | every `@auto` scenario has an evidence map and feasibility |
+| 6 run | load `qa-run`: verify → oracle audit → heal | feasible scenarios green or reason recorded |
 | 7 review | `/auto-code-review` (only when stages 5–6 added or changed automation code; otherwise mark skipped) | a verdict exists |
-| 8 close | **main session** (see §Close) | `progress.md` has a Close section |
+| 8 close | you (see §Close) | `progress.md` has a Close section |
 
 Each round:
-1. Before dispatching, print one line: `▶ [3/8 Case design] dispatching design subagent, ~3–5 min`
-2. After it returns, print one line: `✓ [3/8 Case design] 14 scenarios. Next: review`
-3. Check the done condition → if met, update `progress.md` and move on without asking the user.
-4. Not met → re-dispatch with what's missing in the prompt, at most 2 times; still failing or the subagent returns `needs-user` → print `⏸ Waiting for you: <one specific question>`.
+1. At the start, print one line: `▶ [3/8 Case design] starting design (2 features), ~3–5 min`
+2. Report one line per step inside a stage (design → review, planner → generator, verify → heal) and per finished feature: `✓ planner 2/4: search done`
+3. At the end, print one line: `✓ [3/8 Case design] 14 scenarios. Next: sign-off`
+4. Check the done condition → if met, update `progress.md` and move on without asking the user.
+5. Not met → fill the gap, at most 2 times; still failing or blocked on something only the user knows → print `⏸ Waiting for you: <one specific question>`.
 
-### Dispatch template
+### Context control
 
-```
-You are the executor for the "<stage>" stage of the QA pipeline.
-1. Read and follow .claude/skills/<qa-xxx>/SKILL.md.
-2. Ticket: <ticket>; artifact directory: runs/<ticket>/.
-3. <extra info: user notes, what was missing last time, review feedback…>
-4. Do not edit progress.md.
-5. Return only:
-   status: done | needs-user | blocked
-   summary: <at most three sentences>
-   counts: <key numbers for this stage>
-   question: <one question when needs-user>
-```
+All stages share one conversation, so save context on purpose:
+- Stages hand off only through artifact files; a new stage reads the sections it needs from disk, not from earlier conversation.
+- Large outputs (logs, diffs, bddgen output) → extract the needed part with `grep` / `sed -n` / `jq`; never read them whole.
+- One feature at a time; write its result to disk before starting the next, so an interrupted run resumes from what's unfinished.
 
-Subagents cannot dispatch subagents — anything parallel or requiring an independent review is dispatched by the main session.
+### When to dispatch a subagent
+
+Only for work that runs in parallel or needs an independent view; each returns a summary only. Dispatch in one message and wait in the foreground — never fire-and-forget in the background.
+
+| Stage | Dispatch | When |
+|---|---|---|
+| 3 cases | a brand-new independent reviewer per scoring round (`general-purpose`, model sonnet) | every round; avoids self-review bias |
+| 5 scripts | one `playwright-test-generator` per feature | ≥ 2 feasible features, after you've written the shared base |
+| 7 review | the reviewer inside `/auto-code-review` | per that skill |
+
+Everything else (design, planner, healer) runs in the main session: the browser is a single session and can't run in parallel, and fixes need to be visible live. Subagents cannot dispatch subagents.
 
 ## ★ Case sign-off (the only mandatory stop)
 
@@ -97,7 +100,7 @@ After cases are done, stop and present concisely in chat:
 5. Absolute path of the review page `runs/{ticket}/review.html` (open in a browser; the "Acceptance list" tab can go straight to the PM)
 
 **What counts as sign-off**: only explicit approval ("approved", "OK, continue", "LGTM"); vague replies or replies that also request changes do not count.
-- Changes requested → dispatch the design subagent with the user's exact words → re-review → ask again.
+- Changes requested → fix per the user's exact words → re-review → ask again.
 - After sign-off:
   1. Run `qa-merge {ticket}` to merge back into the `testcases/` main library (it lists the merge plan first).
   2. Record who signed off and a summary of their words in `progress.md`, move to stage 5.

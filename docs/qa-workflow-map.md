@@ -20,6 +20,8 @@ Artifacts live in `runs/{ticket}/`; rerun `/qa-ticket TICKET-xxx` to resume from
 | 7 review | `auto-code-review` | verdict |
 | 8 close | `qa-ticket` (main session) | Close section of `progress.md` |
 
+All stages run in the main session in order, reporting each step; subagents are used only for the independent BDD reviewer (cases) and per-feature generators when there are ≥ 2 features (scripts).
+
 Any single stage can be run on its own by calling its skill.
 
 ## Standing tools
