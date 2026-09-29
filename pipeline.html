@@ -2,251 +2,496 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=1200, initial-scale=1">
-<title>Agentic AI Testing Pipeline v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA pipeline · Playwright-Web-Agentic-Engineering-Automation</title>
+<script>
+  (() => {
+    const saved = localStorage.getItem('qa-theme');
+    const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;background:#e8edf3;font-family:"Aptos","Inter","Segoe UI",Arial,sans-serif;color:#1c2b3f}
-.slide{width:1200px;height:800px;margin:12px auto;background:#fff;overflow:hidden;border-radius:8px}
-.title{height:60px;text-align:center;padding:5px 12px 2px}
-.title h1{margin:0 auto;font-size:23px;line-height:28px;font-weight:800;max-width:1140px}
-.title .sub{font-size:15px;font-style:italic;line-height:19px;margin-bottom:3px}
-.rocket{font-size:25px;vertical-align:-3px;margin-right:4px}
+:root {
 
-.pipeline{min-height:232px;padding:0 15px 18px;
-  display:grid;grid-template-columns:repeat(3,1fr) 1fr repeat(3,1fr);
-  gap:22px;align-items:start
-}
-.card{position:relative;align-self:start;z-index:1;overflow:visible;border:1.8px solid #b3c1cf;border-radius:9px;padding:7px 8px;background:#fff}
-.card.blue{border-color:#b9cbe3}.card.green{border-color:#b9d7c8}.card.purple{border-color:#c9c0df}
-.card.orange{border-color:#e2c8aa}.card.teal{border-color:#b9d7dc}.card.red{border-color:#dfbfc1}
-.head{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.num{width:27px;height:27px;border-radius:7px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex:none}
-.blue .num{background:#275fc6}.green .num{background:#319b68}.purple .num{background:#51379b}
-.orange{z-index:2}.orange .num{background:#bd731e}.teal .num{background:#177f94}.red .num{background:#d0525a}
-.head h3{font-size:11.2px;line-height:12.5px;margin:0;font-weight:800}
-.toolrow{height:34px;display:flex;justify-content:center;align-items:center;gap:7px;margin:1px 0 3px}
-.logo{width:28px;height:28px;display:block;flex:none}
-.logo-label{font-size:9px;font-weight:700;color:#39485a}
+  --ink: #121314;
+  --ink-2: #2a2c30;
+  --slate: #5a5e6e;
+  --slate-2: #5e6771;
+  --paper: #ffffff;
+  --wash: #f5f6f8;
+  --rule: #e4e6ea;
+  --rule-2: #b3b8c2;
+  --marker: #3a7de8;
+  --marker-soft: #eaf2fd;
+  --marker-ink: #2560c4;
+  --flare: #e8651a;
+  --flare-soft: #fdeee4;
+  --flare-ink: #a8430a;
+  --on-marker: #ffffff;
+  --marker-fill: #2f6fd6;
+  --marker-hl: #c9dcfa;
+  --bar-bg: rgba(255, 255, 255, 0.94);
+  color-scheme: light;
 
-.qase-logo{
-  width:28px;height:28px;display:block;flex:none;
-}
+  --font: "Helvetica Neue", -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --fs-xs: 11px;
+  --fs-sm: 12.5px;
+  --fs-md: 14px;
+  --fs-lg: 17px;
+  --fs-xl: 24px;
+  --fs-2xl: 34px;
 
-.bot{width:39px;height:29px;border:1.5px solid #405167;border-radius:10px;background:linear-gradient(#fff,#e9eff5);display:flex;align-items:center;justify-content:center}
-.bot:before{content:"";position:absolute;margin-top:-36px;width:4px;height:4px;border:1.5px solid #405167;border-radius:50%;background:#fff}
-.eyes{display:flex;gap:6px}.eyes i{width:5px;height:5px;border-radius:50%;background:#2d5eaa}
-.list{margin:0;padding-left:14px;font-size:9.15px;line-height:1.24}
-.list li{margin:2.2px 0}
-.arrow{position:absolute;right:-16px;top:50%;transform:translateY(-50%);font-size:19px;font-weight:700;color:#264f77;z-index:3}
-.human{align-self:start;position:relative;z-index:10;border:1.3px solid #dfc77e;overflow:visible;border-radius:9px;background:#fffdf4;text-align:center;padding:7px 7px;display:flex;flex-direction:column;justify-content:center}
-.human .person{font-size:22px;line-height:23px}.human h3{font-size:9px;color:#8a641e;margin:2px 0 4px}
-.human p{font-size:8.6px;line-height:1.25;margin:3px 0}.human p.review-divider{border-top:1px dashed #c9b36f;padding-top:5px;margin-top:5px}.human .arrow{right:-19px;top:50%;z-index:30;display:block;line-height:1;pointer-events:none}
-
-
-.section-separator{height:22px;
-  margin:0 15px;
-  display:flex;
-  align-items:center;
-  position:relative;
-}
-.section-separator:before{
-  content:"";
-  position:absolute;
-  left:0;right:0;
-  height:2.5px;
-  background:#8fa4bb;
-}
-.section-separator span{
-  width:88px;height:5px;border-radius:4px;
-  background:#315d8f;
-  position:relative;
-  margin-left:10px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
+  --radius: 6px;
+  --label-col: 208px;
+  --page: 1240px;
 }
 
-.flow{height:130px;padding:8px 15px 7px;
-  display:grid;grid-template-columns:repeat(6,1fr);gap:14px;align-items:center
-}
-.flowbox{height:108px;border:1.1px solid #c6d0db;border-radius:8px;padding:7px 8px;position:relative;background:#fff}
-.flowbox h4{margin:0 0 5px;text-align:center;font-size:10px;line-height:12px}
-.flowcontent{display:flex;gap:7px;align-items:center}
-.flowicon{width:34px;height:34px;flex:none;border-radius:6px;display:flex;align-items:center;justify-content:center}
-.flowicon.j{background:#edf2ff}.flowicon.ai{background:#eef7f2}.flowicon.tm{background:#eef1f6}.flowicon.ts{background:#eaf3ff}.flowicon.rep{background:#f0f4f8}
-.flowtext{font-size:8.7px;line-height:1.28}.flowtext ul{margin:0;padding-left:13px}.flowtext li{margin:2px 0}
-.flowarrow{position:absolute;right:-18px;top:41px;font-size:20px;color:#264f77;z-index:3}
-.label{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:7.8px;white-space:nowrap;color:#5c6877}
-
-.bottom{height:262px;padding:7px 15px 8px;
-  display:grid;grid-template-columns:1fr 1fr;gap:10px
-}
-.panel{border:1.2px solid #c5d0db;border-radius:10px;overflow:hidden;background:#fff}
-.paneltitle{height:29px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
-.bluehead{background:#173f70;color:#fff}.greenhead{background:#eef8f1;color:#2d7a54}.purplehead{background:#f4efff;color:#593b96}
-.panelbody{padding:9px}
-.stack{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.stackitem{height:38px;border:1px solid #e0e5eb;border-radius:7px;display:flex;align-items:center;gap:7px;padding:5px 6px;font-size:9px;font-weight:700}
-.stackitem .logo{width:25px;height:25px}
-.note{margin-top:5px;padding:5px 8px;border:1px solid #c8d8e8;background:#eef5fc;border-radius:7px;font-size:8.4px;line-height:1.25}
-.outcome{display:flex;gap:7px;margin-bottom:5px}
-.check{width:18px;height:18px;border-radius:50%;background:#49a86e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none}
-.outcome b{display:block;font-size:9.3px;line-height:11px;color:#2e654b}.outcome span{display:block;font-size:8.3px;line-height:10px;color:#46515f}
-.arch{padding:7px 8px}.layer{border:1px solid #c2cdd9;border-radius:7px;padding:5px 6px;margin:4px 0}.layer h5{font-size:8.6px;margin:0 0 3px;color:#2d4f74}
-.chips{display:flex;flex-wrap:wrap;gap:3px}.chip{font-size:7.5px;padding:3px 4px;border-radius:4px;background:#edf3f8;color:#3b5066}
-.hbar{border:1px solid #dfc989;background:#fffaf0;color:#805d20;border-radius:6px;text-align:center;padding:4px;font-size:7.8px;margin:4px 0}
-.aarr{text-align:center;color:#58728d;font-size:10px;line-height:9px}
-
-.horizontal-arch{
-  height:270px;
-  padding:8px 8px 6px;
-}
-.arch-row{
-  display:flex;
-  align-items:stretch;
-  justify-content:center;
-  gap:7px;
-  width:100%;
-}
-.horizontal-arch .layer{
-  margin:0;
-  flex:1 1 0;
-  min-width:0;
-  min-height:68px;
-}
-.horizontal-arch .layer h5{
-  font-size:8px;
-  line-height:9px;
-}
-.horizontal-arch .chips{
-  gap:3px;
-}
-.horizontal-arch .chip{
-  font-size:6.9px;
-  padding:3px 3.5px;
-}
-.horizontal-arch .aarr{
-  flex:0 0 15px;
-  align-self:center;
-  font-size:15px;
-  line-height:1;
-}
-.horizontal-arch .hbar{display:none}
-
-
-.brand-logo{
-  width:28px;height:28px;display:block;flex:none;object-fit:contain;
-}
-.brand-logo.sm{
-  width:24px;height:24px;
-}
-.brand-label{
-  font-size:9px;font-weight:700;color:#39485a;white-space:nowrap;
+:root[data-theme="dark"] {
+  --ink: #ffffff;
+  --ink-2: #dcdee3;
+  --slate: #a4a9b6;
+  --slate-2: #8b93a0;
+  --paper: #000000;
+  --wash: #0d0e10;
+  --rule: #22252a;
+  --rule-2: #3a3f47;
+  --marker: #3a7de8;
+  --marker-soft: rgba(58, 125, 232, 0.18);
+  --marker-ink: #7aa9f2;
+  --flare: #f07a33;
+  --flare-soft: rgba(240, 122, 51, 0.14);
+  --flare-ink: #ff9c5e;
+  --marker-hl: #3a7de8;
+  --on-marker: #ffffff;
+  --marker-fill: #2f6fd6;
+  --bar-bg: rgba(0, 0, 0, 0.92);
+  color-scheme: dark;
 }
 
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 var(--fs-md)/1.65 var(--font); -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 2px; }
+.mono, code { font-family: var(--mono); font-size: 0.92em; letter-spacing: -0.01em; }
+.muted { color: var(--slate); }
+.faint { color: var(--slate-2); }
+.wrap { max-width: var(--page); margin: 0 auto; padding: 0 var(--s6); }
+
+.mark {
+  background: linear-gradient(100deg, transparent 0 1%, var(--marker-hl) 3% 96%, transparent 99%) no-repeat 0 62% / 100% 58%;
+  padding: 0 2px; margin: 0 -2px; color: var(--ink);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.flare-text { color: var(--flare-ink); }
+
+:root[data-theme="dark"] .mark {
+  background: var(--marker-fill); padding: 0 4px; margin: 0; border-radius: 2px; color: var(--on-marker);
+}
+
+.masthead { border-bottom: 1px solid var(--rule); background: var(--paper); }
+.masthead .top {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s4);
+  padding: var(--s5) 0 0; font-size: var(--fs-sm); color: var(--slate);
+}
+.masthead .kicker { font-weight: 600; color: var(--ink); letter-spacing: 0.02em; }
+.masthead .kicker::before {
+  content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 8px; vertical-align: -1px;
+  background: var(--marker); border: 1px solid var(--ink);
+}
+.masthead h1 {
+  margin: var(--s4) 0 var(--s5); max-width: 30em;
+  font-size: var(--fs-2xl); line-height: 1.25; font-weight: 700; letter-spacing: -0.01em;
+}
+.stamp {
+  display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 10px;
+  border: 1.5px solid currentColor; border-radius: 999px; font-size: var(--fs-sm); font-weight: 600; white-space: nowrap;
+}
+.stamp::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.stamp.pending { color: var(--flare-ink); }
+.stamp.confirmed { color: var(--marker-ink); background: var(--marker-soft); }
+.stamp.stale { color: #fff; background: var(--flare); border-color: var(--flare); }
+.masthead .right { display: flex; align-items: center; gap: var(--s3); }
+.theme-toggle {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid var(--rule-2); border-radius: 999px;
+  background: var(--paper); color: var(--slate); font: inherit; font-size: var(--fs-sm); cursor: pointer;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+.theme-toggle svg { width: 14px; height: 14px; }
+.theme-toggle .sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+.tabs-bar { position: sticky; top: 0; z-index: 20; background: var(--bar-bg); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+nav.tabs { display: flex; gap: var(--s6); overflow-x: auto; scrollbar-width: none; }
+nav.tabs a {
+  position: relative; padding: 14px 0 13px; font-size: var(--fs-md); color: var(--slate);
+  text-decoration: none; white-space: nowrap;
+}
+nav.tabs a .n { font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); margin-right: 6px; }
+nav.tabs a:hover { color: var(--ink); }
+nav.tabs a.on { color: var(--ink); font-weight: 600; }
+nav.tabs a.on::after {
+  content: ""; position: absolute; left: -3px; right: -3px; bottom: -1px; height: 5px; background: var(--marker);
+}
+
+main { padding-bottom: var(--s8); }
+.page { display: none; }
+.page.on { display: block; animation: rise 0.28s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .page.on { animation: none; } }
+
+.intro { padding: var(--s6) 0 var(--s4); max-width: 46em; color: var(--slate); font-size: var(--fs-md); }
+.row {
+  display: grid; grid-template-columns: var(--label-col) minmax(0, 1fr); gap: var(--s6);
+  padding: var(--s6) 0; border-top: 1px solid var(--rule-2);
+}
+.row:first-of-type { border-top: 0; }
+.row-label h2 { margin: 0; font-size: var(--fs-md); font-weight: 600; letter-spacing: 0.01em; }
+.row-label p { margin: 6px 0 0; font-size: var(--fs-sm); color: var(--slate); line-height: 1.55; }
+.row-label .count { display: block; margin-top: var(--s3); font-family: var(--mono); font-size: var(--fs-sm); color: var(--ink); }
+.row-body { min-width: 0; }
+@media (max-width: 860px) {
+  .wrap { padding: 0 var(--s4); }
+  .row { grid-template-columns: 1fr; gap: var(--s3); }
+  .masthead h1 { font-size: var(--fs-xl); }
+}
+
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+th {
+  text-align: left; font-weight: 500; color: var(--slate-2); font-size: var(--fs-xs); letter-spacing: 0.04em;
+  padding: 0 var(--s3) var(--s2); border-bottom: 1px solid var(--ink); white-space: nowrap;
+}
+td { padding: 11px var(--s3); border-bottom: 1px solid var(--rule); vertical-align: top; }
+th:first-child, td:first-child { padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+tr.skip td { color: var(--slate-2); }
+tr:target td, tr.target td { background: var(--marker-soft); }
+td.id { font-family: var(--mono); white-space: nowrap; color: var(--slate); }
+td ul { margin: 0; padding-left: 1.1em; }
+
+.tag {
+  display: inline-block; padding: 0 7px; border: 1px solid var(--rule-2); border-radius: 4px;
+  font-size: var(--fs-xs); line-height: 20px; color: var(--slate); white-space: nowrap; margin: 0 4px 2px 0;
+}
+.tag.p0 { border-color: var(--flare); color: var(--flare-ink); font-weight: 600; }
+.tag.p1 { border-color: var(--ink); color: var(--ink); font-weight: 600; }
+.tag.smoke { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.tag.label { border-color: transparent; background: var(--wash); color: var(--ink-2); }
+.tag.boundary { border-color: var(--flare); color: var(--flare-ink); }
+.tag.manual { border-style: dashed; }
+a.ref {
+  font-family: var(--mono); font-size: var(--fs-sm); color: var(--ink); text-decoration: none;
+  border-bottom: 1px solid var(--rule-2); margin-right: 4px; white-space: nowrap;
+}
+a.ref:hover { border-bottom-color: var(--ink); background: var(--marker-soft); }
+.status-ok { color: var(--marker-ink); font-weight: 600; }
+.status-bad { color: var(--flare-ink); font-weight: 600; }
+.status-na { color: var(--slate-2); }
+
+.notes { list-style: none; margin: 0; padding: 0; }
+.notes li { position: relative; padding: 8px 0 8px 18px; border-bottom: 1px solid var(--rule); }
+.notes li:last-child { border-bottom: 0; }
+.notes li::before { content: ""; position: absolute; left: 0; top: 16px; width: 8px; height: 2px; background: var(--flare); }
+.notes.neutral li::before { background: var(--slate-2); }
+
+@media print {
+  .tabs-bar, .toolbar, button.copy { display: none !important; }
+  .page { display: block !important; break-before: page; }
+  .proto-frame { display: none; }
+}
+
+.flow { margin: var(--s2) 0 var(--s7); }
+.flow .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); column-gap: 28px; }
+.flow .step {
+  position: relative; display: flex; flex-direction: column; min-height: 112px;
+  padding: 12px 12px 10px; border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--paper);
+}
+.flow .step:not(:last-child)::before {
+  content: ""; position: absolute; top: 50%; right: -29px; width: 28px; height: 1.5px; background: var(--ink);
+}
+.flow .step:not(:last-child)::after {
+  content: ""; position: absolute; top: calc(50% - 4px); right: -30px; width: 7px; height: 7px;
+  border-top: 1.5px solid var(--ink); border-right: 1.5px solid var(--ink); transform: rotate(45deg);
+}
+.flow .no { font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); }
+.flow .star { margin-left: 6px; color: var(--flare); }
+.flow .name { margin-top: 4px; font-weight: 600; font-size: var(--fs-md); line-height: 1.35; }
+.flow .out { margin-top: 4px; font-size: var(--fs-sm); color: var(--slate); line-height: 1.4; }
+.flow .state { margin-top: auto; padding-top: 8px; font-size: var(--fs-xs); font-weight: 600; }
+.flow .step.done .state { color: var(--marker-ink); }
+.flow .step.done .state::before { content: "✓ "; }
+.flow .step.todo { border-style: dashed; background: transparent; }
+.flow .step.todo .name, .flow .step.todo .out, .flow .step.todo .state { color: var(--slate-2); }
+.flow .step.todo:not(:last-child)::before { background: var(--rule-2); }
+.flow .step.todo:not(:last-child)::after { border-color: var(--rule-2); }
+.flow .step.here {
+  background: var(--marker-fill); border: 1.5px solid var(--ink); color: var(--on-marker);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.flow .step.here .no, .flow .step.here .out, .flow .step.here .state { color: var(--on-marker); }
+.flow .step.here .out { opacity: 0.8; }
+.flow .step.here .state::before { content: "● "; }
+.flow .step.gate:not(.here) { border-color: var(--flare); }
+
+.flow .design-branch {
+  display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); column-gap: 28px; margin-top: 18px; position: relative;
+}
+.flow .branch-label {
+  grid-column: 3 / span 1; position: relative; font-size: var(--fs-xs); letter-spacing: 0.04em; color: var(--slate);
+  padding-top: 12px; text-align: center;
+}
+.flow .branch-label::before { content: ""; position: absolute; left: 50%; top: -18px; height: 26px; border-left: 1.5px dashed var(--rule-2); }
+.flow .substeps {
+  grid-column: 2 / span 5; list-style: none; margin: 8px 0 0; padding: 12px 14px; display: flex; gap: 22px; align-items: flex-start;
+  border: 1px dashed var(--rule-2); border-radius: var(--radius); background: var(--wash);
+}
+.flow .substeps li { position: relative; flex: 1; min-width: 0; }
+.flow .substeps li:not(:last-child)::after { content: "→"; position: absolute; right: -17px; top: 0; color: var(--slate-2); }
+.flow .substeps .name { display: block; margin: 0; font-size: var(--fs-sm); font-weight: 600; }
+.flow .substeps .out { display: block; margin: 2px 0 0; font-size: var(--fs-xs); }
+.flow .legend-line { margin: var(--s4) 0 0; font-size: var(--fs-sm); color: var(--slate); }
+.flow .legend-line b { color: var(--ink); }
+@media (max-width: 1080px) {
+  .flow .steps { grid-template-columns: 1fr; row-gap: 22px; }
+  .flow .step { min-height: 0; }
+  .flow .step:not(:last-child)::before { top: auto; bottom: -23px; right: auto; left: 24px; width: 1.5px; height: 22px; }
+  .flow .step:not(:last-child)::after { top: auto; bottom: -23px; right: auto; left: 20.5px; transform: rotate(135deg); }
+  .flow .design-branch { display: block; }
+  .flow .branch-label { display: block; text-align: left; padding-top: 0; }
+  .flow .branch-label::before { display: none; }
+  .flow .substeps { flex-direction: column; gap: 8px; }
+  .flow .substeps li::after { display: none; }
+}
+
+.figures { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+.figures div { padding: 14px 16px 4px 0; }
+.figures div + div { padding-left: 16px; border-left: 1px solid var(--rule); }
+.figures b { display: block; font-family: var(--mono); font-weight: 500; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; }
+.figures b small { font-size: 14px; color: var(--slate-2); font-weight: 400; }
+.figures span { display: block; margin-top: 6px; font-size: var(--fs-sm); color: var(--slate); }
+@media (max-width: 860px) { .figures { grid-template-columns: repeat(3, 1fr); } .figures div:nth-child(4) { border-left: 0; padding-left: 0; } }
+
+.sources { margin: 0; padding: 0; list-style: none; }
+.sources li { display: grid; grid-template-columns: 72px 1fr; gap: var(--s3); padding: 6px 0; font-size: var(--fs-sm); }
+.sources li span:first-child { font-family: var(--mono); color: var(--slate-2); }
+
+.risk-list { list-style: none; margin: 0; padding: 0; }
+.risk-list li {
+  display: grid; grid-template-columns: 48px 34px minmax(0, 1.4fr) minmax(0, 1fr) 96px; gap: var(--s3); align-items: baseline;
+  padding: 12px 0; border-bottom: 1px solid var(--rule);
+}
+.risk-list li:first-child { border-top: 1px solid var(--ink); }
+.risk-list .rid { font-family: var(--mono); font-size: var(--fs-sm); color: var(--slate); }
+.risk-list .impact { display: block; font-size: var(--fs-sm); color: var(--slate); }
+.risk-list .state { text-align: right; font-size: var(--fs-sm); }
+@media (max-width: 860px) { .risk-list li { grid-template-columns: 44px 34px 1fr; } .risk-list li > :nth-child(4), .risk-list .state { grid-column: 3; text-align: left; } }
+
+.techniques { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--ink); border-left: 1px solid var(--rule); }
+.techniques > div { min-width: 0; overflow-wrap: anywhere; padding: 14px 14px 16px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); min-height: 118px; }
+.techniques h3 { margin: 0; font-size: var(--fs-md); font-weight: 600; }
+.techniques .en { display: block; font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); margin-top: 2px; }
+.techniques p { margin: 10px 0 0; font-size: var(--fs-sm); line-height: 1.5; }
+.techniques .na h3 { color: var(--slate); font-weight: 500; }
+.techniques .na { background: repeating-linear-gradient(135deg, transparent 0 7px, var(--wash) 7px 8px); }
+.techniques .na p { color: var(--slate); }
+@media (max-width: 860px) { .techniques { grid-template-columns: 1fr 1fr; } }
+
+.score { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--s6); align-items: start; }
+.score .total b { font-family: var(--mono); font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -0.03em; }
+.score .total small { font-family: var(--mono); font-size: 16px; color: var(--slate-2); }
+.score .total p { margin: var(--s3) 0 0; font-size: var(--fs-sm); color: var(--slate); }
+.bars { list-style: none; margin: 0; padding: 0; }
+.bars li { display: grid; grid-template-columns: 116px minmax(0, 1fr) 56px; gap: var(--s3); align-items: center; padding: 5px 0; font-size: var(--fs-sm); }
+.bars .bar { height: 6px; background: var(--wash); position: relative; }
+.bars .bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); }
+.bars .v { font-family: var(--mono); text-align: right; color: var(--slate); }
+.review-notes { margin: var(--s5) 0 0; }
+@media (max-width: 860px) { .score { grid-template-columns: 1fr; } }
+
+.matrix + .matrix { margin-top: var(--s7); }
+.matrix-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s4); margin-bottom: var(--s3); }
+.matrix-head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 600; }
+.matrix-head .meta { font-size: var(--fs-sm); color: var(--slate); white-space: nowrap; }
+.matrix-desc { margin: -4px 0 var(--s3); font-size: var(--fs-sm); color: var(--slate); }
+td.skipped { color: var(--slate); font-size: var(--fs-sm); }
+td.skipped em { font-style: normal; font-weight: 600; margin-right: 6px; }
+
+.diagram {
+  border: 1px solid var(--rule); padding: var(--s6); overflow-x: auto; text-align: center;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--rule) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.diagram pre.mermaid { margin: 0; white-space: pre; font-size: var(--fs-sm); color: var(--slate); text-align: left; display: block; }
+.diagram pre.mermaid[data-processed] { text-align: center; }
+.diagram svg { display: block; margin: 0 auto; min-width: 640px; }
+.diagram .edgeLabel rect, .diagram .edgeLabel .background { fill: var(--marker-fill) !important; opacity: 1 !important; }
+.diagram .node rect, .diagram .node path { stroke-width: 1.5px; }
+
+.diagram .node.start .label, .diagram .node.start text { display: none; }
+.diagram .node.start circle, .diagram .node.start path, .diagram .node.start rect { fill: var(--ink) !important; stroke: var(--ink) !important; }
+.arrow { color: var(--slate-2); margin: 0 6px; }
+
+.diagram .edgeLabel, .diagram .edgeLabel * { color: var(--on-marker) !important; fill: var(--on-marker) !important; }
+
+.proto-frame { display: block; width: 100%; height: calc(100vh - 150px); min-height: 760px; border: 1px solid var(--rule); background: var(--wash); }
+.proto-open { font-size: var(--fs-sm); }
+
+.toolbar {
+  position: sticky; top: 49px; z-index: 10; background: var(--paper);
+  display: flex; gap: var(--s3); align-items: center; flex-wrap: wrap; padding: var(--s4) 0; border-bottom: 1px solid var(--rule);
+}
+.toolbar input[type=search], .toolbar select {
+  height: 36px; border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--paper);
+  font: inherit; font-size: var(--fs-sm); color: var(--ink); padding: 0 12px;
+}
+.toolbar input[type=search] { flex: 1; min-width: 220px; }
+.toolbar input[type=search]:focus, .toolbar select:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
+.progress { display: flex; align-items: center; gap: 10px; font-size: var(--fs-sm); color: var(--slate); white-space: nowrap; }
+.progress .meter { width: 120px; height: 6px; background: var(--wash); position: relative; }
+.progress .meter i { position: absolute; inset: 0 auto 0 0; background: var(--marker); transition: width 0.2s; }
+.progress .meter { box-shadow: inset 0 0 0 1px var(--rule); }
+
+.feature { padding-top: var(--s7); }
+.feature-head h2 { margin: 0; font-size: var(--fs-xl); font-weight: 700; letter-spacing: -0.01em; }
+.feature-head .file { font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); }
+.story { margin: var(--s3) 0 var(--s5); padding-left: var(--s4); border-left: 3px solid var(--marker); color: var(--ink-2); font-size: var(--fs-md); }
+.story span { display: block; }
+.rule-head { margin: var(--s6) 0 0; padding-bottom: 6px; font-size: var(--fs-md); font-weight: 600; color: var(--ink); }
+.rule-head .count { margin-left: 8px; font-family: var(--mono); font-size: var(--fs-xs); color: var(--slate-2); font-weight: 400; }
+
+.scenario { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 0 var(--s3); padding: var(--s5) 0; border-bottom: 1px solid var(--rule); }
+.rule-head + .scenario, .story + .scenario { border-top: 1px solid var(--ink); }
+.scenario .check { padding-top: 3px; }
+.scenario .check input {
+  appearance: none; width: 20px; height: 20px; margin: 0; border: 1.5px solid var(--ink); border-radius: 4px; cursor: pointer; background: var(--paper);
+  display: grid; place-items: center;
+}
+.scenario .check input:checked { background: var(--marker-fill); }
+.scenario .check input:checked { border-color: var(--marker-fill); }
+.scenario .check input:checked::after { content: ""; width: 9px; height: 5px; border: 2px solid var(--on-marker); border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+.scenario .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--s3); }
+.scenario .sid { font-family: var(--mono); font-size: var(--fs-sm); color: var(--slate); }
+.scenario h3 { margin: 0; font-size: var(--fs-lg); font-weight: 600; line-height: 1.45; }
+.scenario .tags { margin-left: auto; }
+.scenario.checked h3 .t { color: var(--ink); background: linear-gradient(100deg, transparent 0 1%, var(--marker-hl) 3% 96%, transparent 99%) no-repeat 0 62% / 100% 58%; }
+:root[data-theme="dark"] .scenario.checked h3 .t { color: var(--on-marker); background: var(--marker-fill); padding: 0 4px; border-radius: 2px; }
+.gwt { grid-column: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s5); margin-top: var(--s4); }
+.gwt h4 { margin: 0 0 6px; font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.06em; color: var(--slate-2); }
+.gwt ul { margin: 0; padding: 0; list-style: none; font-size: var(--fs-md); }
+.gwt li { padding: 2px 0 2px 14px; position: relative; }
+.gwt li::before { content: ""; position: absolute; left: 0; top: 12px; width: 6px; height: 1px; background: var(--slate-2); }
+.gwt .then li::before { width: 8px; height: 4px; top: 8px; border: 1.5px solid var(--marker-ink); border-top: 0; border-right: 0; background: none; transform: rotate(-45deg); }
+.examples { grid-column: 2; margin-top: var(--s4); max-width: 560px; }
+.examples h4 { margin: 0 0 4px; font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.06em; color: var(--slate-2); }
+.examples td { padding: 6px var(--s3); font-size: var(--fs-sm); }
+.empty-filter { padding: var(--s7) 0; color: var(--slate); text-align: center; display: none; }
+@media (max-width: 860px) { .gwt { grid-template-columns: 1fr; gap: var(--s3); } .scenario .tags { margin-left: 0; } }
+
+/* ---------- 6. BDD ---------- */
+.legend { display: flex; flex-wrap: wrap; gap: 6px var(--s5); font-size: var(--fs-sm); color: var(--slate); }
+.legend code { color: var(--ink); }
+.file-block + .file-block { margin-top: var(--s6); }
+.file-head {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--s3);
+  padding: 10px 0; border-bottom: 1px solid var(--ink); position: sticky; top: 49px; background: var(--paper); z-index: 5;
+}
+.file-head .mono { font-size: var(--fs-sm); }
+button.copy {
+  height: 30px; padding: 0 12px; border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--paper);
+  font: inherit; font-size: var(--fs-sm); color: var(--ink); cursor: pointer;
+}
+button.copy:hover { border-color: var(--ink); }
+pre.code { margin: 0; padding: var(--s4) 0; overflow-x: auto; font: 13px/1.7 var(--mono); background: var(--paper); }
+pre.code .ln { display: block; padding-right: var(--s4); white-space: pre; }
+pre.code .ln::before { content: attr(data-n); display: inline-block; width: 36px; margin-right: 18px; color: var(--rule-2); text-align: right; }
+pre.code .ln:hover { background: var(--wash); }
+:root {
+  --step-given: #1f5fb8; --step-given-bg: #e7effb;
+  --step-when: #7a3cc4; --step-when-bg: #f1e9fb;
+  --step-then: #2e6e1c; --step-then-bg: #e6f3df;
+  --step-str: #8a5200;
+}
+:root[data-theme="dark"] {
+  --step-given: #8ab8ff; --step-given-bg: rgba(138, 184, 255, 0.14);
+  --step-when: #c9a6ff; --step-when-bg: rgba(201, 166, 255, 0.14);
+  --step-then: #a6e27f; --step-then-bg: rgba(166, 226, 127, 0.13);
+  --step-str: #f0c36a;
+}
+.g-kw { color: var(--ink); font-weight: 600; }
+.g-step { font-weight: 600; padding: 0 5px; margin-left: -5px; border-radius: 3px; }
+.g-given { color: var(--step-given); background: var(--step-given-bg); }
+.g-when { color: var(--step-when); background: var(--step-when-bg); }
+.g-then { color: var(--step-then); background: var(--step-then-bg); }
+.step-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 26px; font-size: var(--fs-sm); }
+.step-legend .g-step { font-family: var(--mono); margin: 0 8px 0 0; }
+.g-tag { color: var(--slate); }
+.g-tc { color: var(--ink); background: var(--marker-soft); }
+.g-str { color: var(--step-str); }
+.g-cmt { color: var(--slate-2); font-style: italic; }
+</style>
+<style>
+.flow .step .state.ai { color: var(--slate-2); }
+.flow .step.here .state.ai { color: var(--on-marker); }
+.flow .step code { font-size: var(--fs-xs); }
+.do { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--s4); }
+.do li { border:1px solid var(--rule); border-radius:var(--radius); padding:var(--s4); background:var(--paper); }
+.do li b { display:block; font-family:var(--mono); font-size:var(--fs-xs); color:var(--slate-2); margin-bottom:6px; }
+.do li h3 { font-size:var(--fs-lg); margin:0 0 6px; }
+.do li p { margin:0; color:var(--slate); font-size:var(--fs-sm); line-height:1.6; }
+.do li.me { border-color:var(--marker); box-shadow: inset 0 0 0 1px var(--marker); }
+@media (max-width: 900px) { .do { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
-<div class="slide">
-  <div class="title">
-    <h1><span class="rocket">🚀</span>Agentic AI Testing Pipeline: From Jira Story to Self-Maintaining Playwright Tests</h1>
-    <div class="sub">AI Understands. Humans Decide. Quality Stays in Control.</div>
-  </div>
-
-  <section class="pipeline">
-    <article class="card blue">
-      <div class="head"><div class="num">1</div><h3>JIRA AGENT</h3></div>
-      <div class="toolrow"><img class="brand-logo" src="https://jira.atlassian.com/favicon.ico" alt="Jira" loading="eager" decoding="async"><span class="brand-label">Jira</span><div class="bot"><span class="eyes"><i></i><i></i></span></div>
-      </div>
-      <ul class="list"><li>Reads Jira story &amp; acceptance criteria</li><li>Extracts requirements</li><li>Maintains traceability back to Jira</li></ul><span class="arrow">→</span>
-    </article>
-
-    <article class="card green">
-      <div class="head"><div class="num">2</div><h3>PLANNING AGENT</h3></div>
-      <div class="toolrow"><img class="brand-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5Nzc1NyIgc3Ryb2tlLXdpZHRoPSI0LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CjxwYXRoIGQ9Ik0zMiA3djUwIi8+PHBhdGggZD0iTTcgMzJoNTAiLz4KPHBhdGggZD0ibTE0LjMgMTQuMyAzNS40IDM1LjQiLz48cGF0aCBkPSJtNDkuNyAxNC4zLTM1LjQgMzUuNCIvPgo8cGF0aCBkPSJtMjIgMTAuNiAyMCA0Mi44Ii8+PHBhdGggZD0ibTQyIDEwLjYtMjAgNDIuOCIvPgo8cGF0aCBkPSJtMTAuNiAyMiA0Mi44IDIwIi8+PHBhdGggZD0ibTEwLjYgNDIgNDIuOC0yMCIvPgo8L2c+PC9zdmc+" alt="Claude" loading="eager" decoding="sync"><span class="brand-label">Claude</span><div class="bot"><span class="eyes"><i></i><i></i></span></div>
-      </div>
-      <ul class="list"><li>Analyzes Jira requirements and feature scope</li><li>Builds and validates the <b>Test Matrix</b></li><li>Designs <b>State Machine</b> and <b>UI Prototype</b></li><li>Identifies coverage gaps, edge cases &amp; inconsistencies</li><li>Generates <b>BDD test scenarios</b></li></ul><span class="arrow">→</span>
-    </article>
-
-    <article class="card purple">
-      <div class="head"><div class="num">3</div><h3>TEST SCENARIO<br>REVIEW AGENT</h3></div>
-      <div class="toolrow"><div class="bot"><span class="eyes"><i></i><i></i></span></div></div>
-      <ul class="list"><li>Reviews AI-generated test scenarios</li><li>Validates coverage against <b>Test Matrix &amp; State Machine</b></li><li>Identifies missing edge cases, duplicated scenarios &amp; inconsistencies</li><li>Checks scenario quality and alignment with requirements</li><li>Provides improvement suggestions for human review</li></ul><span class="arrow">→</span>
-    </article>
-
-    <article class="human">
-      <div class="person">👤</div><h3>HUMAN REVIEW #1</h3>
-      <p><b>Review &amp; approve generated test scenarios.</b></p>
-      <p class="review-divider">Verify coverage against requirements, Test Matrix &amp; State Machine.</p>
-      <p class="review-divider">QA validates test scope, accuracy &amp; business relevance.</p><span class="arrow">→</span>
-    </article>
-
-    <article class="card orange">
-      <div class="head"><div class="num">4</div><h3>TEST MANAGEMENT<br>AGENT</h3></div>
-      <div class="toolrow">
-        <svg class="qase-logo" viewBox="0 0 32 32" aria-label="Qase">
-          <circle cx="16" cy="16" r="12.5" fill="none" stroke="#172b4d" stroke-width="3"/>
-          <path d="M11 16h10M16 11v10" stroke="#172b4d" stroke-width="2.4" stroke-linecap="round"/>
-        </svg>
-        <span class="logo-label">Qase</span>
-        <div class="bot"><span class="eyes"><i></i><i></i></span></div>
-      </div>
-      <ul class="list"><li>Uploads approved test scenarios to <b>Test Management Tools</b></li><li>Links test cases with the <b>Jira ticket</b></li><li>Maintains <b>end-to-end traceability</b></li></ul><span class="arrow">→</span>
-    </article>
-
-    <article class="card teal">
-      <div class="head"><div class="num">5</div><h3>GENERATOR AGENT</h3></div>
-      <div class="toolrow" style="gap:10px"><img class="brand-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5Nzc1NyIgc3Ryb2tlLXdpZHRoPSI0LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CjxwYXRoIGQ9Ik0zMiA3djUwIi8+PHBhdGggZD0iTTcgMzJoNTAiLz4KPHBhdGggZD0ibTE0LjMgMTQuMyAzNS40IDM1LjQiLz48cGF0aCBkPSJtNDkuNyAxNC4zLTM1LjQgMzUuNCIvPgo8cGF0aCBkPSJtMjIgMTAuNiAyMCA0Mi44Ii8+PHBhdGggZD0ibTQyIDEwLjYtMjAgNDIuOCIvPgo8cGF0aCBkPSJtMTAuNiAyMiA0Mi44IDIwIi8+PHBhdGggZD0ibTEwLjYgNDIgNDIuOC0yMCIvPgo8L2c+PC9zdmc+" alt="Claude" loading="eager" decoding="sync"><img class="brand-logo" src="https://openai.com/favicon.ico" alt="OpenAI Codex" loading="eager" decoding="async"><img class="brand-logo" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"></div>
-      <ul class="list"><li>Converts approved test scenarios into <b>automated test cases</b></li><li>Uses <b>Playwright CLI / MCP</b> to interact with and understand the application</li><li>Generates <b>Playwright TypeScript</b> test code</li><li>Creates reusable <b>Page Objects, components &amp; test helpers</b></li><li>Generates <b>test data, configurations &amp; supporting code</b></li></ul><span class="arrow">→</span>
-    </article>
-
-    <article class="card red">
-      <div class="head"><div class="num">6</div><h3>EXECUTION &amp;<br>HEALER AGENT</h3></div>
-      <div class="toolrow"><div class="bot"><span class="eyes"><i></i><i></i></span><span style="margin-left:6px;font-size:18px">⌁</span></div></div>
-      <ul class="list"><li>Executes automated <b>Playwright TypeScript tests</b></li><li>Collects and analyzes <b>test failures, logs &amp; test artifacts</b></li><li>Diagnoses <b>application defects or automation issues</b></li><li>Performs <b>self-healing</b> for automation issues, such as locator updates</li><li>Re-runs affected tests to validate the fix</li><li>Creates a <b>Jira bug</b> only when a real product defect is confirmed</li></ul>
-    </article>
-  </section>
-
-  <div class="section-separator">
-    <span></span>
-  </div>
-
-  <section class="flow">
-    <div class="flowbox"><h4>Jira Ticket</h4><div class="flowcontent"><div class="flowicon j"><img class="brand-logo sm" src="https://jira.atlassian.com/favicon.ico" alt="Jira" loading="eager" decoding="async"></div><div class="flowtext"><ul><li>User Story</li><li>Acceptance Criteria</li><li>Requirements</li></ul></div></div><span class="flowarrow">→</span></div>
-    <div class="flowbox"><h4>Test Planning &amp; Design</h4><div class="flowcontent"><div class="flowicon ai">✦</div><div class="flowtext"><ul><li>Test Matrix</li><li>State Machine</li><li>UI Prototype</li><li>Coverage &amp; Edge Cases</li></ul></div></div><span class="flowarrow">→</span><span class="label">REVIEW &amp; SIGN-OFF</span></div>
-    <div class="flowbox"><h4>Test Scenarios</h4><div class="flowcontent"><div class="flowicon ai">✓</div><div class="flowtext"><ul><li>BDD Scenarios</li><li>Test Conditions</li><li>Expected Results</li><li>Test Data</li></ul></div></div><span class="flowarrow">→</span></div>
-    <div class="flowbox"><h4>Test Management Tools</h4><div class="flowcontent"><div class="flowicon tm">TM</div><div class="flowtext"><ul><li>Approved Test Cases</li><li>Linked to Jira</li><li>Traceability</li><li>Requirements Coverage</li></ul></div></div><span class="flowarrow">→</span><span class="label">APPROVE &amp; UPLOAD</span></div>
-    <div class="flowbox"><h4>Playwright Tests (TypeScript)</h4><div class="flowcontent"><div class="flowicon ts"><img class="brand-logo sm" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"></div><div class="flowtext"><ul><li>Page Objects</li><li>Reusable Components</li><li>Test Helpers / Utils</li><li>Tests (Specs)</li></ul></div></div><span class="flowarrow">→</span><span class="label">RUN &amp; HEAL</span></div>
-    <div class="flowbox"><h4>Test Execution &amp; Reports</h4><div class="flowcontent"><div class="flowicon rep"><svg class="report-icon" viewBox="0 0 32 32" aria-label="Report">
-  <rect x="5" y="3.5" width="22" height="25" rx="3" fill="none" stroke="#50657A" stroke-width="2"/>
-  <path d="M10 10h12M10 15h12M10 20h7" stroke="#50657A" stroke-width="2" stroke-linecap="round"/>
-  <path d="M21 18v5M18.5 20.5h5" stroke="#50657A" stroke-width="1.8" stroke-linecap="round"/>
-</svg></div><div class="flowtext"><ul><li>Pass / Fail</li><li>Screenshots</li><li>Videos</li><li>Logs</li><li>Playwright Smart Reporter</li></ul></div></div></div>
-  </section>
-
-  <section class="bottom">
-    <div class="panel"><div class="paneltitle bluehead">TECH STACK</div><div class="panelbody">
-      <div class="stack">
-        <div class="stackitem"><img class="brand-logo sm" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q5Nzc1NyIgc3Ryb2tlLXdpZHRoPSI0LjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CjxwYXRoIGQ9Ik0zMiA3djUwIi8+PHBhdGggZD0iTTcgMzJoNTAiLz4KPHBhdGggZD0ibTE0LjMgMTQuMyAzNS40IDM1LjQiLz48cGF0aCBkPSJtNDkuNyAxNC4zLTM1LjQgMzUuNCIvPgo8cGF0aCBkPSJtMjIgMTAuNiAyMCA0Mi44Ii8+PHBhdGggZD0ibTQyIDEwLjYtMjAgNDIuOCIvPgo8cGF0aCBkPSJtMTAuNiAyMiA0Mi44IDIwIi8+PHBhdGggZD0ibTEwLjYgNDIgNDIuOC0yMCIvPgo8L2c+PC9zdmc+" alt="Claude" loading="eager" decoding="sync"><span>Claude</span></div>
-        <div class="stackitem"><img class="brand-logo sm" src="https://openai.com/favicon.ico" alt="OpenAI Codex" loading="eager" decoding="async"><span>Codex</span></div>
-        <div class="stackitem"><img class="brand-logo sm" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"><span>Playwright CLI / MCP</span></div>
-        <div class="stackitem"><img class="brand-logo sm" src="https://www.typescriptlang.org/favicon-32x32.png" alt="TypeScript" loading="eager" decoding="async"><span>Playwright TypeScript</span></div>
-        <div class="stackitem"><img class="brand-logo sm" src="https://jira.atlassian.com/favicon.ico" alt="Jira" loading="eager" decoding="async"><span>Jira</span></div>
-        <div class="stackitem"><div style="font-weight:900;font-size:9px">TM</div>Test Management Tools</div>
-        <div class="stackitem"><img class="brand-logo sm" src="https://github.com/favicon.ico" alt="GitHub" loading="eager" decoding="async"><span>GitHub</span></div>
-        <div class="stackitem"><img class="brand-logo sm" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" loading="eager" decoding="async"><span>Playwright Report</span></div>
-      </div>
-    </div></div>
-    <div class="panel">
-      <div class="paneltitle greenhead">KEY OUTCOMES</div>
-      <div class="panelbody">
-        <div class="outcome"><div class="check">✓</div><div><b>Structured Test Design</b><span>From requirements to structured test artifacts</span></div></div>
-        <div class="outcome"><div class="check">✓</div><div><b>Requirement-Driven Coverage</b><span>Validates coverage before automation</span></div></div>
-        <div class="outcome"><div class="check">✓</div><div><b>Human-in-the-Loop Quality Control</b><span>AI generates. Humans approve.</span></div></div>
-        <div class="outcome"><div class="check">✓</div><div><b>End-to-End Traceability</b><span>Jira → Test Scenarios → Test Management → Automation</span></div></div>
-        <div class="outcome"><div class="check">✓</div><div><b>Reusable &amp; Maintainable Automation</b><span>Generates reusable Playwright test assets</span></div></div>
-        <div class="outcome"><div class="check">✓</div><div><b>Self-Healing &amp; Defect Isolation</b><span>Separates automation issues from real defects</span></div></div>
-      </div>
+<header class="masthead">
+  <div class="wrap">
+    <div class="top">
+      <span class="kicker">QA pipeline · YouTube demo</span>
+      <span class="right"><span class="stamp pending" title="The pipeline stops only once, at case sign-off">One stop</span><button type="button" class="theme-toggle" aria-label="Toggle dark / light" title="Toggle dark / light">
+  <svg class="moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7Z"/></svg>
+  <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3 3l1 1M12 12l1 1M3 13l1-1M12 4l1-1"/></svg>
+</button></span>
     </div>
-  </section>
+    <h1>One ticket, one line</h1>
+  </div>
+</header>
+<main class="wrap">
+<div class="page on" data-page="overview">
+<p class="intro">Hand one Jira ticket to <code>/qa-ticket</code> and it runs from reading the ticket to close-out, stopping only once for case sign-off. Artifacts live in <code>runs/{ticket}/</code>; rerun <code>/qa-ticket TICKET-xxx</code> to resume after an interruption. Environment (dev / staging / prod) is an annotation, not a stage.</p>
+<div class="flow" role="img" aria-label="Context → Risk analysis → Case design → Sign-off → Scripts → Run &amp; repair → Code review → Close">
+<ol class="steps"><li class="step"><span class="no">01</span><span class="name">Context</span><span class="out"><code>qa-context</code><br>context.md</span><span class="state ai">AI</span></li><li class="step"><span class="no">02</span><span class="name">Risk analysis</span><span class="out"><code>qa-risk</code><br>risks.md</span><span class="state ai">AI</span></li><li class="step"><span class="no">03</span><span class="name">Case design</span><span class="out"><code>qa-cases</code><br>review.html</span><span class="state ai">AI</span></li><li class="step here gate"><span class="no">04<span class="star" aria-hidden="true">★</span></span><span class="name">Sign-off</span><span class="out"><code>qa-merge</code><br>merge into testcases/</span><span class="state ai">You decide</span></li><li class="step"><span class="no">05</span><span class="name">Scripts</span><span class="out"><code>qa-scripts</code><br>evidence/ · code</span><span class="state ai">AI</span></li><li class="step"><span class="no">06</span><span class="name">Run &amp; repair</span><span class="out"><code>qa-run</code><br>test results</span><span class="state ai">AI</span></li><li class="step"><span class="no">07</span><span class="name">Code review</span><span class="out"><code>auto-code-review</code><br>verdict</span><span class="state ai">AI</span></li><li class="step"><span class="no">08</span><span class="name">Close</span><span class="out"><code>qa-ticket</code><br>verdict · manual checks</span><span class="state ai">AI</span></li></ol>
+<div class="design-branch"><span class="branch-label">How cases are designed</span><ol class="substeps"><li><span class="name">Test matrix</span><span class="out">10 techniques + self-check</span></li><li><span class="name">State machine</span><span class="out">only with state transitions</span></li><li><span class="name">Prototype</span><span class="out">only for new pages</span></li><li><span class="name">BDD scenarios</span><span class="out">Modified = diff only</span></li><li><span class="name">Independent review</span><span class="out">≥ 85, at most 4 rounds</span></li></ol></div>
+<p class="legend-line"><b>★ Sign-off is the only step that needs your decision; </b>every other stage is done by AI. Automation starts only after sign-off.</p>
 </div>
+<section class="row"><div class="row-label"><h2>What you do</h2><p>Only three things need you.</p></div><div class="row-body"><ol class="do">
+<li><b>1 · Start</b><h3>Run <code>/qa-ticket TICKET-xxx</code></h3><p>Context, risk and case design run on their own, with one progress line at the start and end of each stage.</p></li>
+<li class="me"><b>2 · The only stop</b><h3>Open review.html, reply "approved"</h3><p>Matrix, state machine, prototype, acceptance list and BDD on one page. Ask for changes and it re-reviews before asking again.</p></li>
+<li><b>3 · Wrap up</b><h3>Do the manual checks</h3><p>After sign-off it writes automation, runs tests and reviews code, then lists in progress.md the scenarios automation can't cover.</p></li>
+</ol></div></section>
+<section class="row"><div class="row-label"><h2>When it stops</h2><p>Besides sign-off, only when it is truly stuck.</p></div><div class="row-body"><ul class="notes "><li>Case sign-off: the only fixed stop</li><li>Jira can't read the ticket, or it is too thin to design cases</li><li>Browser tooling unavailable or the target site unreachable</li><li>Suspected product bug: it asks before filing, never files on its own</li></ul><p class="muted" style="margin-top:12px">Scenarios that can't be automated (NOT_FEASIBLE) or are outdated (TC_STALE) never stop the run; they are listed at close.</p></div></section>
+<section class="row"><div class="row-label"><h2>Where things live</h2><p>One workspace per ticket; only signed-off BDD enters the main library.</p></div><div class="row-body"><table><thead><tr><th>Path</th><th>Contents</th><th>Written by</th><th>In git</th></tr></thead><tbody><tr><td><code>runs/{ticket}/</code></td><td>context, risks, matrix, state machine, BDD, review.html, <code>progress.md</code></td><td>/qa-ticket stages</td><td><span class="status-na">no</span></td></tr><tr><td><code>testcases/</code></td><td>BDD main library, single source of truth</td><td>qa-merge only (after sign-off)</td><td><span class="status-ok">yes</span></td></tr><tr><td><code>youtube/evidence/</code></td><td>planner evidence maps, the source of every selector</td><td>qa-scripts</td><td><span class="status-ok">yes</span></td></tr><tr><td><code>releases/{version}.md</code></td><td>release sign-offs</td><td>tool-qa-release-gate</td><td><span class="status-na">no</span></td></tr></tbody></table></div></section>
+<section class="row"><div class="row-label"><h2>After close</h2><p>Always asked first, never automatic.</p></div><div class="row-body"><table><thead><tr><th>What</th><th>Command</th><th>Result</th></tr></thead><tbody><tr><td>Sync to Jira</td><td><code>/tool-jira-sync TICKET-xxx</code></td><td>one TEST sub-task: AC on the ticket, review.html attached</td></tr><tr><td>Open a PR</td><td><code>/auto-create-pull-request</code></td><td>when there is new automation code</td></tr><tr><td>File candidate bugs</td><td><code>/tool-open-qa-bug</code></td><td>a bug sub-task under the feature ticket</td></tr></tbody></table></div></section>
+<section class="row"><div class="row-label"><h2>Before a release</h2><p>Run once when a version's tickets are closed.</p></div><div class="row-body"><ul class="notes neutral"><li>Pulls the version's tickets and open bugs by fixVersion, reads each ticket's progress.md verdict</li><li>Any open P0 bug → NO-GO; otherwise readiness ≥ 80 GO, 70–79 CONDITIONAL-GO</li><li>Writes <code>releases/{version}.md</code>: ticket status, post-deploy sanity checklist, sign-off table; a human always signs</li></ul><p style="margin-top:12px"><code>/tool-qa-release-gate vX.X</code></p></div></section>
+<section class="row"><div class="row-label"><h2>Standing tools</h2><p>Outside the main flow, available any time.</p></div><div class="row-body"><table><thead><tr><th>When</th><th>Command</th></tr></thead><tbody><tr><td>Rank tickets by risk</td><td><code>/qa-risk vX.X</code></td></tr><tr><td>Reproduce a reported issue</td><td><code>/tool-root-cause-analysis</code></td></tr><tr><td>Hunt blind spots after scripted tests</td><td><code>/tool-exploratory-testing TICKET-xxx</code></td></tr><tr><td>Rerun a single stage</td><td><code>/qa-cases TICKET-xxx</code> and the other stage skills</td></tr></tbody></table></div></section>
+</div>
+</main>
+<script>
+  document.querySelectorAll('.theme-toggle').forEach((btn) => btn.addEventListener('click', () => {
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('qa-theme', theme);
+  }));
+</script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 | [← Back to README](../../README.md) | [Environment Setup →](02-setup.md) |
 |:---|---:|
-| Back to overview | Step 2: Installation and Setup |
+| Back to overview | Step 2: Installation and setup |
 
 **Step 1 / 6**
 
@@ -10,62 +10,51 @@
 
 ## What is Playwright-Web-Agentic-Engineering-Automation?
 
-`Playwright-Web-Agentic-Engineering-Automation` is an **AI-native QA pipeline**, with `https://www.youtube.com` as the product under test.
+An end-to-end AI QA engineering pipeline. Reading tickets, assessing risk, writing the test matrix, writing BDD, writing automation and running tests are done by AI agents (Claude Code); QA engineers focus on **quality decisions**: are the cases right, is anything missing, can we ship.
 
-Traditional QA work—writing test matrices, authoring BDD cases, tracking Jira tickets—is executed with the help of AI (Claude Code), while the QA engineer focuses on **quality decisions**: confirming the scope is correct, checking whether any cases are missing, and deciding whether to sign off.
+It uses **`https://www.youtube.com`** (guest / logged-out) as the live target. To adopt it, swap the target for your product URL.
 
 > AI handles the tedious work; humans make the quality decisions.
 
 ---
 
-## What is the product under test?
-
-This project uses `https://www.youtube.com` as its single product under test, covering the full AI-native QA workflow.
-
-| Product Under Test | Platform | Description |
-|---|---|---|
-| YouTube Web | `youtube` | `https://www.youtube.com` (guest/logged-out) |
-
-> To apply this framework to your own product, swap the product under test for your own site and fill in your repo mapping in `.claude/CODEBASE.md`.
-
----
-
-## Directory Structure
+## Directory structure
 
 ```
 Playwright-Web-Agentic-Engineering-Automation/
 ├── .claude/
-│   ├── skills/          ← AI skill definitions (full index in docs/qa-workflow-map.md)
-│   └── rules/           ← Gherkin, commit, and PR format rules
+│   ├── skills/          ← qa-ticket pipeline and standing tools
+│   ├── agents/          ← automation planner / generator / healer
+│   └── rules/           ← Gherkin, automation, commit, PR rules
 ├── docs/
-│   ├── tutorial/      ← you are here (03-skills = full skill ref, 04-workflow = full workflow)
-│   ├── qa-workflow-map.md  ← stage → skill single source of truth
-│   └── skills-guide.html   ← which skill to use at each stage (interactive)
-├── testcases/           ← Stable BDD case main library (single source of truth)
-├── features/{ticket}/   ← Workspace during Feature development
-├── versions/{version}/  ← Version acceptance workspace
-└── youtube/  ← YouTube Web E2E automation framework
+│   ├── tutorial/        ← you are here
+│   └── qa-workflow-map.md ← stage → skill index
+├── pipeline.html        ← visual pipeline overview
+├── testcases/           ← BDD main library (single source of truth)
+├── runs/{ticket}/       ← per-ticket workspace (git-ignored)
+└── youtube/             ← YouTube Web E2E automation
 ```
 
-**The three most important concepts:**
+**The three things that matter most:**
 
-1. **skills** — When you type a command like `/stage-test-matrix TICKET-123` in Claude Code, it is backed by a definition in `.claude/skills/`
-2. **testcases/** — The main library of all released BDD cases, read-only (only `/stage-tc-merge` can write to it)
-3. **versions/{version}/** — The temporary workspace for each version, cleared after merge
+1. **`/qa-ticket TICKET-xxx`** — the only command to remember. One ticket from start to close, stopping only once at case sign-off.
+2. **`runs/{ticket}/`** — every artifact for that ticket; `progress.md` records where it is, so rerunning `/qa-ticket TICKET-xxx` resumes.
+3. **`testcases/`** — the main library, written only by `qa-merge` after sign-off; read-only otherwise.
 
 ---
 
-## The Six Stages of the QA Workflow
+## The pipeline at a glance
 
 ```
-Test Planning → Case Generation → Feature Testing → Merge Back → Quality Gate → Sync
-   /stage-test-matrix     /stage-write-bdd                    /stage-tc-merge    /tool-qa-release-gate    /stage-jira-sync
+/qa-ticket TICKET-xxx
+context → risk → cases → ★sign-off → scripts → run → review → close
+ facts     risks   design   merge      automate   verify  code review  verdict
 ```
 
-See Step 4 for the detailed workflow.
+Before a release, `/tool-qa-release-gate vX.X` makes the go / no-go call for the version. Details in Step 4.
 
 ---
 
-| [← Back to README](../../README.md) | [Environment Setup →](02-setup.md) |
+| [← README](../../README.md) | [Environment Setup →](02-setup.md) |
 |:---|---:|
-| Back to overview | Step 2: Installation and Setup |
+| Back to overview | Step 2: Installation and setup |

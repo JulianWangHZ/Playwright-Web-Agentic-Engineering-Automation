@@ -1,6 +1,6 @@
 ---
 name: playwright-test-planner
-description: Does "implementation evidence exploration" for existing YouTube BDD scenarios — using Playwright MCP to walk each @auto scenario in a real browser, extracting verified real locators, confirming feasibility step by step, and producing an implementation evidence map with feasibility tags. Writes no automation code. Dispatched by the playwright-agentic-automation-workflow skill at P2-P3.
+description: Does "implementation evidence exploration" for existing YouTube BDD scenarios — using Playwright MCP to walk each @auto scenario in a real browser, extracting verified real locators, confirming feasibility step by step, and producing an implementation evidence map with feasibility tags. Writes no automation code. Dispatched by the qa-scripts skill.
 tools: Read, Grep, Glob, Bash, Write, mcp__playwright-test__planner_setup_page, mcp__playwright-test__browser_snapshot, mcp__playwright-test__browser_navigate, mcp__playwright-test__browser_navigate_back, mcp__playwright-test__browser_click, mcp__playwright-test__browser_type, mcp__playwright-test__browser_fill_form, mcp__playwright-test__browser_hover, mcp__playwright-test__browser_select_option, mcp__playwright-test__browser_press_key, mcp__playwright-test__browser_wait_for, mcp__playwright-test__browser_evaluate, mcp__playwright-test__browser_generate_locator, mcp__playwright-test__browser_console_messages, mcp__playwright-test__browser_network_requests
 model: sonnet
 color: green
@@ -44,7 +44,7 @@ The main session gives you:
 | `AUTOMATABLE` | every step has a locator verified on the real page; can be handed straight to the generator |
 | `NEEDS_URL_SETUP` | automatable, but must start from a specific video/channel/search URL (note the starting URL or setup navigation steps) |
 | `NOT_FEASIBLE` | depends on uncontrollable factors such as manual review / third party / visual comparison; recommend keeping it manual |
-| `TC_STALE` | the walk found product behavior that does not match the `.feature` (the TC is outdated); needs to go back to `/stage-write-bdd` for correction, do not automate for now |
+| `TC_STALE` | the walk found product behavior that does not match the `.feature` (the TC is outdated); no code; the case goes back to `/qa-cases` for correction and re-sign-off |
 
 ## Evidence Map Format
 

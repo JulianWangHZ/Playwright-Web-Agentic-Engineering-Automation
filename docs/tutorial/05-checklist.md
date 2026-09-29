@@ -2,80 +2,72 @@
 
 | [← Workflow](04-workflow.md) | [Test Data Reference →](06-test-data.md) |
 |:---|---:|
-| Step 4: Feature → Version | Step 6: Test data (reference) |
+| Step 4: Run your first ticket | Step 6: Test data (reference) |
 
 **Step 5 / 6**
 
 ---
 
-## Part 1 · Get set up and run your first skill
+## Day 1: Get set up
 
-- [ ] Finish reading [README.md](../../README.md) — understand what the project is
-- [ ] Complete [Environment Setup](02-setup.md) (CODEBASE.md, Jira MCP)
-- [ ] Start Claude Code in `Playwright-Web-Agentic-Engineering-Automation/`: `claude`
-- [ ] Run `/tool-scan-qa-risk TICKET-1352` to confirm Jira MCP can read the ticket
-- [ ] Run `/stage-test-matrix TICKET-1352` to confirm Claude can produce a test matrix
-
----
-
-## Part 2 · Learn the architecture and the skill system
-
-- [ ] Read [Skill System](03-skills.md) — the skill system, argument format, and the full skill reference
-- [ ] Read [Workflow](04-workflow.md) — the two Feature → Version stages plus the full workflow rules (merge back, Modified/New)
-- [ ] Read [`.claude/rules/gherkin.md`](../../.claude/rules/gherkin.md) — BDD authoring rules
+- [ ] Read the [README](../../README.md)
+- [ ] Finish [Environment Setup](02-setup.md) (secrets.env, `npm install` in `youtube/`)
+- [ ] Start `claude` at the repo root
+- [ ] Run `/qa-context TICKET-1` and confirm `runs/TICKET-1/context.md` is written
 
 ---
 
-## Part 3 · Practice a full feature workflow
+## Day 2: Understand the flow
 
-Pick a ticket within your scope from Jira and walk through the full Feature workflow once:
-
-- [ ] `/stage-test-matrix TICKET-xxx` — build the test matrix
-- [ ] Manually confirm whether the matrix coverage is complete (any missing dimensions)
-- [ ] `/stage-write-bdd TICKET-xxx` — write the BDD .feature
-- [ ] `/stage-bdd-review TICKET-xxx` — review the BDD and look at the scoring report
-- [ ] Confirm the `features/{ticket}/` structure is correct
+- [ ] Read [Skill System](03-skills.md) — `/qa-ticket`, its 8 stages, the standing tools
+- [ ] Read [Workflow](04-workflow.md) — what a run looks like and where you decide
+- [ ] Open [pipeline.html](../../pipeline.html)
+- [ ] Read [`.claude/rules/gherkin.md`](../../.claude/rules/gherkin.md) — BDD writing and tag rules
 
 ---
 
-## Key Knowledge Check
+## Day 3: Run one ticket end to end
 
-If you can answer these questions, you are up to speed:
-
-**Concepts**
-- Why is `testcases/` read-only? Who has permission to write to it?
-- What is the difference between Modified BDD and New BDD? Why does Modified only write the diff?
-- When can `/stage-tc-merge` be run? What happens if it runs too early?
-- What is the purpose of the `# [added]` and `# [changed]` markers?
-
-**Operations**
-- How do you view the risk analysis of a ticket?
-- What is the difference between `/stage-write-bdd v4.14 TICKET-1352` and `/stage-write-bdd TICKET-1352`?
-- Where is the BDD Review report? Does it modify the .feature?
-- When multiple people work on a Version in parallel, what do you do if the same .feature is modified by two Features?
+- [ ] `/qa-ticket TICKET-xxx` and watch context → risk → cases
+- [ ] Open `runs/TICKET-xxx/review.html` and go through the matrix, state machine and BDD tabs
+- [ ] Reply "approved" (or request a change and watch it re-review)
+- [ ] Check the merge result with `git diff testcases/`
+- [ ] Do the manual checks listed in the Close section
 
 ---
 
-## Common Resources
+## Self-check
 
-| Resource | Location |
+If you can answer these, you're ready:
+
+- Where does `/qa-ticket` stop for you? When else does it stop?
+- How do you resume after an interruption?
+- When is `testcases/` written, and by which skill?
+- What do `# [changed]` and `# remove from main library on merge` do at merge time?
+- What's the difference between `NOT_FEASIBLE` and `TC_STALE`, and where does each end up?
+- What goes on the ticket created by `/tool-jira-sync`, and what goes in the attachment?
+- When is `/tool-qa-release-gate` always a NO-GO?
+
+---
+
+## Resources
+
+| What | Where |
 |---|---|
-| Workflow (full detail) | [`04-workflow.md`](04-workflow.md) |
-| Full skill reference | [`03-skills.md`](03-skills.md) |
+| Stage → skill index | [`docs/qa-workflow-map.md`](../qa-workflow-map.md) |
+| Visual overview | [`pipeline.html`](../../pipeline.html) |
 | Gherkin rules | [`.claude/rules/gherkin.md`](../../.claude/rules/gherkin.md) |
-| QA visual pipeline | [`pipeline.html`](../../pipeline.html) |
-| Jira project | your-workspace.atlassian.net (all tickets prefixed TICKET-xxx) |
+| Automation rules | [`.claude/rules/youtube-automation.md`](../../.claude/rules/youtube-automation.md) |
+| Test data | [06-test-data.md](06-test-data.md) |
 
 ---
 
-## Next Step: Test Data Reference
+## Next: the automation framework
 
-Before diving into the automation framework, skim how this project organizes its test data (Step 6).
-
-→ **[Test Data Reference](06-test-data.md)**
+→ **[YouTube Automation — Getting Started](../../youtube/docs/getting-started.md)**
 
 ---
 
 | [← Workflow](04-workflow.md) | [Test Data Reference →](06-test-data.md) |
 |:---|---:|
-| Step 4: Feature → Version | Step 6: Test data (reference) |
+| Step 4: Run your first ticket | Step 6: Test data (reference) |
