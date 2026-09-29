@@ -87,6 +87,8 @@ Subagents cannot dispatch subagents — anything parallel or requiring an indepe
 
 ## ★ Case sign-off (the only mandatory stop)
 
+Sign-off flow across files: this section (the stop) ← `qa-cases` §6–7 (review + review page) ← `qa-cases/references/review-rubric.md` (scoring and fix loop) → `qa-merge` (after sign-off).
+
 After cases are done, stop and present concisely in chat:
 1. Scenario count, `@smoke` / `@auto` / manual counts
 2. Coverage of HIGH risks

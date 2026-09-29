@@ -1,5 +1,7 @@
 # Case review spec (review-rubric)
 
+See also: `qa-cases/SKILL.md` §6 (when the review runs) and `qa-ticket/SKILL.md` §Case sign-off (what happens after it passes).
+
 BDD is usually written by the same session, so self-review is biased → **always dispatch an independent subagent to score**; the reviewer scores only and never edits files, fixes go back to the designer. Minimum 85 points, at most 4 rounds.
 
 ## 1. Ground truth for the reviewer (paste as-is, do not pre-judge)

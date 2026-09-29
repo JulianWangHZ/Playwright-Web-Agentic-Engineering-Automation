@@ -44,3 +44,5 @@ Stage details: [tutorial/04-workflow.md](tutorial/04-workflow.md). Skill argumen
 | Automation root | `youtube/` |
 | Automation rules | `.claude/rules/youtube-automation.md` |
 | Agents | `playwright-test-planner` / `-generator` / `-healer` |
+| Browser MCP (facts) | `playwright` (`mcp__playwright__*`): stages 1 and 3 walk the live site to confirm behavior |
+| Browser MCP (automation) | `playwright-test` (`mcp__playwright-test__*`): stages 5–6 agents extract locators and run / debug tests |
