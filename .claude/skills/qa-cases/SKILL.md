@@ -70,7 +70,7 @@ Afterwards, check every matrix row has scenario coverage; anything uncovered goe
 
 ## 5. Prototype `prototype.html` (optional)
 
-Only for new pages / complex UI flows; spec and template in `references/prototype.md`.
+Only for new screens / forms / multi-step flows: copy `assets/prototype-starter.html`, and after writing BDD add an auto-play demo for every scenario in `qa-scenarios`. Spec in `references/prototype.md`.
 
 ## 6. Review
 
